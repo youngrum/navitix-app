@@ -8,15 +8,17 @@ const fetchTMDB = async () => {
   };
 
   try {
-    const res = await fetch(`https://api.themoviedb.org/3/`, options);
+    const res = await fetch(`https://api.themoviedb.org/3`, options);
 
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json();
     console.log(data);
-  } catch (error) {
+    return data;
+  } catch (error: any) {
     console.error(error);
+    return { error: error.message };
   }
 };
 
