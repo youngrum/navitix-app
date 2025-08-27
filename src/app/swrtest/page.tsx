@@ -11,15 +11,8 @@ export default async function Page() {
   const url = "/movie/now_playing";
   let initialData: MovieData | null = null;
 
-  // サーバーサイドでトークンを取得
-  const tmdbToken = process.env.TMDB_ACCESS_TOKEN;
-  if (!tmdbToken) {
-    console.error("TMDB_ACCESS_TOKEN is not defined.");
-    return <div>Error: API token is missing.</div>;
-  }
-
   // トークンを使って新しいインスタンスを生成
-  const fetchTMDB = createTMDBInstance(tmdbToken);
+  const fetchTMDB = createTMDBInstance();
 
   try {
     const res = await fetchTMDB.get(url);

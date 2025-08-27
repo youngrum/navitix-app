@@ -1,12 +1,11 @@
 // src/services/tmdbApi.ts
 import axios from "axios";
 
-export function createTMDBInstance(token: string) {
+export function createTMDBInstance() {
   const instance = axios.create({
     baseURL: "https://api.themoviedb.org/3",
     headers: {
       accept: "application/json",
-      Authorization: `Bearer ${token}`,
     },
     params: {
       language: "ja",
