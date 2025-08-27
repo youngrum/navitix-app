@@ -2,17 +2,13 @@
 import fetchTMDB from "@/services/tmdbApi";
 import MovieList from "@/components/MovieList";
 import { SWRConfig } from "swr";
-
-// APIから取得するデータの型を定義
-interface MovieData {
-  results: any[];
-}
+import { MovieDataResponse } from "@/types/response/MovieData";
 
 // サーバーコンポーネントは async にできる
 export default async function Page() {
   const url = "/movie/now_playing";
-  let initialData: MovieData | null = null;
-  
+  let initialData: MovieDataResponse | null = null;
+
   try {
     // サーバー上で直接 await を使ってAPIを呼び出す
     const res = await fetchTMDB.get(url);
