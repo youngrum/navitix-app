@@ -1,30 +1,37 @@
-// src/app/page.tsx
-import fetchTMDB from "@/services/tmdbApi";
+// src/swrtest/page.tsx
+import { createTMDBInstance } from "@/services/tmdbApi";
 import MovieList from "@/components/MovieList";
 import { SWRConfig } from "swr";
-import { MovieDataResponse } from "@/types/response/MovieData";
 
-// サーバーコンポーネントは async にできる
+interface MovieData {
+  results: any[];
+}
+
 export default async function Page() {
   const url = "/movie/now_playing";
-  let initialData: MovieDataResponse | null = null;
+  let initialData: MovieData | null = null;
+
+  // サーバーサイドでトークンを取得
+  const tmdbToken = process.env.TMDB_ACCESS_TOKEN;
+  if (!tmdbToken) {
+    console.error("TMDB_ACCESS_TOKEN is not defined.");
+    return <div>Error: API token is missing.</div>;
+  }
+
+  // トークンを使って新しいインスタンスを生成
+  const fetchTMDB = createTMDBInstance(tmdbToken);
 
   try {
-    // サーバー上で直接 await を使ってAPIを呼び出す
     const res = await fetchTMDB.get(url);
     initialData = res.data;
   } catch (error) {
     console.error("Failed to fetch initial data:", error);
   }
 
-  // サーバーサイドで取得したデータを SWRConfig の fallback に渡す
   const fallback = initialData ? { [url]: initialData } : {};
 
   return (
-    // クライアントコンポーネントである movieList をラップ
-    // この中で useSWR が動く
     <SWRConfig value={{ fallback }}>
-      {/* 以下のクライアントコンポーネントにデータを渡す必要はありません */}
       <MovieList />
     </SWRConfig>
   );

@@ -1,22 +1,17 @@
 // app/components/MovieList.tsx
 "use client";
 
-import fetchTMDB from "@/services/tmdbApi";
 import useSWR from "swr";
 import Image from "next/image";
 import { NowPlaying } from "@/types/response/MovieData";
 
 export default function MovieList() {
-  const movieFetcher = (url: string) =>
-    fetchTMDB.get(url).then((res) => {
-      console.log(res.data);
-      return res.data;
-    });
-
-  const { data, error } = useSWR("/movie/now_playing", movieFetcher);
+  const movieFetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data, error } = useSWR("/api/movies/now-playing", movieFetcher);
 
   if (error) return <div>データの取得に失敗しました</div>;
   if (!data) return <div>読み込み中...</div>;
+  if (data) console.log(data);
 
   return (
     <div>
