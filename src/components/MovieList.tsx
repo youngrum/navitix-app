@@ -7,7 +7,7 @@ import { NowPlaying } from "@/types/response/MovieData";
 
 export default function MovieList() {
   const movieFetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, error } = useSWR("/api/movies/now-playing", movieFetcher);
+  const { data, error } = useSWR("/api/movie/now_playing", movieFetcher);
 
   if (error) return <div>データの取得に失敗しました</div>;
   if (!data) return <div>読み込み中...</div>;
@@ -19,12 +19,12 @@ export default function MovieList() {
       <ul>
         {data.results.map((movie: NowPlaying) => (
           <li key={movie.id}>
-            {movie.title}
+            <p>{movie.title}</p>
             <Image
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={movie.title}
-              width={500}
-              height={750}
+              width={200}
+              height={300}
             />
           </li>
         ))}

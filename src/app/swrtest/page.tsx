@@ -2,14 +2,11 @@
 import { createTMDBInstance } from "@/services/tmdbApi";
 import MovieList from "@/components/MovieList";
 import { SWRConfig } from "swr";
-
-interface MovieData {
-  results: any[];
-}
+import { MovieDataResponse } from "@/types/response/MovieData";
 
 export default async function Page() {
   const url = "/movie/now_playing";
-  let initialData: MovieData | null = null;
+  let initialData: MovieDataResponse | null = null;
 
   // トークンを使って新しいインスタンスを生成
   const fetchTMDB = createTMDBInstance();
