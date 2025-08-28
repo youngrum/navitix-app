@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["image.tmdb.org"],
   },
-  env: {
-    TMDB_API_SECRET: process.env.TMDB_API_SECRET,
-  },
 };
 
 export default nextConfig;
