@@ -14,3 +14,17 @@ export interface ResponseMovies {
   vote_average: number;
   vote_count: number;
 }
+
+export interface ResponseMovieDetail {
+  adult: boolean;
+  backdrop_path: string | null;
+  belongs_to_collection: object | null;
+  overview: string | null;
+  budget: number;
+  genres: { id: number; name: string }[];
+  homepage: string | null;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
