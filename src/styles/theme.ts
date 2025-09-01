@@ -16,9 +16,9 @@ declare module "@mui/material/styles" {
   interface PaletteOptions {
     base?: PaletteOptions["primary"]; // baseはprimaryと同じ構造を持つが、必須ではない
     status?: {
-      success?: string;
-      warning?: string;
-      error?: string;
+      available?: string;
+      selected?: string;
+      reserved?: string;
     };
   }
 }
@@ -27,41 +27,49 @@ declare module "@mui/material/styles" {
 const myProjectTheme = createTheme({
   palette: {
     primary: {
-      main: "#1976d2", // 青系の色
+      // メインカラーとして使用
+      main: "#8F8F8F", // グレー系の色
       light: "#4791db",
       dark: "#115293",
       contrastText: "#fff",
     },
     secondary: {
-      main: "#dc004e", // 赤紫系の色
+      // アクセントカラー として使用
+      main: "#FE3323", // 赤紫系の色
       light: "#e33371",
       dark: "#9a0036",
       contrastText: "#fff",
     },
-    base: {
-      // カスタムで定義した「ベースカラー」
-      main: "#f5f5f5", // 非常に薄い灰色など、背景や要素の基盤となる色
-      light: "#ffffff",
-      dark: "#e0e0e0",
-      contrastText: "#000", // 暗い背景に対する文字色
+    background: {
+      // ベースカラーとして定義
+      default: "#ffffff", // アプリケーションの背景色
+      paper: "#ffffff", // カードやモーダルの背景色
     },
+    // 区切り線の色を定義
+    divider: "#DADADA",
+
+    // 座席の状態を示すためのカスタムカラー
     status: {
-      success: "#4caf50",
-      warning: "#ff9800",
-      error: "#f44336",
+      available: "#ffffff", // 選択可能
+      selected: "#FE3323", // 選択中・自身が購入済
+      reserved: "#8F8F8F", // 他のユーザーが購入済
+    },
+    text: {
+      primary: "#333333", // 濃いグレー
+      secondary: "#666666", // 中間のグレー
+      disabled: "#999999", // 薄いグレー
     },
   },
   typography: {
     // アプリケーションで使用するフォントファミリーや、h1, h2などのスタイルを定義
     fontFamily: ["Noto Sans JP", "Roboto", "sans-serif"].join(","),
     h1: {
-      fontSize: "2.5rem",
-      fontWeight: 700,
-      color: "#333", // ここで直接色を指定可能 paletteから参照する方が一般的
+      fontSize: "2.0rem",
+      fontWeight: 400,
     },
     h2: {
-      fontSize: "2rem",
-      fontWeight: 600,
+      fontSize: "1.5rem",
+      fontWeight: 400,
     },
   },
 });
