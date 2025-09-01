@@ -15,7 +15,7 @@ export default function PostsList({ movies }: MovieListProps) {
       {movies.map((movie) => (
         <Box key={movie.id} sx={{ my: 2, p: 2, border: '1px solid grey' }}>
           <Typography variant="h5">{movie.title}</Typography>
-          <Image src={`${movie.poster_path}`} alt={`${movie.title}`} width={200} height={300} />
+          <Image src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={`${movie.title}`} width={200} height={300} />
         </Box>
       ))}
     </Box>

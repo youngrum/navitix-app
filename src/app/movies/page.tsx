@@ -1,7 +1,7 @@
 import tmdbApi from '@/services/tmdbApi';
 import MovieList from '@/components/movies/MovieList'
 import { NOW_PLAYING } from '@/types/movies';
-import { apiResponse, apiResponseData } from '@/types/apiResponse';
+import { apiResponse } from '@/types/apiResponse';
 
 async function getMovieData() {
     try {
