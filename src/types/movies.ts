@@ -1,5 +1,4 @@
-
-export interface NOW_PLAYING {
+export interface ResponseMovies {
   adult: boolean;
   backdrop_path: string | null;
   genre_ids: number[];
