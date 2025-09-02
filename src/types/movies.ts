@@ -30,3 +30,25 @@ export interface ResponseMovieDetail {
   vote_average: number;
   vote_count: number;
 }
+
+// movie/{movie_id}/release_dates のレスポンス型
+export interface ResponseMovieReleaseDates {
+  certification: string;
+  descriptors: string[];
+  iso_639_1: string;
+  note: string;
+  release_date: string; // ISO 8601形式の文字列
+  type: number;
+}
+
+// 2. 特定の国の公開日情報を表す型
+export interface CountryRelease {
+  iso_3166_1: string; // 国コード (例: "JP", "US")
+  release_dates: ResponseMovieReleaseDates[];
+}
+
+// 3. 全体のAPIレスポンスを表す型
+export interface ReleaseDatesResponse {
+  id: number;
+  results: CountryRelease[];
+}

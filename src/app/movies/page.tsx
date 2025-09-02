@@ -6,11 +6,13 @@ import { Box } from "@mui/material";
 import Header1 from "@/components/common/header1";
 import Header2 from "@/components/common/header2";
 import CarouselMovieList from "@/components/movies/CarouselMovieList";
+import { ResponseMovies } from "@/types/movies";
 
 // 現在上映中の映画データを取得
 async function getNowPlayingMovieData() {
   try {
-    const res: apiResponse<apiResponseData_Movies> = await tmdbApi.get("/movie/now_playing");
+    const res: apiResponse<apiResponseData_Movies<ResponseMovies[]>> =
+      await tmdbApi.get("/movie/now_playing");
     console.log(res.data.results);
     return res.data.results;
   } catch (error) {
@@ -22,7 +24,8 @@ async function getNowPlayingMovieData() {
 // 公開予定の映画データを取得
 async function getUpcomingMovieData() {
   try {
-    const res: apiResponse<apiResponseData_Movies> = await tmdbApi.get("/movie/upcoming");
+    const res: apiResponse<apiResponseData_Movies<ResponseMovies[]>> =
+      await tmdbApi.get("/movie/upcoming");
     console.log(res.data.results);
     return res.data.results;
   } catch (error) {

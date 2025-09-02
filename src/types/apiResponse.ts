@@ -1,4 +1,4 @@
-import { ResponseMovies } from "@/types/movies";
+import { ResponseMovieReleaseDates, ResponseMovies } from "@/types/movies";
 
 // tmdb API全般のレスポンス型
 export interface apiResponse<T> {
@@ -11,10 +11,10 @@ export interface apiResponse<T> {
 }
 
 // movie/now_playingと movie/upcommong の レスポンスdata型
-export interface apiResponseData_Movies {
+export interface apiResponseData_Movies<T> {
   dates: [];
   page: number;
-  results: ResponseMovies[];
+  results: T;
   total_pages: number;
   total_results: number;
 }
