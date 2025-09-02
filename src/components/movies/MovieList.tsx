@@ -12,11 +12,10 @@ interface MovieListProps {
 }
 
 export default function MovieList({ movies }: MovieListProps) {
-  const theme = useTheme(); // useThemeでテーマを取得 useThemeはCSRで使用可
+  const theme = useTheme();
   return (
     <Box
       sx={{
-        // ここがポイント
         display: "flex", // 子要素をFlexアイテムにする
         overflowX: "auto", // 横方向にはみ出た場合にスクロールバーを表示
         gap: 2, // カード間の間隔を空ける

@@ -1,3 +1,4 @@
+// movie/now_playingと movie/upcommong のdata.results型
 export interface ResponseMovies {
   adult: boolean;
   backdrop_path: string | null;
@@ -15,6 +16,7 @@ export interface ResponseMovies {
   vote_count: number;
 }
 
+// movie/{movie_id} のレスポンス型
 export interface ResponseMovieDetail {
   adult: boolean;
   backdrop_path: string | null;

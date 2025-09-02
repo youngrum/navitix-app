@@ -4,6 +4,7 @@
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import myProjectTheme from "@/styles/theme"; // カスタムテーマをインポート
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 
 export default function ThemeProviderWrapper({
   children,
@@ -11,10 +12,12 @@ export default function ThemeProviderWrapper({
   children: React.ReactNode;
 }) {
   return (
-    // MUIのテーマプロバイダーを使用して、ThemeProviderWrapperコンポーネントの子要素にのみカスタムテーマを適用
+    <AppRouterCacheProvider>
+    {/* MUIのテーマプロバイダーを使用して、ThemeProviderWrapperコンポーネントの子要素にのみカスタムテーマを適用 */}
     <ThemeProvider theme={myProjectTheme}>
       <CssBaseline />
       {children}
     </ThemeProvider>
+    </AppRouterCacheProvider>
   );
 }
