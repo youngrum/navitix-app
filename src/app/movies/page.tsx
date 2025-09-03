@@ -1,8 +1,8 @@
 import tmdbApi from "@/services/tmdbApi";
 import MovieList from "@/components/movies/MovieList";
-import { apiResponse, apiResponseData_Movies } from "@/types/apiResponse";
+import { apiResponse, apiResponseMovies_results } from "@/types/apiResponse";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import { Box } from "@mui/material";
+import { Container } from "@mui/material";
 import Header1 from "@/components/common/header1";
 import Header2 from "@/components/common/header2";
 import CarouselMovieList from "@/components/movies/CarouselMovieList";
@@ -11,7 +11,7 @@ import { ResponseMovies } from "@/types/movies";
 // 現在上映中の映画データを取得
 async function getNowPlayingMovieData() {
   try {
-    const res: apiResponse<apiResponseData_Movies<ResponseMovies[]>> =
+    const res: apiResponse<apiResponseMovies_results<ResponseMovies[]>> =
       await tmdbApi.get("/movie/now_playing");
     console.log(res.data.results);
     return res.data.results;
@@ -24,7 +24,7 @@ async function getNowPlayingMovieData() {
 // 公開予定の映画データを取得
 async function getUpcomingMovieData() {
   try {
-    const res: apiResponse<apiResponseData_Movies<ResponseMovies[]>> =
+    const res: apiResponse<apiResponseMovies_results<ResponseMovies[]>> =
       await tmdbApi.get("/movie/upcoming");
     console.log(res.data.results);
     return res.data.results;
@@ -68,7 +68,7 @@ export default async function Page() {
 
   return (
     <main>
-      <Box sx={{ p: 1 }}>
+      <Container sx={{ p: 1 }}>
         <ThemeProviderWrapper>
           {/* ThemeProviderでテーマを適用 */}
           {/* ヘッダーコンポーネントを使用 */}
@@ -80,7 +80,7 @@ export default async function Page() {
           <Header2 headerText={header2TextUpcoming} />
           <MovieList movies={upcoming} />
         </ThemeProviderWrapper>
-      </Box>
+      </Container>
     </main>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Slider from "react-slick";
 import { Box, styled, Typography } from "@mui/material";
 import Image from "next/image";

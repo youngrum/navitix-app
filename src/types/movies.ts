@@ -26,12 +26,29 @@ export interface ResponseMovieDetail {
   genres: { id: number; name: string }[];
   homepage: string | null;
   title: string;
+  poster_path: string | null;
+  id: number;
+  imdb_id: string | null;
+  original_language: string;
+  original_title: string;
+  popularity: number;
+  release_date: string;
+  revenue: number;
+  runtime: number | null;
+  status: string;
+  tagline: string | null;
   video: boolean;
   vote_average: number;
   vote_count: number;
 }
 
-// movie/{movie_id}/release_dates のレスポンス型
+// movie/{movie_id}/release_dates のレスポンスdata.results型
+export interface ResponseReleaseDates_release_dates {
+  iso_3166_1: string; // 国コード (例: "JP", "US")
+  release_dates: ResponseMovieReleaseDates[];
+}
+
+// movie/{movie_id}/release_dates のレスポンスdata.results.release_dates型
 export interface ResponseMovieReleaseDates {
   certification: string;
   descriptors: string[];
@@ -41,14 +58,16 @@ export interface ResponseMovieReleaseDates {
   type: number;
 }
 
-// 2. 特定の国の公開日情報を表す型
-export interface CountryRelease {
-  iso_3166_1: string; // 国コード (例: "JP", "US")
-  release_dates: ResponseMovieReleaseDates[];
-}
-
-// 3. 全体のAPIレスポンスを表す型
-export interface ReleaseDatesResponse {
-  id: number;
-  results: CountryRelease[];
+// movie/{movie_id}/videos のレスポンスdata.results型
+export interface ResponseMovieVideos {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string; // ISO 8601形式の文字列
+  id: string;
 }

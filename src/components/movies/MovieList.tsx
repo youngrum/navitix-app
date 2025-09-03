@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Box, Typography } from "@mui/material";
 import { ResponseMovies } from "@/types/movies";
 import Image from "next/image";
