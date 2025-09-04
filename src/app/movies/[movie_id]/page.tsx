@@ -6,7 +6,7 @@ import {
   ResponseReleaseDates_results,
 } from "@/types/apiResponse";
 import { ResponseMovieDetail, ResponseMovieVideos } from "@/types/movies";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import DetailInfo from "../../../components/movies/detail/DetailInfo";
 import Header1 from "@/components/common/header1";
@@ -109,8 +109,7 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
   }
 
   return (
-    <main>
-      <Container sx={{ p: 1 }}>
+    <main style={{ padding: "10px" }}>
         <ThemeProviderWrapper>
           <Header1 headerText={header1Text} />
           <DetailInfo MovieDetail={detail} ReleaseInfoProps={releaseInfo} />
@@ -125,7 +124,6 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
             )}
           </Box>
         </ThemeProviderWrapper>
-      </Container>
     </main>
   );
 }

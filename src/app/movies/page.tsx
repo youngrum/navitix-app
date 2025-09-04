@@ -2,7 +2,6 @@ import tmdbApi from "@/services/tmdbApi";
 import MovieList from "@/components/movies/MovieList";
 import { apiResponse, apiResponseMovies_results } from "@/types/apiResponse";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import { Container } from "@mui/material";
 import Header1 from "@/components/common/header1";
 import Header2 from "@/components/common/header2";
 import CarouselMovieList from "@/components/movies/CarouselMovieList";
@@ -67,8 +66,7 @@ export default async function Page() {
   const header2TextUpcoming = "公開予定";
 
   return (
-    <main>
-      <Container sx={{ p: 1 }}>
+    <main style={{ padding: "10px" }}>
         <ThemeProviderWrapper>
           {/* ThemeProviderでテーマを適用 */}
           {/* ヘッダーコンポーネントを使用 */}
@@ -80,7 +78,6 @@ export default async function Page() {
           <Header2 headerText={header2TextUpcoming} />
           <MovieList movies={upcoming} />
         </ThemeProviderWrapper>
-      </Container>
     </main>
   );
 }
