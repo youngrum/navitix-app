@@ -45,7 +45,7 @@ export interface ResponseMovieDetail {
 // movie/{movie_id}/release_dates のレスポンスdata.results型
 export interface ResponseReleaseDates_release_dates {
   iso_3166_1: string; // 国コード (例: "JP", "US")
-  release_dates: ResponseMovieReleaseDates[];
+  release_dates: ResponseMovieReleaseDates[] | null | undefined;
 }
 
 // movie/{movie_id}/release_dates のレスポンスdata.results.release_dates型
@@ -54,7 +54,7 @@ export interface ResponseMovieReleaseDates {
   descriptors: string[];
   iso_639_1: string;
   note: string;
-  release_date: string; // ISO 8601形式の文字列
+  release_date: string | null;
   type: number;
 }
 

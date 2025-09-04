@@ -1,5 +1,4 @@
 // app/movies/[movie_id]/page.tsx
-import Header2 from "@/components/common/header2";
 import tmdbApi from "@/services/tmdbApi";
 import {
   apiResponse,
@@ -8,9 +7,9 @@ import {
 } from "@/types/apiResponse";
 import { ResponseMovieDetail, ResponseMovieVideos } from "@/types/movies";
 import { Box, Container } from "@mui/material";
-import MovieList from "../../../components/movies/MovieList";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import DetailInfo from "../../../components/movies/detail/DetailInfo";
+import Header1 from "@/components/common/header1";
 
 // propsの型定義
 interface MovieIdProps {
@@ -54,7 +53,7 @@ async function getMovieVideoData(movieId: string) {
     const res: apiResponse<apiResponseMovies_results<ResponseMovieVideos[]>> =
       await tmdbApi.get(`/movie/${movieId}/videos`);
     const videoData = res.data.results;
-    console.log(videoData);
+    // console.log(videoData);
     return videoData;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -93,19 +92,15 @@ function getLatestOfficialTrailerKey(movies: ResponseMovieVideos[]) {
 export default async function MovieDetailsPage({ params }: MovieIdProps) {
   // paramsから動的なIDを取得
   const { movie_id } = await params;
+  const header1Text = "dtail";
 
   // APIにリクエストを送信
   const detail = await getMovieDtailData(movie_id);
   const release = await getMovieReleaseData(movie_id);
   const videos = await getMovieVideoData(movie_id);
 
-  // 日本の年齢制限を取得
-  const releaseInfo = release?.find((result) => result.iso_3166_1 === "JP");
-  const release_date = releaseInfo?.release_dates[0]?.release_date;
-  const certification =
-    releaseInfo?.release_dates[0]?.certification === ""
-      ? "全年齢対象"
-      : releaseInfo?.release_dates[0]?.certification;
+  // 日本でのリリース情報を取得
+  const releaseInfo = release?.find((result) => result.iso_3166_1 === "JP") || null;
 
   // 最新の公式予告編のキーを取得
   let trailerKey = null;
@@ -117,15 +112,8 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
     <main>
       <Container sx={{ p: 1 }}>
         <ThemeProviderWrapper>
-          <DetailInfo MovieDetail={detail} />
-          <Header2 headerText="詳細情報" />
-          <p>
-            公開日:{" "}
-            {release_date
-              ? new Date(release_date).toLocaleDateString()
-              : "不明"}
-          </p>
-          <p>年齢制限: {certification ?? "-"}</p>
+          <Header1 headerText={header1Text} />
+          <DetailInfo MovieDetail={detail} ReleaseInfoProps={releaseInfo} />
           <Box sx={{ mt: 4, maxWidth: "500px" }}>
             {trailerKey && (
               <iframe
