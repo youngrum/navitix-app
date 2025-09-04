@@ -61,23 +61,23 @@ async function getMovieVideoData(movieId: string) {
   }
 }
 
-function getLatestOfficialTrailerKey(movies: ResponseMovieVideos[]) {
-  if (!movies || movies.length === 0) {
+function getLatestOfficialTrailerKey(videoList: ResponseMovieVideos[]) {
+  if (!videoList || videoList.length === 0) {
     return null; // データが存在しない場合はnullを返す
   }
 
   // 条件に合う動画をフィルタリング
-  const trailers = movies.filter(
-    (video) => video.type === "Trailer" && video.site === "YouTube"
+  const filtered_videos = videoList.filter(
+    (video) => (video.type === "Trailer" || video.type === "Teaser") && video.site === "YouTube"
   );
 
   // フィルタリングされた動画が存在しない場合はnullを返す
-  if (trailers.length === 0) {
+  if (filtered_videos.length === 0) {
     return null;
   }
 
   // published_atが最新のものを見つけるためにソート
-  trailers.sort((a, b) => {
+  filtered_videos.sort((a, b) => {
     // 日付文字列を比較して新しい順に並べる
     return (
       new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
@@ -85,7 +85,7 @@ function getLatestOfficialTrailerKey(movies: ResponseMovieVideos[]) {
   });
 
   // ソート後の配列の最初の要素（最も新しいもの）のキーを返す
-  return trailers[0].key;
+  return filtered_videos[0].key;
 }
 
 // SSRコンポーネントだからasync/await
