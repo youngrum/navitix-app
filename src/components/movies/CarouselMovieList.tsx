@@ -49,8 +49,8 @@ export default function CarouselMovieList({ movies }: CarouselMovieListProps) {
               sx={{
                 borderRadius: "16px", // 画像の角を丸くする
                 overflow: "hidden", // はみ出る部分を隠す
-                width: 400, // カルーセルの表示幅を固定 (Imageのwidthと一致させる)
-                height: 300, // カルーセルの表示高さを固定 (Imageのheightと一致させる)
+                width: "95vw", // カルーセルの表示幅を固定
+                height: 200, // カルーセルの表示高さを固定ss
                 position: "relative", // Imageコンポーネントでfillを使うために必要
                 margin: "0 auto", // 中央揃え
               }}
@@ -58,8 +58,6 @@ export default function CarouselMovieList({ movies }: CarouselMovieListProps) {
               <Image
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
-                // width={400} // fillプロパティを使う場合はwidthとheightは不要
-                // height={200}
                 fill // 親要素のサイズに合わせて画像を拡大・縮小
                 style={{ objectFit: "cover" }} // 画像をトリミングして親要素にフィットさせる
                 priority={true}
