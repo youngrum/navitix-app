@@ -19,13 +19,13 @@ export default function ClientPageContent() {
     <Box
       sx={{
         // page.tsxの背景色をこちらで設定
-        backgroundColor: theme.palette.base.light, // baseカラーのlightを背景色に使用
+        backgroundColor: theme.palette.background.default, // baseカラーのlightを背景色に使用
         padding: theme.spacing(4), // theme.spacingを使用
         width: "100%", // 例として追加
         textAlign: "center", // 例として追加
       }}
     >
-      <Typography variant="h1" sx={{ mt: 4, color: theme.palette.base.dark }}>
+      <Typography variant="h1" sx={{ mt: 4, color: theme.palette.secondary.dark }}>
         This is Client Component (CSR)
       </Typography>
       <Typography
@@ -39,7 +39,7 @@ export default function ClientPageContent() {
         <Button
           variant="contained"
           sx={{
-            color: theme.palette.base.dark,
+            color: theme.palette.secondary.dark,
           }}
           onClick={handleClick}
         >
@@ -53,20 +53,15 @@ export default function ClientPageContent() {
         <Button
           variant="contained"
           sx={{
-            backgroundColor: theme.palette.base.dark,
-            color: theme.palette.base.contrastText,
+            backgroundColor: theme.palette.secondary.dark,
             "&:hover": {
-              backgroundColor: theme.palette.base.main,
+              backgroundColor: theme.palette.background.default,
             },
           }}
         >
           Base Color Button
         </Button>
       </Stack>
-
-      <Typography sx={{ mt: 4, color: theme.palette.text.secondary }}>
-        現在のベースカラーメイン: {theme.palette.base.main}
-      </Typography>
     </Box>
   );
 }

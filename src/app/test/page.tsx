@@ -11,6 +11,7 @@ import {
 } from "@mui/material/";
 import ClientPageContent from "@/components/ClientPageContent";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
+import SubmitButton from "@/components/common/SubmitButton";
 
 export default function TestPage() {
   return (
@@ -62,6 +63,7 @@ export default function TestPage() {
 
       {/* テーマが必要な部分だけをクライアントコンポーネントに */}
       <ThemeProviderWrapper>
+        <SubmitButton isLoading={false} buttonText={"テスト"} ></SubmitButton>
         <ClientPageContent />
       </ThemeProviderWrapper>
     </Box>
