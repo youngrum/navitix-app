@@ -13,9 +13,9 @@ import Header1 from "@/components/common/header1";
 
 // propsの型定義
 interface MovieIdProps {
-  params: {
+  params: Promise<{
     movie_id: string; // URLから渡される映画のID
-  };
+  }>;
 }
 
 // 映画の詳細を取得
