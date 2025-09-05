@@ -1,23 +1,21 @@
-const fetchTMDB = async () => {
-  const options = {
-    method: "GET",
+import axios from 'axios'
+
+const tmdbApi = axios.create({
+  baseURL: 'https://api.themoviedb.org/3', // 必要に応じて環境変数化可能
     headers: {
       accept: "application/json",
-      Authorization: `Bearer ${process.env.TMDB_API_SECRET}`,
     },
-  };
+    params: {
+      language: "ja",
+      region: "JP",
+    },
+})
 
-  try {
-    const res = await fetch(`https://api.themoviedb.org/3/`, options);
+// リクエスト前にトークンを自動挿入
+tmdbApi.interceptors.request.use((config) => {
+  const token = process.env.TMDB_ACCESS_TOKEN
+  config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    const data = await res.json();
-    console.log(data);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export default fetchTMDB;
+export default tmdbApi
