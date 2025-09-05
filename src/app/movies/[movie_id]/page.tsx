@@ -19,13 +19,13 @@ interface MovieIdProps {
 }
 
 // 映画の詳細を取得
-async function getMovieDtailData(movieId: string) {
+async function getMovieDetailData(movieId: string) {
   try {
     const res: apiResponse<ResponseMovieDetail> = await tmdbApi.get(
       `/movie/${movieId}`
     );
     const detail = res.data;
-    console.log(detail);
+    // console.log(detail);
     return detail;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -40,7 +40,7 @@ async function getMovieReleaseData(movieId: string) {
       `/movie/${movieId}/release_dates`
     );
     const releaseData = res.data.results;
-    console.log(releaseData);
+    // console.log(releaseData);
     return releaseData;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -68,7 +68,9 @@ function getLatestOfficialTrailerKey(videoList: ResponseMovieVideos[]) {
 
   // 条件に合う動画をフィルタリング
   const filtered_videos = videoList.filter(
-    (video) => (video.type === "Trailer" || video.type === "Teaser") && video.site === "YouTube"
+    (video) =>
+      (video.type === "Trailer" || video.type === "Teaser") &&
+      video.site === "YouTube"
   );
 
   // フィルタリングされた動画が存在しない場合はnullを返す
@@ -92,15 +94,16 @@ function getLatestOfficialTrailerKey(videoList: ResponseMovieVideos[]) {
 export default async function MovieDetailsPage({ params }: MovieIdProps) {
   // paramsから動的なIDを取得
   const { movie_id } = await params;
-  const header1Text = "dtail";
+  const header1Text = "detail";
 
   // APIにリクエストを送信
-  const detail = await getMovieDtailData(movie_id);
+  const detail = await getMovieDetailData(movie_id);
   const release = await getMovieReleaseData(movie_id);
   const videos = await getMovieVideoData(movie_id);
 
   // 日本でのリリース情報を取得
-  const releaseInfo = release?.find((result) => result.iso_3166_1 === "JP") || null;
+  const releaseInfo =
+    release?.find((result) => result.iso_3166_1 === "JP") || null;
 
   // 最新の公式予告編のキーを取得
   let trailerKey = null;
@@ -110,20 +113,31 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
 
   return (
     <main style={{ padding: "10px" }}>
-        <ThemeProviderWrapper>
-          <Header1 headerText={header1Text} />
-          <DetailInfo MovieDetail={detail} ReleaseInfoProps={releaseInfo} />
-          <Box sx={{ mt: 4, maxWidth: "500px" }}>
-            {trailerKey && (
-              <iframe
-                src={`https://www.youtube.com/embed/${trailerKey}`}
-                title="Latest Official Trailer"
-                allowFullScreen
-                width="100%"
-              ></iframe>
-            )}
-          </Box>
-        </ThemeProviderWrapper>
+      <ThemeProviderWrapper>
+        <Header1 headerText={header1Text} />
+        <DetailInfo MovieDetail={detail} ReleaseInfoProps={releaseInfo} />
+        <Box
+          sx={{
+            mt: 4,
+            maxWidth: "500px",
+            borderRadius: 5,
+            overflow: "hidden",
+          }}
+        >
+          {trailerKey && (
+            <iframe
+              src={`https://www.youtube.com/embed/${trailerKey}`}
+              title="official video"
+              allowFullScreen
+              width="100%"
+              style={{
+                borderRadius: 5,
+                overflow: "hidden",
+              }}
+            ></iframe>
+          )}
+        </Box>
+      </ThemeProviderWrapper>
     </main>
   );
 }
