@@ -1,6 +1,7 @@
 import {
   ResponseReleaseDates_release_dates,
   ResponseMovieVideos,
+  ResponseMovieCredits,
 } from "@/types/movies";
 
 // tmdb API全般のレスポンス型
@@ -28,7 +29,15 @@ export interface ResponseReleaseDates_results {
   results: ResponseReleaseDates_release_dates[];
 }
 
+// movie/{movie_id}/videos のレスポンスdata型
 export interface ResponseVideos_results {
   id: number;
   results: ResponseMovieVideos[];
+}
+
+// movie/{movie_id}/credits のレスポンスdata型
+export interface ResponseCredits_casts {
+  id: number;
+  cast: ResponseMovieCredits[];
+  crew: [];
 }

@@ -3,13 +3,15 @@ import tmdbApi from "@/services/tmdbApi";
 import {
   apiResponse,
   apiResponseMovies_results,
+  ResponseCredits_casts,
   ResponseReleaseDates_results,
 } from "@/types/apiResponse";
 import { ResponseMovieDetail, ResponseMovieVideos } from "@/types/movies";
-import { Box } from "@mui/material";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import DetailInfo from "../../../components/movies/detail/DetailInfo";
 import Header1 from "@/components/common/header1";
+import VideoContainer from "@/components/movies/detail/VideoContainer";
+import CastList from "@/components/movies/detail/CastList";
 
 // propsの型定義
 interface MovieIdProps {
@@ -60,34 +62,18 @@ async function getMovieVideoData(movieId: string) {
     return null;
   }
 }
-
-function getLatestOfficialTrailerKey(videoList: ResponseMovieVideos[]) {
-  if (!videoList || videoList.length === 0) {
-    return null; // データが存在しない場合はnullを返す
-  }
-
-  // 条件に合う動画をフィルタリング
-  const filtered_videos = videoList.filter(
-    (video) =>
-      (video.type === "Trailer" || video.type === "Teaser") &&
-      video.site === "YouTube"
-  );
-
-  // フィルタリングされた動画が存在しない場合はnullを返す
-  if (filtered_videos.length === 0) {
+async function getMovieCasts(movie_id: string) {
+  try {
+    const res: apiResponse<ResponseCredits_casts> = await tmdbApi.get(
+      `/movie/${movie_id}/credits`
+    );
+    const castsData = res.data.cast;
+    console.log(castsData);
+    return castsData;
+  } catch (error) {
+    console.log("Failed to fetch", error);
     return null;
   }
-
-  // published_atが最新のものを見つけるためにソート
-  filtered_videos.sort((a, b) => {
-    // 日付文字列を比較して新しい順に並べる
-    return (
-      new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
-    );
-  });
-
-  // ソート後の配列の最初の要素（最も新しいもの）のキーを返す
-  return filtered_videos[0].key;
 }
 
 // SSRコンポーネントだからasync/await
@@ -100,43 +86,58 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
   const detail = await getMovieDetailData(movie_id);
   const release = await getMovieReleaseData(movie_id);
   const videos = await getMovieVideoData(movie_id);
+  const casts = await getMovieCasts(movie_id);
 
   // 日本でのリリース情報を取得
   const releaseInfo =
     release?.find((result) => result.iso_3166_1 === "JP") || null;
 
+  function getLatestOfficialTrailerKey(videoList: ResponseMovieVideos[]) {
+    if (!videoList || videoList.length === 0) {
+      return null; // データが存在しない場合はnullを返す
+    }
+
+    // 条件に合う動画をフィルタリング
+    const filtered_videos = videoList.filter(
+      (video) =>
+        (video.type === "Trailer" || video.type === "Teaser") &&
+        video.site === "YouTube"
+    );
+
+    // フィルタリングされた動画が存在しない場合はnullを返す
+    if (filtered_videos.length === 0) {
+      return null;
+    }
+
+    // published_atが最新のものを見つけるためにソート
+    filtered_videos.sort((a, b) => {
+      // 日付文字列を比較して新しい順に並べる
+      return (
+        new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+      );
+    });
+
+    // ソート後の配列の最初の要素（最も新しいもの）のキーを返す
+    return filtered_videos[0].key;
+  }
+
   // 最新の公式予告編のキーを取得
   let trailerKey = null;
-  if (videos) {
+  if (videos && videos.length > 0) {
     trailerKey = getLatestOfficialTrailerKey(videos);
   }
 
   return (
-    <main style={{ padding: "10px" }}>
+    <main>
       <ThemeProviderWrapper>
         <Header1 headerText={header1Text} />
-        <DetailInfo MovieDetail={detail} ReleaseInfoProps={releaseInfo} />
-        <Box
-          sx={{
-            mt: 4,
-            maxWidth: "500px",
-            borderRadius: 5,
-            overflow: "hidden",
-          }}
-        >
-          {trailerKey && (
-            <iframe
-              src={`https://www.youtube.com/embed/${trailerKey}`}
-              title="official video"
-              allowFullScreen
-              width="100%"
-              style={{
-                borderRadius: 5,
-                overflow: "hidden",
-              }}
-            ></iframe>
-          )}
-        </Box>
+        <DetailInfo
+          MovieDetailProps={detail}
+          ReleaseInfoProps={releaseInfo}
+          videosProps={videos}
+        />
+        <VideoContainer trailerKeyProps={trailerKey} />
+        <CastList castsProps={casts} />
       </ThemeProviderWrapper>
     </main>
   );

@@ -2,23 +2,31 @@
 
 import {
   ResponseMovieDetail,
+  ResponseMovieVideos,
   ResponseReleaseDates_release_dates,
 } from "@/types/movies";
 import React from "react";
+import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, ButtonBase, Stack, Typography, Collapse } from "@mui/material";
 
-interface MovieDetailProps {
-  MovieDetail: ResponseMovieDetail | null;
+interface MovieDetailInfoProps {
+  MovieDetailProps: ResponseMovieDetail | null;
   ReleaseInfoProps: ResponseReleaseDates_release_dates | null;
+  videosProps: ResponseMovieVideos[] | null;
 }
 
 export default function DetailInfo({
-  MovieDetail,
+  MovieDetailProps,
   ReleaseInfoProps,
-}: MovieDetailProps) {
+}: MovieDetailInfoProps) {
   const theme = useTheme();
+  const [isOverviewExpanded, setIsOverviewExpanded] = useState(false);
+
+  const handleOverviewToggle = () => {
+    setIsOverviewExpanded((prev) => !prev);
+  };
 
   // 年齢制限
   const certification =
@@ -28,10 +36,24 @@ export default function DetailInfo({
   console.log(certification);
   // 公開日
   const release_date =
-    MovieDetail?.release_date === null ? "-" : MovieDetail?.release_date;
+    MovieDetailProps?.release_date === null
+      ? "-"
+      : MovieDetailProps?.release_date;
   // console.log(release_date);
+
   // 上映時間
-  const runtime = MovieDetail?.runtime === null ? "-" : MovieDetail?.runtime;
+  const runtime =
+    MovieDetailProps?.runtime === null ? "-" : MovieDetailProps?.runtime;
+
+  // ジャンル
+  const genres = MovieDetailProps?.genres
+    ? MovieDetailProps.genres.map((genre) => genre.name).join(", ")
+    : "-";
+  // console.log(genres);
+
+  // あらすじ
+  const overview = MovieDetailProps?.overview;
+  console.log(overview);
 
   return (
     <>
@@ -51,11 +73,11 @@ export default function DetailInfo({
         >
           <Image
             src={
-              MovieDetail?.poster_path !== ""
-                ? `https://image.tmdb.org/t/p/w500${MovieDetail?.poster_path}`
+              MovieDetailProps?.poster_path !== ""
+                ? `https://image.tmdb.org/t/p/w500${MovieDetailProps?.poster_path}`
                 : ""
             }
-            alt={MovieDetail?.title ?? "タイトル不明"}
+            alt={MovieDetailProps?.title ?? "タイトル不明"}
             fill // 親要素のBoxいっぱいに広がる
             sizes="(max-width: 900px) 100vw, 30vw" // 画像のサイズを最適化 900pxまでは親要素の幅いっぱいに広がりそれ以上は30vwに切り替わる
             style={{ objectFit: "cover" }} // ImageはNext由来なのでsx使用不可 アスペクト比を維持しつつ、Boxを埋める
@@ -65,7 +87,7 @@ export default function DetailInfo({
         {/* タイトルと詳細情報のコンテナ */}
         <Box sx={{ flex: 1, minWidth: "30%" }}>
           <Typography sx={{ fontSize: "18px", fontWeight: "bold", mb: "15px" }}>
-            {MovieDetail?.title ?? "-"}
+            {MovieDetailProps?.title ?? "-"}
           </Typography>
           <Typography
             sx={{
@@ -86,7 +108,7 @@ export default function DetailInfo({
               color: theme.palette.text.secondary,
             }}
           >
-            年齢制限: {certification}
+            上映時間: {runtime} min
           </Typography>
           <Typography
             sx={{
@@ -95,10 +117,51 @@ export default function DetailInfo({
               color: theme.palette.text.secondary,
             }}
           >
-            上映時間: {runtime} min
+            レーティング: {certification}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "14px",
+              mb: "5px",
+              color: theme.palette.text.secondary,
+            }}
+          >
+            ジャンル: {genres}
           </Typography>
         </Box>
       </Stack>
+      <ButtonBase sx={{ width: "100%" }} onClick={handleOverviewToggle}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          sx={{ width: "100%", mt: 4 }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                color: theme.palette.secondary.main,
+                fontSize: 14,
+                fontWeight: "bold",
+              }}
+            >
+              解説・あらすじ
+            </Typography>
+          </Box>
+          <Box sx={{ pr: 1 }}>
+            <Image
+              src="/icon_pullDown.svg"
+              alt="Pull Down Icon"
+              width={18}
+              height={11}
+            ></Image>
+          </Box>
+        </Stack>
+      </ButtonBase>
+      <Collapse in={isOverviewExpanded}>
+        <Box sx={{ mt: 1 }}>
+          <Typography sx={{ mt: 1, fontSize: 14 }}>{overview}</Typography>
+        </Box>
+      </Collapse>
     </>
   );
 }

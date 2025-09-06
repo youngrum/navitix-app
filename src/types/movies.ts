@@ -71,3 +71,18 @@ export interface ResponseMovieVideos {
   published_at: string; // ISO 8601形式の文字列
   id: string;
 }
+
+export interface ResponseMovieCredits {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  order: number;
+}
