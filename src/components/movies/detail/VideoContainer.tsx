@@ -8,9 +8,6 @@ interface MovieContainerProps {
 function VideoContainer({ trailerKeyProps }: MovieContainerProps) {
   return (
     <>
-      <Typography variant="h2" color="textSecondary" sx={{ mt: 4 }}>
-        トレーラー
-      </Typography>
       <Box
         sx={{
           maxWidth: "500px",

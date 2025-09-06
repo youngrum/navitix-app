@@ -39,5 +39,4 @@ export interface ResponseVideos_results {
 export interface ResponseCredits_casts {
   id: number;
   cast: ResponseMovieCredits[];
-  crew: [];
 }

@@ -52,7 +52,10 @@ export default function DetailInfo({
   // console.log(genres);
 
   // あらすじ
-  const overview = MovieDetailProps?.overview;
+  const overview =
+    MovieDetailProps?.overview === "" || MovieDetailProps?.overview === null
+      ? "解説・あらすじを取得できませんでした"
+      : MovieDetailProps?.overview;
   console.log(overview);
 
   return (
@@ -130,11 +133,11 @@ export default function DetailInfo({
           </Typography>
         </Box>
       </Stack>
-      <ButtonBase sx={{ width: "100%" }} onClick={handleOverviewToggle}>
+      <ButtonBase sx={{ width: "100%", mt: 4 }} onClick={handleOverviewToggle}>
         <Stack
           direction="row"
           justifyContent="space-between"
-          sx={{ width: "100%", mt: 4 }}
+          sx={{ width: "100%" }}
         >
           <Box>
             <Typography

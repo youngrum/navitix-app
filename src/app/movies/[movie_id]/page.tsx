@@ -12,6 +12,8 @@ import DetailInfo from "../../../components/movies/detail/DetailInfo";
 import Header1 from "@/components/common/header1";
 import VideoContainer from "@/components/movies/detail/VideoContainer";
 import CastList from "@/components/movies/detail/CastList";
+import Header2 from "../../../components/common/header2";
+import { Typography } from "@mui/material";
 
 // propsの型定義
 interface MovieIdProps {
@@ -80,7 +82,6 @@ async function getMovieCasts(movie_id: string) {
 export default async function MovieDetailsPage({ params }: MovieIdProps) {
   // paramsから動的なIDを取得
   const { movie_id } = await params;
-  const header1Text = "detail";
 
   // APIにリクエストを送信
   const detail = await getMovieDetailData(movie_id);
@@ -130,13 +131,15 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
   return (
     <main>
       <ThemeProviderWrapper>
-        <Header1 headerText={header1Text} />
+        <Header1 headerText="detail" />
         <DetailInfo
           MovieDetailProps={detail}
           ReleaseInfoProps={releaseInfo}
           videosProps={videos}
         />
+        <Header2 headerText="トレーラー" />
         <VideoContainer trailerKeyProps={trailerKey} />
+        <Header2 headerText="キャスト" />
         <CastList castsProps={casts} />
       </ThemeProviderWrapper>
     </main>
