@@ -13,8 +13,9 @@ import Header1 from "@/components/common/header1";
 import VideoContainer from "@/components/movies/detail/VideoContainer";
 import CastList from "@/components/movies/detail/CastList";
 import Header2 from "../../../components/common/header2";
-import { Typography } from "@mui/material";
 import RatingStar from "@/components/movies/detail/RatingStar";
+import { Stack } from "@mui/material";
+import BackButton from "@/components/common/BackButton";
 
 // propsの型定義
 interface MovieIdProps {
@@ -65,6 +66,7 @@ async function getMovieVideoData(movieId: string) {
     return null;
   }
 }
+// 映画のキャスト情報を取得
 async function getMovieCasts(movie_id: string) {
   try {
     const res: apiResponse<ResponseCredits_casts> = await tmdbApi.get(
@@ -132,7 +134,10 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
   return (
     <main>
       <ThemeProviderWrapper>
-        <Header1 headerText="detail" />
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <BackButton returnPath="/movies" />
+          <Header1 headerText="detail" />
+        </Stack>
         <DetailInfo
           MovieDetailProps={detail}
           ReleaseInfoProps={releaseInfo}
