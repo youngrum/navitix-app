@@ -16,6 +16,7 @@ import Header2 from "../../../components/common/header2";
 import RatingStar from "@/components/movies/detail/RatingStar";
 import { Stack } from "@mui/material";
 import BackButton from "@/components/common/BackButton";
+import SubmitButton from "@/components/common/SubmitButton";
 
 // propsの型定義
 interface MovieIdProps {
@@ -149,6 +150,7 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
         <CastList castsProps={casts} />
         <Header2 headerText="評価" />
         <RatingStar MovieDetailProps={detail} />
+        <SubmitButton isLoading={false} buttonText="予約する" />
       </ThemeProviderWrapper>
     </main>
   );
