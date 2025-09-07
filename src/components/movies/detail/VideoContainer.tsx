@@ -10,9 +10,10 @@ function VideoContainer({ trailerKeyProps }: MovieContainerProps) {
     <>
       <Box
         sx={{
-          maxWidth: "500px",
           borderRadius: 5,
           overflow: "hidden",
+          position: "relative",
+          aspectRatio: "16 / 9", // 16:9のアスペクト比を維持 (9 / 16 * 100)
         }}
       >
         {trailerKeyProps && (
@@ -22,8 +23,11 @@ function VideoContainer({ trailerKeyProps }: MovieContainerProps) {
             allowFullScreen
             width="100%"
             style={{
-              borderRadius: 5,
-              overflow: "hidden",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
             }}
           ></iframe>
         )}
