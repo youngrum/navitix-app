@@ -14,6 +14,7 @@ import VideoContainer from "@/components/movies/detail/VideoContainer";
 import CastList from "@/components/movies/detail/CastList";
 import Header2 from "../../../components/common/header2";
 import { Typography } from "@mui/material";
+import RatingStar from "@/components/movies/detail/RatingStar";
 
 // propsの型定義
 interface MovieIdProps {
@@ -141,6 +142,8 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
         <VideoContainer trailerKeyProps={trailerKey} />
         <Header2 headerText="キャスト" />
         <CastList castsProps={casts} />
+        <Header2 headerText="評価" />
+        <RatingStar MovieDetailProps={detail} />
       </ThemeProviderWrapper>
     </main>
   );

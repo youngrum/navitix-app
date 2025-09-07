@@ -42,6 +42,7 @@ function CastList({ castsProps }: CastListProps) {
                       alt={cast.name}
                       fill
                       style={{ objectFit: "cover" }}
+                      sizes="(max-width: 900px) 100vw, 30vw"
                     />
                   </Box>
                 </Box>
