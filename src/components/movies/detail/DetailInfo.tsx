@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
 import { Box, ButtonBase, Stack, Typography, Collapse } from "@mui/material";
+import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 
 interface MovieDetailInfoProps {
   MovieDetailProps: ResponseMovieDetail | null;
@@ -150,14 +151,14 @@ export default function DetailInfo({
               解説・あらすじ
             </Typography>
           </Box>
-          <Box sx={{ pr: 1 }}>
-            <Image
-              src="/icon_pullDown.svg"
-              alt="Pull Down Icon"
-              width={18}
-              height={11}
-            ></Image>
-          </Box>
+          <ExpandMoreOutlinedIcon
+            sx={{
+              color: theme.palette.text.primary,
+              fontSize: 32,
+              fontWeight: "bold",
+              pr: 1,
+            }}
+          />
         </Stack>
       </ButtonBase>
       <Collapse in={isOverviewExpanded}>

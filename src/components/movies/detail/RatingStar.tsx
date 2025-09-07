@@ -27,7 +27,7 @@ function RatingStar({ MovieDetailProps }: RatingStarProps) {
         {/* 平均評価と評価数を表示 */}
         <Typography
           variant="body1"
-          sx={{ color: "text.primary", fontSize: 50 }}
+          sx={{ color: "text.primary", fontSize: 40, mt: -1.3 }}
         >
           {voteAverage.toFixed(1)}
         </Typography>
