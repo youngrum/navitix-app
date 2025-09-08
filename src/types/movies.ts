@@ -19,6 +19,12 @@ export interface ResponseVideos_results {
   results: ResponseMovieVideos[];
 }
 
+// movie/{movie_id}/credits のレスポンスdata型
+export interface ResponseCredits_casts {
+  id: number;
+  cast: ResponseMovieCredits[];
+}
+
 
 // movie/now_playingと movie/upcommong のdata.results型
 export interface ResponseMovies {
