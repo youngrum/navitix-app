@@ -1,3 +1,25 @@
+// movie/now_playingと movie/upcommong の レスポンスdata型
+export interface ResponseMovies_results<T> {
+  dates: [];
+  page: number;
+  results: T;
+  total_pages: number;
+  total_results: number;
+}
+
+// movie/{movie_id}/release_dates のレスポンスdata型
+export interface ResponseReleaseDates_results {
+  id: number;
+  results: ResponseReleaseDates_release_dates[];
+}
+
+// movie/{movie_id}/videos のレスポンスdata型
+export interface ResponseVideos_results {
+  id: number;
+  results: ResponseMovieVideos[];
+}
+
+
 // movie/now_playingと movie/upcommong のdata.results型
 export interface ResponseMovies {
   adult: boolean;

@@ -1,11 +1,8 @@
 // app/movies/[movie_id]/page.tsx
 import tmdbApi from "@/services/tmdbApi";
-import {
-  apiResponse,
-  apiResponseMovies_results,
-  ResponseReleaseDates_results,
-} from "@/types/apiResponse";
-import { ResponseMovieDetail, ResponseMovieVideos } from "@/types/movies";
+import { apiResponse } from "@/types/apiResponse";
+import { ResponseMovieDetail, ResponseMovieVideos,  ResponseMovies_results,
+  ResponseReleaseDates_results, } from "@/types/movies";
 import { Box } from "@mui/material";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import DetailInfo from "../../../components/movies/detail/DetailInfo";
@@ -50,7 +47,7 @@ async function getMovieReleaseData(movieId: string) {
 // 映画の動画情報を取得
 async function getMovieVideoData(movieId: string) {
   try {
-    const res: apiResponse<apiResponseMovies_results<ResponseMovieVideos[]>> =
+    const res: apiResponse<ResponseMovies_results<ResponseMovieVideos[]>> =
       await tmdbApi.get(`/movie/${movieId}/videos`);
     const videoData = res.data.results;
     // console.log(videoData);
