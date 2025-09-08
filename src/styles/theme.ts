@@ -77,10 +77,10 @@ const myProjectTheme = createTheme({
       variants: [
         {
           // variant="contained"をサブミットボタンとしてデザインを共通化
-          props: { variant: 'contained' },
+          props: { variant: "contained" },
           style: {
-            borderRadius: '25px',
-            backgroundColor: '#FE3323',
+            borderRadius: "25px",
+            backgroundColor: "#FE3323",
             color: "#FFFFFF",
             fontWeight: 400,
             minWidth: "80vw",
@@ -89,8 +89,24 @@ const myProjectTheme = createTheme({
         },
       ],
     },
+    MuiTextField: {
+      styleOverrides: {
+        //root: カスタマイズ対象コンポーネントの最上位要素 ownerState: 対象コンポーネントの現在の状態を格納 テーマオブジェクト: 定義したテーマオブジェクト
+        root: ({ ownerState, theme }) => ({
+          ...(ownerState.color === "secondary" && {
+            //対象コンポーネントに color="secondary" というプロパティが渡された時の分岐
+            "& .MuiOutlinedInput-root fieldset": {
+              borderColor: theme.palette.secondary.main,
+            },
+            // フォーカスした時の枠線の色
+            "& .Mui-focused fieldset": {
+              borderColor: theme.palette.secondary.main,
+            },
+          }),
+        }),
+      },
+    },
   },
-  
 });
 
 export default myProjectTheme;
