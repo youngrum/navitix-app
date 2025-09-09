@@ -5,11 +5,16 @@ import Image from "next/image";
 import Header1 from '@/components/common/header1';
 import SubText from '@/components/common/SubText';
 import SubmitButton from '../components/common/SubmitButton';
+import SignInLeads from "@/components/common/SignInLeads";
+import LinkButton from "@/components/common/LinkButton";
 
 export default function Home() {
   const h1Title = "NaviTix"
   const subText = "Let's dive in into your account!"
   const buttonText = "アカウントを作成"
+  const toCreateAccount = "/signUp"
+  const toLogIn = "/login"
+  const leadText ="アカウントを持っている方は"
   return (
     <main>
       <ThemeProviderWrapper>
@@ -35,7 +40,8 @@ export default function Home() {
         <Box sx={{display: "flex", justifyContent:"center", my: "2.5rem"}}>
           <SubText subText= {subText}/>
         </Box>
-          <SubmitButton isLoading={false} buttonText={buttonText} />
+          <LinkButton toProps={toCreateAccount} buttonTextProps={buttonText}  />
+          <SignInLeads toProps={toLogIn} leadTextProps={leadText} />
       </ThemeProviderWrapper>
     </main>
   );
