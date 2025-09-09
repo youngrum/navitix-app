@@ -14,12 +14,12 @@ export default function SubmitButton({
   buttonText,
 }: SubmitButtonProps) {
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", my: 2}}>
       <Button
         type="submit"
         variant="contained"
         disabled={isLoading}
-        sx={{ width: "80vw" }}
+        sx={{ width: "80vw", maxWidth: "500px",minWidth: 0 }}
       >
         {isLoading ? (
           <CircularProgress size={24} color="inherit" />
