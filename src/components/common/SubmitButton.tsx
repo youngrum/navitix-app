@@ -14,7 +14,7 @@ export default function SubmitButton({
   buttonText,
 }: SubmitButtonProps) {
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", my: 2}}>
+    <Box sx={{ display: "flex", justifyContent: "center", my: 4}}>
       <Button
         type="submit"
         variant="contained"

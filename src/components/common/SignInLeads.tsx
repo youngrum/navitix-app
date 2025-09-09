@@ -12,7 +12,7 @@ export default function SignInLeads({leadTextProps, toProps}: LinkProps) {
     const theme = useTheme();
 
     return (
-    <Box sx={{ marginTop: "1.5rem" }}>
+    <Box sx={{ my: "1.5rem" }}>
       <Typography sx={{ textAlign: "center" }}>
         <Link href={toProps} sx={{ textDecoration: 'none' }}>
           <span style={{ color: theme.palette.text.primary }}>
