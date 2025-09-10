@@ -66,18 +66,18 @@ export default async function Page() {
   const header2TextUpcoming = "公開予定";
 
   return (
-    <main style={{ padding: "10px" }}>
-        <ThemeProviderWrapper>
-          {/* ThemeProviderでテーマを適用 */}
-          {/* ヘッダーコンポーネントを使用 */}
-          <Header1 headerText={header1Text} />
-          <CarouselMovieList movies={top5} />
-          <Header2 headerText={header2TextNowPlaying} />
-          {/* データをpropsとして子コンポーネントに渡す */}
-          <MovieList movies={nowPlaying} />
-          <Header2 headerText={header2TextUpcoming} />
-          <MovieList movies={upcoming} />
-        </ThemeProviderWrapper>
+    <main>
+      <ThemeProviderWrapper>
+        {/* ThemeProviderでテーマを適用 */}
+        {/* ヘッダーコンポーネントを使用 */}
+        <Header1 headerText={header1Text} />
+        <CarouselMovieList movies={top5} />
+        <Header2 headerText={header2TextNowPlaying} />
+        {/* データをpropsとして子コンポーネントに渡す */}
+        <MovieList movies={nowPlaying} />
+        <Header2 headerText={header2TextUpcoming} />
+        <MovieList movies={upcoming} />
+      </ThemeProviderWrapper>
     </main>
   );
 }
