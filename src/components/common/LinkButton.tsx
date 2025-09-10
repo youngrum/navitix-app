@@ -3,11 +3,20 @@
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useRouter } from "next/navigation";
+import { styled } from '@mui/material/styles';
 
 interface LinkButtonProps {
   buttonTextProps: string;
   toProps: string;
 }
+
+// ボタンデザイン定義
+const CustomButton = styled(Button)({
+  borderRadius: '25px',
+  fontWeight: 400,
+  minWidth: '80vw',
+  height: '50px',
+});
 
 export default function LinkButton({
   buttonTextProps,
@@ -17,14 +26,14 @@ export default function LinkButton({
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center", my: 2}}>
-      <Button
+      <CustomButton
         type="button"
         variant="contained"
-        sx={{ width: "80vw", maxWidth: "500px",minWidth: 0 }}
+        color="secondary"
         onClick={() => router.push(toProps)}
       >
         {buttonTextProps}
-      </Button>
+      </CustomButton>
     </Box>
   );
 }

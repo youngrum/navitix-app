@@ -4,7 +4,6 @@ import React from "react";
 import Image from "next/image";
 import Header1 from '@/components/common/header1';
 import SubText from '@/components/common/SubText';
-import SubmitButton from '../components/common/SubmitButton';
 import SignInLeads from "@/components/common/SignInLeads";
 import LinkButton from "@/components/common/LinkButton";
 
@@ -12,7 +11,7 @@ export default function Home() {
   const h1Title = "NaviTix"
   const subText = "Let's dive in into your account!"
   const buttonText = "アカウントを作成"
-  const toCreateAccount = "/signUp"
+  const toCreateAccount = "/signup"
   const toLogIn = "/login"
   const leadText ="アカウントを持っている方は"
   return (
