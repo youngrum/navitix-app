@@ -3,8 +3,23 @@
 import { FormControl,InputLabel, InputAdornment, Box, IconButton, Input,  } from "@mui/material";
 import {VisibilityOff, Visibility } from '@mui/icons-material/';
 import LockIcon from '@mui/icons-material/Lock';
-
+import styled from "@emotion/styled";
 import { useState } from 'react';
+
+// Inputのデザイン定義
+const CustomInput = styled(Input)({
+    // 背景色とボーダーをカスタマイズ
+    backgroundColor: '#f5f5f5',
+    borderRadius: '8px',
+    padding: '8px 12px',
+    // フォーカス時のスタイル
+    '&.Mui-focused': {
+      // boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)', // フォーカス時の影
+      '& .MuiSvgIcon-root': {
+        color: 'text.primary',
+      },
+    }
+})
 
 export default function InputPasswordArea () {
 
@@ -21,25 +36,10 @@ export default function InputPasswordArea () {
       <Box sx={{maxWidth:"500px"}}>
         <FormControl variant="outlined" sx={{width: "100%"}}>
           <InputLabel htmlFor="PasswordArea" required sx={{fontSize: "20px", fontWeight:"bold", left: "-10px"}}>Password</InputLabel>
-          <Input
+          <CustomInput
             required
             id="PasswordArea"
             disableUnderline={true}
-            sx={{
-              // 背景色とボーダーをカスタマイズ
-              backgroundColor: '#f5f5f5',
-              borderRadius: '8px',
-              border: 'none',
-              padding: '8px 12px',
-
-              // フォーカス時のスタイル
-              '&.Mui-focused': {
-                // boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)', // フォーカス時の影
-                '& .MuiSvgIcon-root': {
-                  color: 'text.primary',
-                },
-              }
-            }}
             startAdornment={
               <InputAdornment position="start">
                 <LockIcon color="primary"/>
