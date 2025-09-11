@@ -73,24 +73,7 @@ const myProjectTheme = createTheme({
     },
   },
   components: {
-    MuiButton: {
-      variants: [
-        {
-          // variant="contained"をサブミットボタンとしてデザインを共通化
-          props: { variant: 'contained' },
-          style: {
-            borderRadius: '25px',
-            backgroundColor: '#FE3323',
-            color: "#FFFFFF",
-            fontWeight: 400,
-            minWidth: "80vw",
-            height: "50px",
-          },
-        },
-      ],
-    },
   },
-  
 });
 
 export default myProjectTheme;

@@ -8,9 +8,7 @@ interface BackButtonProps {
   returnPath: string;
 }
 
-function BackButton({ returnPath }: BackButtonProps) {
+export default function BackButton({ returnPath }: BackButtonProps) {
   const router = useRouter();
   return <ArrowBackOutlinedIcon onClick={() => router.push(returnPath)} />;
 }
-
-export default BackButton;
