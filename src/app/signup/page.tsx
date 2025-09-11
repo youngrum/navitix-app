@@ -9,8 +9,6 @@ import { Container, Divider, Stack } from "@mui/material";
 export default function page() {
   const header1Text = "Create Account";
   const subText = "アカウントを作成してください";
-  const leadText = "アカウントをお持ちの方は";
-  const toLogIn = "/login";
 
   return (
     <main>
@@ -27,8 +25,6 @@ export default function page() {
           </Stack>
           <SubText subText={subText} />
           <SignupForm />
-          <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
-          <Divider />
         </Container>
       </ThemeProviderWrapper>
     </main>

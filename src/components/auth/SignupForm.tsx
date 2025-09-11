@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import SubmitButton from "@/components/common/SubmitButton";
 import NoticeMordal from "@/components/common/NoticeMordal";
+import SignInLeads from "@/components/common/SignInLeads";
+import Divider from "@mui/material/Divider";
 
 // Zodでバリデーションスキーマを定義
 const signUpSchema = z.object({
@@ -26,6 +28,8 @@ const signUpSchema = z.object({
 
 export default function SignupForm() {
 	const submitText = "アカウント作成";
+	const leadText = "アカウントをお持ちの方は";
+	const toLogIn = "/login";
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {
     register, // TSX内でinputに渡す
@@ -55,7 +59,8 @@ export default function SignupForm() {
 				registerProps={register}
 				errorProps={errors.password as FieldError}
 				/>
-
+				<SignInLeads leadTextProps={leadText} toProps={toLogIn} />
+				<Divider />
 				<SubmitButton isLoading={false} buttonText={submitText} />
 				<NoticeMordal />
 			</form>

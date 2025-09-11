@@ -15,6 +15,8 @@ const CustomButton = styled(Button)({
   borderRadius: "25px",
   fontWeight: 400,
   minWidth: "80vw",
+  width: "100%",
+  maxWidth: "600px",
   height: "50px",
 });
 
