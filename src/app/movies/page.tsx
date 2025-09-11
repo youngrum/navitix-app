@@ -1,10 +1,10 @@
 import tmdbApi from "@/services/tmdbApi";
 import MovieList from "@/components/movies/MovieList";
-import { apiResponse,  } from "@/types/apiResponse";
-import { ResponseMovies,ResponseMovies_results } from "@/types/movies";
+import { apiResponse } from "@/types/apiResponse";
+import { ResponseMovies, ResponseMovies_results } from "@/types/movies";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import Header1 from "@/components/common/header1";
-import Header2 from "@/components/common/header2";
+import Header1 from "@/components/common/Header1";
+import Header2 from "@/components/common/Header2";
 import CarouselMovieList from "@/components/movies/CarouselMovieList";
 
 // 現在上映中の映画データを取得
