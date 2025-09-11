@@ -22,7 +22,7 @@ export default function SignInLeads({
   const theme = useTheme();
 
   return (
-    <Box sx={{ my: "2rem" }}>
+    <Box sx={{ maxWidth: "600px", my: "2rem" }}>
       <CustomTypography
         variant="body2"
         color="primary"

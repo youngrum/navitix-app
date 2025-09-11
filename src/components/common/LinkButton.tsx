@@ -3,7 +3,7 @@
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useRouter } from "next/navigation";
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 
 interface LinkButtonProps {
   buttonTextProps: string;
@@ -12,10 +12,10 @@ interface LinkButtonProps {
 
 // ボタンデザイン定義
 const CustomButton = styled(Button)({
-  borderRadius: '25px',
+  borderRadius: "25px",
   fontWeight: 400,
-  minWidth: '80vw',
-  height: '50px',
+  width: "100%",
+  height: "50px",
 });
 
 export default function LinkButton({
@@ -25,7 +25,7 @@ export default function LinkButton({
   const router = useRouter();
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", my: 2}}>
+    <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
       <CustomButton
         type="button"
         variant="contained"

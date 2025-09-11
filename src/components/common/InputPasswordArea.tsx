@@ -52,7 +52,7 @@ export default function InputPasswordArea({
   };
 
   return (
-    <Box sx={{ maxWidth: "500px", mt:"50px" }}>
+    <Box sx={{ maxWidth: "600px", mt: "50px" }}>
       <FormControl variant="outlined" sx={{ width: "100%" }}>
         <InputLabel
           htmlFor="password"

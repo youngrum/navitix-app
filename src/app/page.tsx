@@ -21,8 +21,8 @@ export default function Home() {
           sx={{
             position: "relative",
             margin: "4rem auto 1rem",
-            width: "30vw",
-            height: "20vh",
+            width: "36vw",
+            height: "24vh",
             minHeight: "15vh",
             maxHeight: "24vh",
           }}

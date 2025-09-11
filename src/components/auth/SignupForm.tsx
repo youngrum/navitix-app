@@ -6,9 +6,10 @@ import { FieldError, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import SubmitButton from "@/components/common/SubmitButton";
-import NoticeMordal from "@/components/common/NoticeMordal";
+import NoticeModal from "@/components/common/NoticeModal";
 import SignInLeads from "@/components/common/SignInLeads";
 import Divider from "@mui/material/Divider";
+import { Box, Container } from "@mui/material";
 
 // Zodでバリデーションスキーマを定義
 const signUpSchema = z.object({
@@ -27,9 +28,9 @@ const signUpSchema = z.object({
 });
 
 export default function SignupForm() {
-	const submitText = "アカウント作成";
-	const leadText = "アカウントをお持ちの方は";
-	const toLogIn = "/login";
+  const submitText = "アカウント作成";
+  const leadText = "アカウントをお持ちの方は";
+  const toLogIn = "/login";
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {
     register, // TSX内でinputに渡す
@@ -49,22 +50,21 @@ export default function SignupForm() {
 
   return (
     <>
-			{/** handleSubmitは第1引数に渡されたonSubmit関数を呼び出す */}
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<InputEmailArea
-				registerProps={register}
-				errorProps={errors.email as FieldError}
-				/>
-				<InputPasswordArea
-				registerProps={register}
-				errorProps={errors.password as FieldError}
-				/>
-				<SignInLeads leadTextProps={leadText} toProps={toLogIn} />
-				<Divider />
-				<SubmitButton isLoading={false} buttonText={submitText} />
-				<NoticeMordal />
-			</form>
+      {/** handleSubmitは第1引数に渡されたonSubmit関数を呼び出す */}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <InputEmailArea
+          registerProps={register}
+          errorProps={errors.email as FieldError}
+        />
+        <InputPasswordArea
+          registerProps={register}
+          errorProps={errors.password as FieldError}
+        />
+        <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
+        <Divider />
+        <SubmitButton isLoading={false} buttonText={submitText} />
+        <NoticeModal />
+      </form>
     </>
-
   );
 }

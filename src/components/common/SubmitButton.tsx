@@ -14,9 +14,7 @@ interface SubmitButtonProps {
 const CustomButton = styled(Button)({
   borderRadius: "25px",
   fontWeight: 400,
-  minWidth: "80vw",
   width: "100%",
-  maxWidth: "600px",
   height: "50px",
 });
 
@@ -25,19 +23,12 @@ export default function SubmitButton({
   buttonText,
 }: SubmitButtonProps) {
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+    <Box sx={{ my: 4 }}>
       <CustomButton
         type="submit"
         variant="contained"
         disabled={isLoading}
         color="secondary"
-        sx={{
-          borderRadius: "25px",
-          color: "#FFFFFF",
-          fontWeight: 400,
-          minWidth: "80vw",
-          height: "50px",
-        }}
       >
         {isLoading ? (
           <CircularProgress size={24} color="inherit" />
