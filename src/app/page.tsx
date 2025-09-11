@@ -2,7 +2,7 @@ import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Box } from "@mui/material";
 import React from "react";
 import Image from "next/image";
-import Header1 from "@/components/common/header1";
+import Header1 from "@/components/common/Header1";
 import SubText from "@/components/common/SubText";
 import SignInLeads from "@/components/common/SignInLeads";
 import LinkButton from "@/components/common/LinkButton";
