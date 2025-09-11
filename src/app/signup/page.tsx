@@ -1,10 +1,9 @@
 import SignupForm from "@/components/auth/SignupForm";
 import BackButton from "@/components/common/BackButton";
 import Header1 from "@/components/common/Header1";
-import SignInLeads from "@/components/common/SignInLeads";
 import SubText from "@/components/common/SubText";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import { Box, Container, Divider, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 
 export default function page() {
   const header1Text = "Create Account";

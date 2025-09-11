@@ -9,16 +9,11 @@ import {
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import { styled } from "@mui/material/styles";
-import {
-  UseFormRegister,
-  FieldValues,
-  FieldError,
-  FieldErrorsImpl,
-  Merge,
-} from "react-hook-form";
+import { UseFormRegister, FieldError } from "react-hook-form";
+import { SignUpFormValues } from "@/types/form";
 
-interface formProps {
-  registerProps: UseFormRegister<any>;
+interface FormProps {
+  registerProps: UseFormRegister<SignUpFormValues>;
   errorProps?: FieldError;
 }
 // Inputのデザイン定義
@@ -39,7 +34,7 @@ const CustomInput = styled(Input)({
 export default function InputEmailArea({
   registerProps,
   errorProps,
-}: formProps) {
+}: FormProps) {
   return (
     <Box sx={{ maxWidth: "600px", mt: "50px" }}>
       <FormControl variant="outlined" sx={{ width: "100%" }}>

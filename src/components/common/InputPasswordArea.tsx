@@ -8,14 +8,15 @@ import {
   IconButton,
   Input,
 } from "@mui/material";
-import { VisibilityOff, Visibility } from "@mui/icons-material/";
+import { VisibilityOff, Visibility } from "@mui/icons-material";
 import LockIcon from "@mui/icons-material/Lock";
 import styled from "@emotion/styled";
 import { useState } from "react";
-import { UseFormRegister, FieldValues, FieldError } from "react-hook-form";
+import { UseFormRegister, FieldError } from "react-hook-form";
+import { SignUpFormValues } from "@/types/form";
 
-interface formProps {
-  registerProps: UseFormRegister<any>;
+interface FormProps {
+  registerProps: UseFormRegister<SignUpFormValues>;
   errorProps?: FieldError;
 }
 
@@ -37,7 +38,7 @@ const CustomInput = styled(Input)({
 export default function InputPasswordArea({
   registerProps,
   errorProps,
-}: formProps) {
+}: FormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (
