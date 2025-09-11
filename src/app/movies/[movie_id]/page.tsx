@@ -1,15 +1,19 @@
 // app/movies/[movie_id]/page.tsx
 import tmdbApi from "@/services/tmdbApi";
 import { apiResponse } from "@/types/apiResponse";
-import { ResponseMovieDetail, ResponseMovieVideos,  ResponseMovies_results,
-  ResponseReleaseDates_results,   ResponseCredits_casts} from "@/types/movies";
-import { Box } from "@mui/material";
+import {
+  ResponseMovieDetail,
+  ResponseMovieVideos,
+  ResponseMovies_results,
+  ResponseReleaseDates_results,
+  ResponseCredits_casts,
+} from "@/types/movies";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import DetailInfo from "../../../components/movies/detail/DetailInfo";
-import Header1 from "@/components/common/header1";
+import DetailInfo from "@/components/movies/detail/DetailInfo";
+import Header1 from "@/components/common/Header1";
 import VideoContainer from "@/components/movies/detail/VideoContainer";
 import CastList from "@/components/movies/detail/CastList";
-import Header2 from "../../../components/common/header2";
+import Header2 from "@/components/common/Header2";
 import RatingStar from "@/components/movies/detail/RatingStar";
 import { Stack } from "@mui/material";
 import BackButton from "@/components/common/BackButton";
