@@ -2,18 +2,18 @@ import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Box } from "@mui/material";
 import React from "react";
 import Image from "next/image";
-import Header1 from '@/components/common/header1';
-import SubText from '@/components/common/SubText';
+import Header1 from "@/components/common/header1";
+import SubText from "@/components/common/SubText";
 import SignInLeads from "@/components/common/SignInLeads";
 import LinkButton from "@/components/common/LinkButton";
 
 export default function Home() {
-  const h1Title = "NaviTix"
-  const subText = "Let's dive in into your account!"
-  const buttonText = "アカウントを作成"
-  const toCreateAccount = "/signup"
-  const toLogIn = "/login"
-  const leadText ="アカウントを持っている方は"
+  const h1Title = "NaviTix";
+  const subText = "Let's dive in into your account!";
+  const buttonText = "アカウントを作成";
+  const toCreateAccount = "/signup";
+  const toLogIn = "/login";
+  const leadText = "アカウントを持っている方は";
   return (
     <main>
       <ThemeProviderWrapper>
@@ -27,20 +27,20 @@ export default function Home() {
             maxHeight: "24vh",
           }}
         >
-          <Image
-            src="/logo.svg"
-            fill
-            alt="logoImage"
-          ></Image>
+          <Image src="/logo.svg" fill alt="logoImage"></Image>
         </Box>
-        <Box sx={{display: "flex", justifyContent:"center"}}>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Header1 headerText={h1Title} />
         </Box>
-        <Box sx={{display: "flex", justifyContent:"center", my: "2.5rem"}}>
-          <SubText subText= {subText}/>
+        <Box sx={{ display: "flex", justifyContent: "center", my: "2.5rem" }}>
+          <SubText subText={subText} />
         </Box>
-          <LinkButton toProps={toCreateAccount} buttonTextProps={buttonText}  />
-          <SignInLeads toProps={toLogIn} leadTextProps={leadText} />
+        <LinkButton toProps={toCreateAccount} buttonTextProps={buttonText} />
+        <SignInLeads
+          toProps={toLogIn}
+          leadTextProps={leadText}
+          textAlignProps="center"
+        />
       </ThemeProviderWrapper>
     </main>
   );
