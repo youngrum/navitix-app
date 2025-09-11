@@ -67,18 +67,14 @@ export default function page() {
           </Stack>
           <SubText subText={subText} />
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ mt: "50px" }}>
               <InputEmailArea
                 registerProps={register}
                 errorProps={errors.email as FieldError}
               />
-            </Box>
-            <Box sx={{ mt: "50px" }}>
               <InputPasswordArea
                 registerProps={register}
                 errorProps={errors.password as FieldError}
               />
-            </Box>
             <Box>
               <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
             </Box>
