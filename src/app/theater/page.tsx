@@ -1,5 +1,5 @@
 import BackButton from "@/components/common/BackButton";
-import Header1 from "@/components/common/header1";
+import Header1 from "@/components/common/Header1";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Stack } from "@mui/material";
 import React from "react";
