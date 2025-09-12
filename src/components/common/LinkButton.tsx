@@ -2,12 +2,12 @@
 
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
+import { useRouter } from "next/navigation";
 import { styled } from "@mui/material/styles";
-import CircularProgress from "@mui/material/CircularProgress";
 
-interface SubmitButtonProps {
-  isLoading: boolean;
-  buttonText: string;
+interface LinkButtonProps {
+  buttonTextProps: string;
+  toProps: string;
 }
 
 // ボタンデザイン定義
@@ -18,23 +18,21 @@ const CustomButton = styled(Button)({
   height: "50px",
 });
 
-export default function SubmitButton({
-  isLoading,
-  buttonText,
-}: SubmitButtonProps) {
+export default function LinkButton({
+  buttonTextProps,
+  toProps,
+}: LinkButtonProps) {
+  const router = useRouter();
+
   return (
-    <Box sx={{ my: 4 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
       <CustomButton
-        type="submit"
+        type="button"
         variant="contained"
-        disabled={isLoading}
         color="secondary"
+        onClick={() => router.push(toProps)}
       >
-        {isLoading ? (
-          <CircularProgress size={24} color="inherit" />
-        ) : (
-          buttonText
-        )}
+        {buttonTextProps}
       </CustomButton>
     </Box>
   );

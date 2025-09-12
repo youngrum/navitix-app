@@ -49,7 +49,6 @@ export default function CarouselMovieList({ movies }: CarouselMovieListProps) {
               sx={{
                 borderRadius: "16px", // 画像の角を丸くする
                 overflow: "hidden", // はみ出る部分を隠す
-                width: "95vw", // カルーセルの表示幅を固定
                 height: "200px", // カルーセルの表示高さを固定
                 position: "relative", // Imageコンポーネントでfillを使うために必要
                 margin: "0 auto", // 中央揃え

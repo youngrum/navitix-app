@@ -1,10 +1,10 @@
 import tmdbApi from "@/services/tmdbApi";
 import MovieList from "@/components/movies/MovieList";
-import { apiResponse,  } from "@/types/apiResponse";
-import { ResponseMovies,ResponseMovies_results } from "@/types/movies";
+import { apiResponse } from "@/types/apiResponse";
+import { ResponseMovies, ResponseMovies_results } from "@/types/movies";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import Header1 from "@/components/common/header1";
-import Header2 from "@/components/common/header2";
+import Header1 from "@/components/common/Header1";
+import Header2 from "@/components/common/Header2";
 import CarouselMovieList from "@/components/movies/CarouselMovieList";
 
 // 現在上映中の映画データを取得
@@ -66,18 +66,18 @@ export default async function Page() {
   const header2TextUpcoming = "公開予定";
 
   return (
-    <main style={{ padding: "10px" }}>
-        <ThemeProviderWrapper>
-          {/* ThemeProviderでテーマを適用 */}
-          {/* ヘッダーコンポーネントを使用 */}
-          <Header1 headerText={header1Text} />
-          <CarouselMovieList movies={top5} />
-          <Header2 headerText={header2TextNowPlaying} />
-          {/* データをpropsとして子コンポーネントに渡す */}
-          <MovieList movies={nowPlaying} />
-          <Header2 headerText={header2TextUpcoming} />
-          <MovieList movies={upcoming} />
-        </ThemeProviderWrapper>
+    <main>
+      <ThemeProviderWrapper>
+        {/* ThemeProviderでテーマを適用 */}
+        {/* ヘッダーコンポーネントを使用 */}
+        <Header1 headerText={header1Text} />
+        <CarouselMovieList movies={top5} />
+        <Header2 headerText={header2TextNowPlaying} />
+        {/* データをpropsとして子コンポーネントに渡す */}
+        <MovieList movies={nowPlaying} />
+        <Header2 headerText={header2TextUpcoming} />
+        <MovieList movies={upcoming} />
+      </ThemeProviderWrapper>
     </main>
   );
 }
