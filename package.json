@@ -23,7 +23,6 @@
     "react-hook-form": "^7.62.0",
     "react-slick": "^0.31.0",
     "slick-carousel": "^1.8.1",
-    "zod": "^4.1.5",
     "zustand": "^5.0.7"
   },
   "devDependencies": {
@@ -35,6 +34,7 @@
     "@types/react-slick": "^0.23.13",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "zod": "^4.1.8"
   }
 }
