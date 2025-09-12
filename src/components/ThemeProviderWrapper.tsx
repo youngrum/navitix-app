@@ -17,6 +17,7 @@ export default function ThemeProviderWrapper({
       {/* MUIのテーマプロバイダーを使用して、ThemeProviderWrapperコンポーネントの子要素にのみカスタムテーマを適用 */}
       <ThemeProvider theme={myProjectTheme}>
         <CssBaseline />
+        {/* <Box sx={{ p: 1, maxWidth: "600px", mx: "auto" }}>{children}</Box> */}
         <Container maxWidth="sm"> {children}</Container>
       </ThemeProvider>
     </AppRouterCacheProvider>

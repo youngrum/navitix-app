@@ -2,9 +2,8 @@
 
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
-
 
 interface SubmitButtonProps {
   isLoading: boolean;
@@ -13,10 +12,10 @@ interface SubmitButtonProps {
 
 // ボタンデザイン定義
 const CustomButton = styled(Button)({
-  borderRadius: '25px',
+  borderRadius: "25px",
   fontWeight: 400,
-  minWidth: '80vw',
-  height: '50px',
+  width: "100%",
+  height: "50px",
 });
 
 export default function SubmitButton({
@@ -24,19 +23,12 @@ export default function SubmitButton({
   buttonText,
 }: SubmitButtonProps) {
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", my: 4}}>
+    <Box sx={{ my: 4 }}>
       <CustomButton
         type="submit"
         variant="contained"
         disabled={isLoading}
         color="secondary"
-        sx={{
-            borderRadius: "25px",
-            color: "#FFFFFF",
-            fontWeight: 400,
-            minWidth: "80vw",
-            height: "50px"
-          }}
       >
         {isLoading ? (
           <CircularProgress size={24} color="inherit" />
