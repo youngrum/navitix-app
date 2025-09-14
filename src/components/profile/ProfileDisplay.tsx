@@ -12,7 +12,7 @@ import { profileSchema, ProfileFormValues } from "@/types/form";
 import InputNameArea from "@/components/common/InputNameArea";
 import InputBirthdayArea from "@/components/common/InputBirthdayArea";
 
-export default function SigninForm() {
+export default function ProfileDisplay() {
   const submitText = "プロフィールを修正";
   const leadText = "パスワードを更新する方は";
   const toLogIn = "/reset-password";
@@ -36,17 +36,17 @@ export default function SigninForm() {
     <>
       {/** handleSubmitは第1引数に渡されたonSubmit関数を呼び出す */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <InputNameArea
+        <InputNameArea<ProfileFormValues>
           registerProps={register}
           errorProps={errors.accountName}
           readonlyProps={readonly}
         ></InputNameArea>
-        <InputEmailArea
+        <InputEmailArea<ProfileFormValues>
           registerProps={register}
           errorProps={errors.email}
           readonlyProps={readonly}
         ></InputEmailArea>
-        <InputBirthdayArea
+        <InputBirthdayArea<ProfileFormValues>
           registerProps={register}
           errorProps={errors.birthDay}
           readonlyProps={readonly}

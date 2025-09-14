@@ -8,13 +8,18 @@ import {
   Box,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { UseFormRegister, FieldError } from "react-hook-form";
+import {
+  UseFormRegister,
+  FieldError,
+  FieldValues,
+  Path,
+} from "react-hook-form";
 import { ProfileFormValues } from "@/types/form";
 import theme from "@/styles/theme";
 import { useState } from "react";
 
-interface FormProps {
-  registerProps: UseFormRegister<ProfileFormValues>;
+interface FormProps<T extends { accountName: string } & FieldValues> {
+  registerProps: UseFormRegister<T>;
   errorProps?: FieldError;
   readonlyProps?: boolean;
 }
@@ -39,11 +44,9 @@ const CustomInput = styled(Input)({
   },
 });
 
-export default function InputEmailArea({
-  registerProps,
-  errorProps,
-  readonlyProps,
-}: FormProps) {
+export default function InputEmailArea<
+  T extends { accountName: string } & FieldValues
+>({ registerProps, errorProps, readonlyProps }: FormProps<T>) {
   // const [value, setValue] = useState<string>("test user"); // テスト表示用
 
   return (
@@ -61,7 +64,7 @@ export default function InputEmailArea({
           // value={value}
           disableUnderline={true}
           readOnly={readonlyProps}
-          {...registerProps("accountName")} // ここでregisterを適用
+          {...registerProps("accountName" as Path<T>)} // ここでregisterを適用
           error={Boolean(errorProps)} // MUIのエラー表示
           startAdornment={<InputAdornment position="start"></InputAdornment>}
         />

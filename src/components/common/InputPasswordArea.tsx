@@ -12,12 +12,17 @@ import { VisibilityOff, Visibility } from "@mui/icons-material";
 import LockIcon from "@mui/icons-material/Lock";
 import styled from "@emotion/styled";
 import { useState } from "react";
-import { UseFormRegister, FieldError } from "react-hook-form";
+import {
+  UseFormRegister,
+  FieldError,
+  FieldValues,
+  Path,
+} from "react-hook-form";
 import { SignUpFormValues } from "@/types/form";
 import theme from "@/styles/theme";
 
-interface FormProps {
-  registerProps: UseFormRegister<SignUpFormValues>;
+interface FormProps<T extends { password: string } & FieldValues> {
+  registerProps: UseFormRegister<T>;
   errorProps?: FieldError;
   readonlyProps?: boolean;
 }
@@ -43,11 +48,9 @@ const CustomInput = styled(Input)({
   },
 });
 
-export default function InputPasswordArea({
-  registerProps,
-  errorProps,
-  readonlyProps,
-}: FormProps) {
+export default function InputPasswordArea<
+  T extends { password: string } & FieldValues
+>({ registerProps, errorProps, readonlyProps }: FormProps<T>) {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (
@@ -73,7 +76,7 @@ export default function InputPasswordArea({
         </InputLabel>
         <CustomInput
           id="password"
-          {...registerProps("password")} // ここでregisterを適用
+          {...registerProps("password" as Path<T>)} // ここでregisterを適用
           error={Boolean(errorProps)} // MUIのエラー表示
           disableUnderline={true}
           readOnly={readonlyProps}
