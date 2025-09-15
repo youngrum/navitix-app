@@ -14,21 +14,29 @@ import styled from "@emotion/styled";
 import { useState } from "react";
 import { UseFormRegister, FieldError } from "react-hook-form";
 import { SignUpFormValues } from "@/types/form";
+import theme from "@/styles/theme";
 
 interface FormProps {
   registerProps: UseFormRegister<SignUpFormValues>;
   errorProps?: FieldError;
+  readonlyProps?: boolean;
 }
 
 // Inputのデザイン定義
 const CustomInput = styled(Input)({
   // 背景色とボーダーをカスタマイズ
   backgroundColor: "#f5f5f5",
-  borderRadius: "8px",
+  borderRadius: "4px",
   padding: "8px 12px",
+  borderColor: "#555",
+  border: `1px solid #DADADA`, // これを追加
+  // "& .MuiInput-root": {
+  //   borderColor: "#555",
+  // },
   // フォーカス時のスタイル
   "&.Mui-focused": {
     // boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)', // フォーカス時の影
+    border: `1px solid ${theme.palette.text.secondary}`,
     "& .MuiSvgIcon-root": {
       color: "text.primary",
     },
@@ -38,6 +46,7 @@ const CustomInput = styled(Input)({
 export default function InputPasswordArea({
   registerProps,
   errorProps,
+  readonlyProps,
 }: FormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -67,6 +76,7 @@ export default function InputPasswordArea({
           {...registerProps("password")} // ここでregisterを適用
           error={Boolean(errorProps)} // MUIのエラー表示
           disableUnderline={true}
+          readOnly={readonlyProps}
           startAdornment={
             <InputAdornment position="start">
               <LockIcon color="primary" />

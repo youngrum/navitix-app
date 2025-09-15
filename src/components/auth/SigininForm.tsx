@@ -10,11 +10,12 @@ import NoticeModal from "@/components/common/NoticeModal";
 import SignInLeads from "@/components/common/SignInLeads";
 import Divider from "@mui/material/Divider";
 import { SignUpFormValues, signUpSchema } from "@/types/form";
+import { readonly } from "zod";
 
-export default function SignupForm() {
-  const submitText = "アカウント作成";
-  const leadText = "アカウントをお持ちの方は";
-  const toLogIn = "/login";
+export default function SigninForm() {
+  const submitText = "サインイン";
+  const leadText = "パスワードを忘れた方は";
+  const toLogIn = "/reset-password";
   const readOnly = false;
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {

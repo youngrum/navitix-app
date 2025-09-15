@@ -7,14 +7,14 @@ import {
   InputAdornment,
   Box,
 } from "@mui/material";
-import EmailIcon from "@mui/icons-material/Email";
 import { styled } from "@mui/material/styles";
 import { UseFormRegister, FieldError } from "react-hook-form";
-import { SignUpFormValues } from "@/types/form";
+import { ProfileFormValues } from "@/types/form";
 import theme from "@/styles/theme";
+import { useState } from "react";
 
 interface FormProps {
-  registerProps: UseFormRegister<SignUpFormValues>;
+  registerProps: UseFormRegister<ProfileFormValues>;
   errorProps?: FieldError;
   readonlyProps?: boolean;
 }
@@ -24,11 +24,15 @@ const CustomInput = styled(Input)({
   backgroundColor: "#f5f5f5",
   borderRadius: "4px",
   padding: "8px 12px",
-  border: "0.8px solid #DADADA",
+  borderColor: "#555",
+  border: `1px solid #DADADA`, // これを追加
+  // "& .MuiInput-root": {
+  //   borderColor: "#555",
+  // },
   // フォーカス時のスタイル
   "&.Mui-focused": {
-    border: `1px solid ${theme.palette.text.secondary}`,
     // boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)', // フォーカス時の影
+    border: `1px solid ${theme.palette.text.secondary}`,
     "& .MuiSvgIcon-root": {
       color: "text.primary",
     },
@@ -40,28 +44,26 @@ export default function InputEmailArea({
   errorProps,
   readonlyProps,
 }: FormProps) {
+  // const [value, setValue] = useState<string>("test user"); // テスト表示用
+
   return (
     <Box sx={{ maxWidth: "600px", mt: "50px" }}>
       <FormControl variant="outlined" sx={{ width: "100%" }}>
         <InputLabel
-          htmlFor="email"
+          htmlFor="name"
           required
           sx={{ fontSize: "20px", fontWeight: "bold", left: "-10px" }}
         >
-          Email
+          Full Name
         </InputLabel>
         <CustomInput
-          id="email"
+          id="name"
+          // value={value}
           disableUnderline={true}
           readOnly={readonlyProps}
-          {...registerProps("email")} // ここでregisterを適用
+          {...registerProps("accountName")} // ここでregisterを適用
           error={Boolean(errorProps)} // MUIのエラー表示
-          startAdornment={
-            <InputAdornment position="start">
-              <EmailIcon color="primary" />
-            </InputAdornment>
-          }
-          placeholder="example@gmail.com"
+          startAdornment={<InputAdornment position="start"></InputAdornment>}
         />
         {errorProps && (
           <span style={{ color: "red", fontSize: "14px", paddingTop: "10px" }}>
