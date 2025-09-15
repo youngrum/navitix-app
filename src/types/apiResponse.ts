@@ -7,4 +7,3 @@ export interface apiResponse<T> {
   status: number;
   stausText: string;
 }
-

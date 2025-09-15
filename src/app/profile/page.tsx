@@ -1,13 +1,13 @@
+import ProfileDisplay from "@/components/profile/ProfileDisplay";
 import BackButton from "@/components/common/BackButton";
 import Header1 from "@/components/common/Header1";
+import SubText from "@/components/common/SubText";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Stack } from "@mui/material";
-import React from "react";
-import SearchTheater from "../../components/theater/SearchTextField";
 
-function Page() {
-  const header1Text = "Theater";
-  const placeHolderText = "映画館・市区町村を入力";
+export default function page() {
+  const header1Text = "Your Profile";
+  const subText = "プロフィールを完成させてください。";
 
   return (
     <main>
@@ -18,13 +18,12 @@ function Page() {
           spacing={2}
           sx={{ marginBottom: "35px" }}
         >
-          <BackButton returnPath="/movies" />
+          <BackButton returnPath="/" />
           <Header1 headerText={header1Text} />
         </Stack>
-        <SearchTheater placeHolderTextProps={placeHolderText} />
+        <SubText subText={subText} />
+        <ProfileDisplay />
       </ThemeProviderWrapper>
     </main>
   );
 }
-
-export default Page;
