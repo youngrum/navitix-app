@@ -11,24 +11,23 @@ import {
 
 import { styled } from "@mui/material/styles";
 import {
-  UseFormRegister,
   FieldError,
   FieldValues,
   Path,
+  Controller,
+  Control,
 } from "react-hook-form";
-import { ProfileFormValues, profileSchema } from "@/types/form";
 import dayjs, { Dayjs } from "dayjs";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
-import { useState } from "react";
 import theme from "@/styles/theme";
 
 interface FormProps<
   T extends { birthDay?: string | null | undefined } & FieldValues
 > {
-  registerProps: UseFormRegister<T>;
+  control: Control<T>;
   errorProps?: FieldError;
   readonlyProps?: boolean;
 }
@@ -48,14 +47,11 @@ const CustomMobileDatePicker = styled(MobileDatePicker)({
 
 export default function InputBirthdayArea<
   T extends { birthDay?: string | null | undefined } & FieldValues
->({ registerProps, errorProps, readonlyProps }: FormProps<T>) {
-  const [value, setValue] = useState<Dayjs | null>(dayjs("2022-04-17")); // テスト表示用
-
+>({ control, errorProps, readonlyProps }: FormProps<T>) {
   return (
     <Box sx={{ maxWidth: "600px", mt: "50px" }}>
       <FormControl variant="outlined" sx={{ width: "100%" }}>
         <FormLabel
-          required
           sx={{
             fontSize: "16px",
             fontWeight: "bold",
@@ -66,25 +62,42 @@ export default function InputBirthdayArea<
           Day of Birth
         </FormLabel>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <CustomMobileDatePicker
-            value={value}
-            onChange={(newValue) => {
-              setValue(newValue);
-              // react-hook-formにも値を設定
-              const { onChange } = registerProps("birthDay" as Path<T>);
-              onChange({
-                target: {
-                  value: newValue ? newValue.format("YYYY-MM-DD") : "",
-                },
-              });
-            }}
-            disableFuture
-            format="YYYY-MM-DD"
-            readOnly={readonlyProps}
-          ></CustomMobileDatePicker>
+          <Controller
+            name={"birthDay" as Path<T>}
+            control={control}
+            render={({ field }) => (
+              <CustomMobileDatePicker
+                value={field.value ? dayjs(field.value) : null}
+                onChange={(newValue) => {
+                  const formattedValue = newValue
+                    ? newValue.format("YYYY-MM-DD")
+                    : null;
+                  field.onChange(formattedValue);
+                }}
+                onClose={() => {
+                  // DatePickerが閉じられた時にonBlurを呼び出す
+                  field.onBlur();
+                }}
+                onAccept={() => {
+                  // 日付が確定された時にonBlurを呼び出す
+                  field.onBlur();
+                }}
+                disableFuture
+                format="YYYY-MM-DD"
+                readOnly={readonlyProps}
+                minDate={dayjs("1925-01-01")}
+              />
+            )}
+          />
         </LocalizationProvider>
         {errorProps && (
-          <span style={{ color: "red", fontSize: "14px", paddingTop: "10px" }}>
+          <span
+            style={{
+              color: theme.palette.secondary.main,
+              fontSize: "14px",
+              paddingTop: "10px",
+            }}
+          >
             {errorProps.message}
           </span>
         )}
