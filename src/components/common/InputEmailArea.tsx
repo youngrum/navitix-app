@@ -9,15 +9,22 @@ import {
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import { styled } from "@mui/material/styles";
-import { UseFormRegister, FieldError } from "react-hook-form";
+import {
+  UseFormRegister,
+  FieldError,
+  FieldValues,
+  Path,
+} from "react-hook-form";
 import { SignUpFormValues } from "@/types/form";
 import theme from "@/styles/theme";
 
-interface FormProps {
-  registerProps: UseFormRegister<SignUpFormValues>;
+// Tは必ずフォーム入力項目(FieldValues) と string型のemailというプロパティを持つ
+interface FormProps<T extends { email: string } & FieldValues> {
+  registerProps: UseFormRegister<T>;
   errorProps?: FieldError;
   readonlyProps?: boolean;
 }
+
 // Inputのデザイン定義
 const CustomInput = styled(Input)({
   // 背景色とボーダーをカスタマイズ
@@ -35,11 +42,10 @@ const CustomInput = styled(Input)({
   },
 });
 
-export default function InputEmailArea({
-  registerProps,
-  errorProps,
-  readonlyProps,
-}: FormProps) {
+// コンポーネントのジェネリック型Tにも同じ制約を適用
+export default function InputEmailArea<
+  T extends { email: string } & FieldValues
+>({ registerProps, errorProps, readonlyProps }: FormProps<T>) {
   return (
     <Box sx={{ maxWidth: "600px", mt: "50px" }}>
       <FormControl variant="outlined" sx={{ width: "100%" }}>
@@ -54,7 +60,7 @@ export default function InputEmailArea({
           id="email"
           disableUnderline={true}
           readOnly={readonlyProps}
-          {...registerProps("email")} // ここでregisterを適用
+          {...registerProps("email" as Path<T>)} // ここでregisterを適用。Path<T>はTに渡すzodスキーマ定義のプロパティ
           error={Boolean(errorProps)} // MUIのエラー表示
           startAdornment={
             <InputAdornment position="start">
