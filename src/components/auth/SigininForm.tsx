@@ -15,6 +15,7 @@ export default function SigninForm() {
   const submitText = "サインイン";
   const leadText = "パスワードを忘れた方は";
   const toLogIn = "/reset-password";
+  const readOnly = false;
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {
     register, // TSX内でinputに渡す
@@ -34,13 +35,15 @@ export default function SigninForm() {
     <>
       {/** handleSubmitは第1引数に渡されたonSubmit関数を呼び出す */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <InputEmailArea
+        <InputEmailArea<SignUpFormValues>
           registerProps={register}
           errorProps={errors.email as FieldError}
+          readonlyProps={readOnly}
         />
-        <InputPasswordArea
+        <InputPasswordArea<SignUpFormValues>
           registerProps={register}
           errorProps={errors.password as FieldError}
+          readonlyProps={readOnly}
         />
         <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
         <Divider />

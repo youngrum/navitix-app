@@ -1,28 +1,46 @@
-import SignupForm from "@/components/auth/SignupForm";
-import BackButton from "@/components/common/BackButton";
+import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
+import { Box } from "@mui/material";
+import React from "react";
+import Image from "next/image";
 import Header1 from "@/components/common/Header1";
 import SubText from "@/components/common/SubText";
-import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import { Stack } from "@mui/material";
+import SignInLeads from "@/components/common/SignInLeads";
+import LinkButton from "@/components/common/LinkButton";
 
-export default function page() {
-  const header1Text = "Create Account";
-  const subText = "アカウントを作成してください";
-
+export default function Home() {
+  const h1Title = "NaviTix";
+  const subText = "Let's dive in into your account!";
+  const buttonText = "アカウントを作成";
+  const toCreateAccount = "/signup/comfirm";
+  const toLogIn = "/login";
+  const leadText = "アカウントを持っている方は";
   return (
     <main>
       <ThemeProviderWrapper>
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={2}
-          sx={{ marginBottom: "35px" }}
+        <Box
+          sx={{
+            position: "relative",
+            margin: "4rem auto 1rem",
+            width: "36vw",
+            height: "24vh",
+            minHeight: "15vh",
+            maxHeight: "24vh",
+          }}
         >
-          <BackButton returnPath="/" />
-          <Header1 headerText={header1Text} />
-        </Stack>
-        <SubText subText={subText} />
-        <SignupForm />
+          <Image src="/logo.svg" fill alt="logoImage"></Image>
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Header1 headerText={h1Title} />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center", my: "2.5rem" }}>
+          <SubText subText={subText} />
+        </Box>
+        <LinkButton toProps={toCreateAccount} buttonTextProps={buttonText} />
+        <SignInLeads
+          toProps={toLogIn}
+          leadTextProps={leadText}
+          textAlignProps="center"
+        />
       </ThemeProviderWrapper>
     </main>
   );
