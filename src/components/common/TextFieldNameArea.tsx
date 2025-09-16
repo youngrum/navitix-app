@@ -19,7 +19,6 @@ const CustomTextField = styled(TextField)({
     // フォーカス時のスタイル
   "& .Mui-focused": {
     // boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)', // フォーカス時の影
-    borderColor: `${theme.palette.grey[400]}`,
     "& .MuiSvgIcon-root": {
       color: `${theme.palette.grey[600]}`,
     },

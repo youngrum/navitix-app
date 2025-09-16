@@ -12,14 +12,13 @@ interface FormProps<T extends { email: string } & FieldValues> {
 
 const CustomTextField = styled(TextField)({
   backgroundColor: `${theme.palette.grey[100]}`,
-  borderRadius: "4px",
+  borderRadius: 1,
   "& .MuiSvgIcon-root": {
       color: `${theme.palette.grey[400]}`,
     },
     // フォーカス時のスタイル
   "& .Mui-focused": {
     // boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)', // フォーカス時の影
-    borderColor: `${theme.palette.grey[400]}`,
     "& .MuiSvgIcon-root": {
       color: `${theme.palette.grey[600]}`,
     },

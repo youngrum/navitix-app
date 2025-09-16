@@ -38,7 +38,7 @@ export const profileSchema = z.object({
         const date = new Date(dateString);
         return date <= today;
       },
-      { message: "今日以降の日付は選択できません。" }
+      { message: "今日以降の日付は選択できません" }
     )
     .optional()
     .nullable(),
