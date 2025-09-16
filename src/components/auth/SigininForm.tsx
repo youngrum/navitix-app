@@ -10,7 +10,6 @@ import NoticeModal from "@/components/common/NoticeModal";
 import SignInLeads from "@/components/common/SignInLeads";
 import Divider from "@mui/material/Divider";
 import { SignUpFormValues, signUpSchema } from "@/types/form";
-import { readonly } from "zod";
 
 export default function SigninForm() {
   const submitText = "サインイン";
@@ -36,12 +35,12 @@ export default function SigninForm() {
     <>
       {/** handleSubmitは第1引数に渡されたonSubmit関数を呼び出す */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <InputEmailArea
+        <InputEmailArea<SignUpFormValues>
           registerProps={register}
           errorProps={errors.email as FieldError}
           readonlyProps={readOnly}
         />
-        <InputPasswordArea
+        <InputPasswordArea<SignUpFormValues>
           registerProps={register}
           errorProps={errors.password as FieldError}
           readonlyProps={readOnly}
