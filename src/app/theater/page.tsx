@@ -3,11 +3,29 @@ import Header1 from "@/components/common/Header1";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Stack } from "@mui/material";
 import React from "react";
-import SearchTheater from "../../components/theater/SearchTextField";
+import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
+import { TheaterSearchResponse } from "@/types/thater";
+import { apiResponse } from "@/types/apiResponse";
+import SearchTheaterAutocomplete from "@/components/theater/SearchTheaterAutocomplete";
+import SearchTheaterContainer from "@/components/theater/SearchTheaterContainer";
 
-function Page() {
+// 現在映画館データを取得
+async function getAllTheaterData(): Promise<TheaterSearchResponse[]> {
+  try {
+    const res: apiResponse<TheaterSearchResponse[]> =
+      await searchTheaterLocalApi.get("/all-theaters");
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    console.log("Failed to fetch", error);
+    return [];
+  }
+}
+
+export async function Page() {
+
   const header1Text = "Theater";
-  const placeHolderText = "映画館・市区町村を入力";
+  const allTheatersData = await getAllTheaterData();
 
   return (
     <main>
@@ -16,12 +34,11 @@ function Page() {
           direction="row"
           alignItems="center"
           spacing={2}
-          sx={{ marginBottom: "35px" }}
         >
           <BackButton returnPath="/movies" />
           <Header1 headerText={header1Text} />
         </Stack>
-        <SearchTheater placeHolderTextProps={placeHolderText} />
+        <SearchTheaterContainer allTheatersProps={allTheatersData}/>
       </ThemeProviderWrapper>
     </main>
   );
