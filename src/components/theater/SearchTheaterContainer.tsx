@@ -1,23 +1,33 @@
 "use client";
 
-import { TheaterSearchResponse } from "@/types/thater";
+import { TheaterSearchResponse } from "@/types/theater";
 import { useState } from "react";
 import SearchTheaterAutocomplete from "@/components/theater/SearchTheaterAutocomplete";
 import SuggestTheaterList from "@/components/theater/SuggestTheaterList";
+import { Divider } from "@mui/material";
 
 interface allTheatersProps {
-    allTheatersProps: TheaterSearchResponse[];
+  allTheatersProps: TheaterSearchResponse[];
 }
 
-export default function SearchTheaterContainer({ allTheatersProps }: allTheatersProps) {
+export default function SearchTheaterContainer({
+  allTheatersProps,
+}: allTheatersProps) {
   const [suggestions, setSuggestions] = useState<TheaterSearchResponse[]>([]);
+  const [isSearched, setIsSearched] = useState(false); // 検索が実行されたかの状態
 
   return (
     <>
-      <SearchTheaterAutocomplete allTheatersProps={allTheatersProps} setData={setSuggestions}/>
-      <SuggestTheaterList theaterlist={suggestions}/>
+      <SearchTheaterAutocomplete
+        allTheatersProps={allTheatersProps}
+        setData={setSuggestions}
+        setBoolean={setIsSearched}
+      />
+      <Divider sx={{ my: 2 }} />
+      <SuggestTheaterList
+        theaterlist={suggestions}
+        isSearchedProps={isSearched}
+      />
     </>
   );
-  
-
 }
