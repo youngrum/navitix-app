@@ -6,10 +6,6 @@ import SearchTheaterAutocomplete from "@/components/theater/SearchTheaterAutocom
 import SuggestTheaterList from "@/components/theater/SuggestTheaterList";
 import { Divider } from "@mui/material";
 
-interface allTheatersProps {
-  allTheatersProps: TheaterSearchResponse[];
-}
-
 export default function SearchTheaterContainer() {
   const [suggestions, setSuggestions] = useState<TheaterSearchResponse[]>([]);
   const [isSearched, setIsSearched] = useState(false); // 検索が実行されたかの状態

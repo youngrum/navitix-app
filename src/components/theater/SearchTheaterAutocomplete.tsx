@@ -24,7 +24,7 @@ export default function SearchTheaterAutocomplete({
     setInputValue(newInputValue);
 
     // 入力値が空でない場合にのみ、候補リストを開く
-    if (newInputValue.length > 0) {
+    if (newInputValue) {
       setOpen(true);
 
       // フィルタリングロジック
@@ -60,10 +60,10 @@ export default function SearchTheaterAutocomplete({
       <Autocomplete
         freeSolo
         fullWidth
-        options={suggestions.map((option) => `${option.name} - ${option.city}`)}
+        options={suggestions.map((option) => `${option.name}`)}
         inputValue={inputValue}
-        onInputChange={(_event, value) => {
-          onInputChangehundler(value);
+        onInputChange={(_event, inputValue) => {
+          onInputChangehundler(inputValue);
         }} // _eventは使わないが第一引数に置かないとエラーになるので回避のため_つける
         open={open}
         onBlur={() => {

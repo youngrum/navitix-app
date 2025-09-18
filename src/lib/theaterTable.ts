@@ -297,7 +297,7 @@ export const theater_details = [
     id: 26,
     theater_id: 26,
     post_code: "460-0008",
-    address: "愛知県名古屋市中区栄3丁目15-20",
+    address: "東京都新宿区北新宿11-5",
     photo_path: "/theater/test-screen2.png",
   },
   {
