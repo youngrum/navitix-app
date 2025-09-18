@@ -3,7 +3,6 @@ import { Box, Typography, Divider } from "@mui/material";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import theme from "@/styles/theme";
 import Image from "next/image";
-import { relative } from "path";
 
 interface theaterlistProps {
   theaterlist: TheaterSearchResponse[];

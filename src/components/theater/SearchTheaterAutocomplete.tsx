@@ -35,7 +35,7 @@ export default function SearchTheaterAutocomplete({
       );
       console.log(filtered);
       setSuggestions(filtered);
-      setData(suggestions);
+      setData(filtered);
       setBoolean(true);
     } else {
       setOpen(false);
@@ -70,6 +70,7 @@ export default function SearchTheaterAutocomplete({
           setOpen(false);
           searchHundler(inputValue);
         }}
+        onClick={()=>{setOpen(false)}}
         renderInput={(params) => (
           <TextField
             {...params}
