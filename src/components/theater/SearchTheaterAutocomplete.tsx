@@ -2,23 +2,23 @@
 
 import { TheaterSearchResponse } from "@/types/theater";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Autocomplete, Stack, TextField } from "@mui/material";
+import { AllTheatersContext } from "@/contexts/AllTheatersContext";
 
 interface autCompleteProps {
-  allTheatersProps: TheaterSearchResponse[];
   setData: Dispatch<SetStateAction<TheaterSearchResponse[]>>;
   setBoolean: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function SearchTheaterAutocomplete({
-  allTheatersProps,
   setData,
   setBoolean,
 }: autCompleteProps) {
   const [inputValue, setInputValue] = useState("");
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<TheaterSearchResponse[]>([]);
+  const allTheaters = useContext(AllTheatersContext); // 映画館情報をContextから所得
 
   const onInputChangehundler = (newInputValue: string) => {
     setInputValue(newInputValue);
@@ -28,7 +28,7 @@ export default function SearchTheaterAutocomplete({
       setOpen(true);
 
       // フィルタリングロジック
-      const filtered = allTheatersProps.filter(
+      const filtered = allTheaters.filter(
         (theater) =>
           theater.name.includes(newInputValue) ||
           theater.address.includes(newInputValue)
@@ -45,7 +45,7 @@ export default function SearchTheaterAutocomplete({
 
   const searchHundler = (newValue: string | undefined) => {
     if (newValue) {
-      const filtered = allTheatersProps.filter(
+      const filtered = allTheaters.filter(
         (theater) =>
           theater.name.includes(newValue) || theater.address.includes(newValue)
       );

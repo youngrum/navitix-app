@@ -10,16 +10,13 @@ interface allTheatersProps {
   allTheatersProps: TheaterSearchResponse[];
 }
 
-export default function SearchTheaterContainer({
-  allTheatersProps,
-}: allTheatersProps) {
+export default function SearchTheaterContainer() {
   const [suggestions, setSuggestions] = useState<TheaterSearchResponse[]>([]);
   const [isSearched, setIsSearched] = useState(false); // 検索が実行されたかの状態
 
   return (
     <>
       <SearchTheaterAutocomplete
-        allTheatersProps={allTheatersProps}
         setData={setSuggestions}
         setBoolean={setIsSearched}
       />
