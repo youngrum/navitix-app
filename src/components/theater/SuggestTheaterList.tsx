@@ -3,6 +3,7 @@ import { Box, Typography, Divider } from "@mui/material";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import theme from "@/styles/theme";
 import Image from "next/image";
+import LinkButton from '@/components/common/LinkButton';
 
 interface theaterlistProps {
   theaterlist: TheaterSearchResponse[];
@@ -40,7 +41,7 @@ export default function SuggestTheaterList({
                     borderRadius: 3,
                     overflow: "hidden",
                     boxShadow: 3,
-                    aspectRatio: "1.5 / 1",
+                    aspectRatio: "1.8 / 1",
                     maxWidh: "100%",
                     mb: 1,
                     position: "relative",
@@ -55,6 +56,7 @@ export default function SuggestTheaterList({
                     sizes="30vw"
                   ></Image>
                 </Box>
+                <LinkButton buttonTextProps={"上映作品を確認する"} toProps={`/theater/${theater.id}/screen`} ></LinkButton>
                 <Divider />
               </Box>
             )
