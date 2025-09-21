@@ -1,9 +1,25 @@
+import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
+import { apiResponse } from "@/types/apiResponse";
 import { Typography } from "@mui/material";
 
-export default async function page({params}: {params: {id: string}}){
-    const theater_id = params.id;
+async function getScreenData(theater_id: string): Promise<any[]> {
+  try {
+    const res: apiResponse<any[]> = await searchTheaterLocalApi.get(
+      "/screen-schedules",
+      { params: { id: theater_id } }
+    );
+    // console.log(res.data);
+    return res.data;
+  } catch (error) {
+    console.log("Failed to fetch", error);
+    return [];
+  }
+}
 
-    return (
-        <Typography>{theater_id}</Typography>
-    )
+export default async function page({ params }: { params: { id: string } }) {
+  const { id } = await params;
+
+  const screenData = getScreenData(id);
+
+  return <Typography>{id}</Typography>;
 }
