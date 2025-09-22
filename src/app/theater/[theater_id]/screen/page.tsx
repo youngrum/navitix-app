@@ -8,7 +8,7 @@ async function getScreenData(theater_id: string): Promise<ScreenResponse[]> {
    const res: apiResponse<ScreenResponse[]> = await searchTheaterLocalApi.get(
      `/screen-schedules/${theater_id}/`,
    );
-   console.log(res.data);
+  //  console.log(res.data);
      return res.data;
    } catch (error) {
      console.log("Failed to fetch", error);
