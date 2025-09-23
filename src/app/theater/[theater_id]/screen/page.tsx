@@ -17,9 +17,7 @@ async function getScreenData(theater_id: string): Promise<ScreenResponse[]> {
 
 export default async function page({
   params,
-}: {
-  params: { theater_id: string };
-}) {
+}: { params: Promise<{ theater_id: string }> }) {
   const { theater_id } = await params;
 
   const screenData = getScreenData(theater_id);
