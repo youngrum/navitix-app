@@ -309,7 +309,7 @@ export const theaters = [
     address: "静岡県静岡市葵区紺屋町6-7",
     photo_path: "/theater/test-screen1.png",
   },
-    {
+  {
     id: 26,
     name: "新宿ムービーハウス",
     prefecture_id: 13,
@@ -353,9 +353,9 @@ export const theaters = [
     post_code: "190-0012",
     address: "東京都立川市曙町2丁目42-1",
     photo_path: "/theater/test-screen1.png",
-  }
+  },
 ];
-  
+
 // export const theaters = [
 //   { id: 1, name: "新宿シネマ", prefecture_id: 13, city_id: 2 },
 //   { id: 2, name: "お台場シアター", prefecture_id: 1, city_id: 1 },
