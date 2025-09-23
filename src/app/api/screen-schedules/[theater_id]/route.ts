@@ -2,10 +2,8 @@ import { theaters } from "@/lib/theaterTable";
 import { auditoriums, schedules } from "@/lib/screenDB";
 import tmdbApi from "@/services/tmdbApi";
 import { apiResponse } from "@/types/apiResponse";
-import {
-  ResponseMovieDetail,
-  ResponseReleaseDates_results,
-} from "@/types/movies";
+import { ResponseMovieDetail } from "@/types/movies";
+import { NextRequest } from "next/server";
 
 // 映画の詳細を取得
 async function getMovieDetailData(movieId: number) {
@@ -23,7 +21,7 @@ async function getMovieDetailData(movieId: number) {
 }
 
 export async function GET(
-  req: Request, // 第一引数にrequestオブジェクトおかないとparamsが取れない
+  req: NextRequest, // 第一引数にrequestオブジェクトおかないとparamsが取れない
   { params }: { params: Promise<{ theater_id: string }> }
 ) {
   // Next.js 15+ では params が Promise の場合がある
