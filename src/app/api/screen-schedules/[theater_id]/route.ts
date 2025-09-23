@@ -3,7 +3,7 @@ import { auditoriums, schedules } from "@/lib/screenDB";
 import tmdbApi from "@/services/tmdbApi";
 import { apiResponse } from "@/types/apiResponse";
 import { ResponseMovieDetail } from "@/types/movies";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // 映画の詳細を取得
 async function getMovieDetailData(movieId: number) {
@@ -130,7 +130,7 @@ export async function GET(
 
   // console.log("auditoriumsWithMoviesAndSchedules>>>>>>", auditoriumsWithMoviesAndSchedules);
 
-  return new Response(JSON.stringify(auditoriumsWithMoviesAndSchedules), {
+  return new NextResponse(JSON.stringify(auditoriumsWithMoviesAndSchedules), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
