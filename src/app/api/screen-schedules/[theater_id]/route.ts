@@ -2,8 +2,14 @@ import { theaters } from "@/lib/theaterTable";
 import { auditoriums, schedules } from "@/lib/screenDB";
 import tmdbApi from "@/services/tmdbApi";
 import { apiResponse } from "@/types/apiResponse";
-import { ResponseMovieDetail } from "@/types/movies";
+import {
+  _ResponseMovieDetail,
+  ResponseMovieDetail,
+  ResponseReleaseDates_release_dates,
+  ResponseReleaseDates_results,
+} from "@/types/movies";
 import { NextRequest, NextResponse } from "next/server";
+import { release } from "os";
 
 // 映画の詳細を取得
 async function getMovieDetailData(movieId: number) {
@@ -19,6 +25,77 @@ async function getMovieDetailData(movieId: number) {
     return null;
   }
 }
+
+// 映画作品のリリース情報を取得
+async function getMovieReleaseData(movieId: number) {
+  try {
+    const res: apiResponse<ResponseReleaseDates_results> = await tmdbApi.get(
+      `/movie/${movieId}/release_dates`
+    );
+    const releaseData = res.data.results;
+    // console.log(releaseData);
+    return releaseData;
+  } catch (error) {
+    console.log("Failed to fetch", error);
+    return [];
+  }
+}
+
+// release_datesからcertificationの値を取得する関数 release_datesに複数要素あるので全部回してcertificationを取得
+const getCertification = (
+  release: ResponseReleaseDates_release_dates[] | null
+) => {
+  const releaseInfo =
+    release?.find((result) => result.iso_3166_1 === "JP") || null;
+  const release_dates = releaseInfo?.release_dates ?? null;
+  // find()メソッドを使用して、空文字列ではないcertificationを持つ要素を探す
+  const certifiedItem = release_dates?.find(
+    (item) => item.certification !== ""
+  );
+  console.log(certifiedItem);
+
+  // 条件に合う要素が見つかればそのcertificationを、なければ'-'を返す
+  return certifiedItem ? certifiedItem.certification : "-";
+};
+
+/**
+ * 映画の詳細データを整形する関数
+ * @param detail TMDB APIからの映画詳細データ
+ * @param release TMDB APIからのリリース日データ
+ * @returns 整形された映画詳細オブジェクト
+ */
+const formatMovieDetail = (
+  detail: ResponseMovieDetail,
+  release: ResponseReleaseDates_release_dates[]
+): _ResponseMovieDetail => {
+  const formattedGenres: string =
+    detail.genres?.map((genre) => genre.name).join(", ") ?? "-";
+  const formattedOverview =
+    detail.overview || "解説・あらすじを取得できませんでした";
+  const formattedPosterPath =
+    detail.poster_path || "https://example.com/default-poster.jpg";
+  const formattedReleaseDate = detail.release_date || "不明";
+  const formattedRevenue = detail.revenue || "不明";
+  const formattedRuntime = detail.runtime || 0;
+  const formattedTitle = detail.title || "タイトル不明";
+  const formattedVoteAverage = detail.vote_average || 0;
+  const formattedVoteCount = detail.vote_count || 0;
+  const certificationValue = getCertification(release);
+
+  return {
+    id: detail.id,
+    genres: formattedGenres,
+    overview: formattedOverview,
+    poster_path: formattedPosterPath,
+    release_date: formattedReleaseDate,
+    revenue: formattedRevenue,
+    runtime: formattedRuntime,
+    title: formattedTitle,
+    vote_average: formattedVoteAverage,
+    vote_count: formattedVoteCount,
+    certification: certificationValue,
+  };
+};
 
 export async function GET(
   req: NextRequest, // 第一引数にrequestオブジェクトおかないとparamsが取れない
@@ -100,38 +177,39 @@ export async function GET(
           error: "上映作品が見つかりませんでした",
         };
       }
-      const formattedGenres: string = movieDetail.genres?.map(genre => genre.name).join(', ') ?? '-';
+
+      // 映画作品のリリース情報を取得
+      const release = await getMovieReleaseData(
+        schedulesForAuditorium[0].movie_id
+      );
 
       // 映画詳細を簡略化
-      const simplifiedMovieDetail = {
-        id: movieDetail.id,
-        genres: formattedGenres,
-        overview: movieDetail.overview as string | number,
-        poster_path: movieDetail.poster_path as string,
-        release_date: movieDetail.release_date,
-        revenue:movieDetail.revenue,
-        runtime: movieDetail.runtime as string | number,
-        title: movieDetail.title,
-        vote_average: movieDetail.vote_average,
-        vote_count: movieDetail.vote_count,
-        certification: movieDetail.certification,
-      };
+      const simplifiedMovieDetail = formatMovieDetail(movieDetail, release);
 
       // スケジュール情報を簡略化
-      const simplifiedSchedules = schedulesForAuditorium.map(schedule => {
+      const simplifiedSchedules = schedulesForAuditorium.map((schedule) => {
         // start_timeをDateオブジェクトに変換
         const startDate = new Date(schedule.start_time);
 
         // 日付、曜日、開始時刻を抽出
-        const date = startDate.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
-        const week = startDate.toLocaleDateString('ja-JP', { weekday: 'short' });
-        const play_beginning = startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        const date = startDate.toLocaleDateString("ja-JP", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+        const week = startDate.toLocaleDateString("ja-JP", {
+          weekday: "short",
+        });
+        const play_beginning = startDate.toLocaleTimeString("ja-JP", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
 
         return {
-            ...schedule,
-            date: date,
-            week: week,
-            play_beginning: play_beginning
+          ...schedule,
+          date: date,
+          week: week,
+          play_beginning: play_beginning,
         };
       });
 
