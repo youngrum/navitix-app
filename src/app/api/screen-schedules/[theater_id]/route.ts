@@ -9,7 +9,6 @@ import {
   ResponseReleaseDates_results,
 } from "@/types/movies";
 import { NextRequest, NextResponse } from "next/server";
-import { release } from "os";
 
 // 映画の詳細を取得
 async function getMovieDetailData(movieId: number) {
@@ -105,12 +104,9 @@ export async function GET(
   const { theater_id } = await params;
 
   if (!params || !theater_id) {
-    return new Response(
-      JSON.stringify({ error: "theater_id パラメータが見つかりませんでした" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      }
+    return NextResponse.json(
+      { error: 'theater_id パラメータが見つかりませんでした' },
+      { status: 404 }
     );
   }
 
@@ -123,12 +119,9 @@ export async function GET(
   // console.log("theaterData:",theaterData);
 
   if (!theaterData) {
-    return new Response(
-      JSON.stringify({ error: "映画館は見つかりませんでした" }),
-      {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      }
+    return NextResponse.json(
+      { error: '映画館は見つかりませんでした' },
+      { status: 404 }
     );
   }
 
@@ -138,12 +131,9 @@ export async function GET(
   );
 
   if (!auditoriumData || auditoriumData.length === 0) {
-    return new Response(
-      JSON.stringify({ error: "上映室が見つかりませんでした" }),
-      {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      }
+     return NextResponse.json(
+      { error: '上映室が見つかりませんでした' },
+      { status: 404 }
     );
   }
 
@@ -223,8 +213,11 @@ export async function GET(
 
   // console.log("auditoriumsWithMoviesAndSchedules>>>>>>", auditoriumsWithMoviesAndSchedules);
 
-  return new NextResponse(JSON.stringify(auditoriumsWithMoviesAndSchedules), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  return NextResponse.json(
+    auditoriumsWithMoviesAndSchedules, 
+    { 
+      status: 200, 
+      headers: { "Content-Type": "application/json" }, 
+    },
+  );
 }
