@@ -100,25 +100,40 @@ export async function GET(
           error: "上映作品が見つかりませんでした",
         };
       }
+      const formattedGenres: string = movieDetail.genres?.map(genre => genre.name).join(', ') ?? '-';
 
       // 映画詳細を簡略化
       const simplifiedMovieDetail = {
         id: movieDetail.id,
-        overview: movieDetail.overview,
-        genres: movieDetail.genres,
+        genres: formattedGenres,
+        overview: movieDetail.overview as string | number,
+        poster_path: movieDetail.poster_path as string,
         release_date: movieDetail.release_date,
-        poster_path: movieDetail.poster_path,
-        runtime: movieDetail.runtime,
+        revenue:movieDetail.revenue,
+        runtime: movieDetail.runtime as string | number,
+        title: movieDetail.title,
+        vote_average: movieDetail.vote_average,
+        vote_count: movieDetail.vote_count,
+        certification: movieDetail.certification,
       };
 
       // スケジュール情報を簡略化
-      const simplifiedSchedules = schedulesForAuditorium.map((schedule) => ({
-        id: schedule.id,
-        movie_id: schedule.movie_id,
-        auditorium_id: schedule.auditorium_id,
-        start_time: schedule.start_time,
-        end_time: schedule.end_time,
-      }));
+      const simplifiedSchedules = schedulesForAuditorium.map(schedule => {
+        // start_timeをDateオブジェクトに変換
+        const startDate = new Date(schedule.start_time);
+
+        // 日付、曜日、開始時刻を抽出
+        const date = startDate.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        const week = startDate.toLocaleDateString('ja-JP', { weekday: 'short' });
+        const play_beginning = startDate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+
+        return {
+            ...schedule,
+            date: date,
+            week: week,
+            play_beginning: play_beginning
+        };
+      });
 
       return {
         ...auditorium,
