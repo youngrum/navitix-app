@@ -7,9 +7,9 @@ import {
   ResponseMovies_results,
   ResponseReleaseDates_results,
   ResponseCredits_casts,
+  _ResponseMovieDetail,
 } from "@/types/movies";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import DetailInfo from "@/components/movies/detail/DetailInfo";
 import Header1 from "@/components/common/Header1";
 import VideoContainer from "@/components/movies/detail/VideoContainer";
 import CastList from "@/components/movies/detail/CastList";
@@ -18,6 +18,8 @@ import RatingStar from "@/components/movies/detail/RatingStar";
 import { Stack } from "@mui/material";
 import BackButton from "@/components/common/BackButton";
 import SubmitButton from "@/components/common/SubmitButton";
+import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
+import _DetailInfo from "@/components/movies/detail/_DetailInfo";
 
 // propsの型定義
 interface MovieIdProps {
@@ -33,7 +35,7 @@ async function getMovieDetailData(movieId: string) {
       `/movie/${movieId}`
     );
     const detail = res.data;
-    // console.log(detail);
+    console.log("detail>>>>>>>>>>>>>>>>>>>>>",detail);
     return detail;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -41,14 +43,13 @@ async function getMovieDetailData(movieId: string) {
   }
 }
 
-// 映画の詳細を取得
+// 映画のリリースを取得
 async function getMovieReleaseData(movieId: string) {
   try {
     const res: apiResponse<ResponseReleaseDates_results> = await tmdbApi.get(
       `/movie/${movieId}/release_dates`
     );
     const releaseData = res.data.results;
-    // console.log(releaseData);
     return releaseData;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -79,6 +80,19 @@ async function getMovieCasts(movie_id: string) {
     return castsData;
   } catch (error) {
     console.log("Failed to fetch", error);
+    return [];
+  }
+}
+
+async function newGetMovileDetail(movie_id: string){
+  try {
+    const res: apiResponse<_ResponseMovieDetail> = await searchTheaterLocalApi.get(
+      `/movie/get-detail/${movie_id}/`
+    );
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    console.log("Failed to fetch", error);
     return null;
   }
 }
@@ -94,11 +108,13 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
   const videos = await getMovieVideoData(movie_id);
   const casts = await getMovieCasts(movie_id);
 
+  const newDetail = await newGetMovileDetail(movie_id);
+
   // 日本でのリリース情報を取得
   const releaseInfo =
     release?.find((result) => result.iso_3166_1 === "JP") || null;
 
-  function getLatestOfficialTrailerKey(videoList: ResponseMovieVideos[]) {
+  const getLatestOfficialTrailerKey = (videoList: ResponseMovieVideos[]) => {
     if (!videoList || videoList.length === 0) {
       return null; // データが存在しない場合はnullを返す
     }
@@ -140,10 +156,8 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
           <BackButton returnPath="/movies" />
           <Header1 headerText="detail" />
         </Stack>
-        <DetailInfo
-          MovieDetailProps={detail}
-          ReleaseInfoProps={releaseInfo}
-          videosProps={videos}
+        <_DetailInfo
+          MovieDetailProps={newDetail}
         />
         <Header2 headerText="トレーラー" />
         <VideoContainer trailerKeyProps={trailerKey} />
