@@ -1,33 +1,35 @@
 "use client";
 
 import InputEmailArea from "@/components/common/InputEmailArea";
-import InputPasswordArea from "@/components/common/InputPasswordArea";
-import { FieldError, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import SubmitButton from "@/components/common/SubmitButton";
 import NoticeModal from "@/components/common/NoticeModal";
 import SignInLeads from "@/components/common/SignInLeads";
 import Divider from "@mui/material/Divider";
-import { SignUpFormValues, signUpSchema } from "@/types/form";
+import { profileSchema, ProfileFormValues } from "@/types/form";
+import InputNameArea from "@/components/common/InputNameArea";
+import InputBirthdayArea from "@/components/common/InputBirthdayArea";
 
-export default function SignupForm() {
-  const submitText = "アカウント作成";
-  const leadText = "アカウントをお持ちの方は";
-  const toLogIn = "/login";
-  const readOnly = false;
+export default function ProfileForm() {
+  const submitText = "プロフィールを修正";
+  const leadText = "パスワードを更新する方は";
+  const toLogIn = "/reset-password";
+  const readonly = false;
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {
     register, // TSX内でinputに渡す
     handleSubmit, // サブミットイベントのラッパー関数
+    control,
     formState: { errors },
     setError, // バックエンドからのエラーメッセージを格納
-  } = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
+  } = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
     mode: "onBlur", //フォーカスが外れた時をトリガーとする
   });
 
-  const onSubmit = (data: SignUpFormValues) => {
+  const onSubmit = (data: ProfileFormValues) => {
     console.log(data); // 検証済みのデータ
   };
 
@@ -35,16 +37,22 @@ export default function SignupForm() {
     <>
       {/** handleSubmitは第1引数に渡されたonSubmit関数を呼び出す */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <InputEmailArea
+        <InputNameArea<ProfileFormValues>
           registerProps={register}
-          errorProps={errors.email as FieldError}
-          readonlyProps={readOnly}
-        />
-        <InputPasswordArea
+          errorProps={errors.accountName}
+          readonlyProps={readonly}
+        ></InputNameArea>
+        <InputEmailArea<ProfileFormValues>
           registerProps={register}
-          errorProps={errors.password as FieldError}
-          readonlyProps={readOnly}
-        />
+          errorProps={errors.email}
+          readonlyProps={readonly}
+        ></InputEmailArea>
+        <InputBirthdayArea<ProfileFormValues>
+          control={control}
+          errorProps={errors.birthDay}
+          readonlyProps={readonly}
+        ></InputBirthdayArea>
+
         <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
         <Divider />
         <SubmitButton isLoading={false} buttonText={submitText} />
