@@ -25,7 +25,7 @@ export default function LinkButton({
   const router = useRouter();
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+    <Box sx={{ my: 4 }}>
       <CustomButton
         type="button"
         variant="contained"
