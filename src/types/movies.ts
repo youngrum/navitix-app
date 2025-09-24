@@ -114,3 +114,18 @@ export interface ResponseMovieCredits {
   credit_id: string;
   order: number;
 }
+
+// movie/get-detail/[movie_id]/のレスポンス型
+export interface _ResponseMovieDetail {
+    id : number,
+    genres: { id: number; name: string }[] | string;
+    overview: number | string;
+    poster_path: string;
+    release_date: string;
+    revenue: number | string;
+    runtime: number | string;
+    title: string;
+    vote_average: number;
+    vote_count: number;
+    certification: string;
+}

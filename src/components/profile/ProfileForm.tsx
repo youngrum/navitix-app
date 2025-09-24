@@ -4,20 +4,19 @@ import InputEmailArea from "@/components/common/InputEmailArea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import SubmitButton from "@/components/common/SubmitButton";
 import NoticeModal from "@/components/common/NoticeModal";
 import SignInLeads from "@/components/common/SignInLeads";
 import Divider from "@mui/material/Divider";
 import { profileSchema, ProfileFormValues } from "@/types/form";
 import InputNameArea from "@/components/common/InputNameArea";
 import InputBirthdayArea from "@/components/common/InputBirthdayArea";
-import LinkButton from "@/components/common/LinkButton";
 
-export default function ProfileDisplay() {
-  const toEditLink = "profile/edit";
-  const linkText = "プロフィールを修正";
+export default function ProfileForm() {
+  const submitText = "プロフィールを修正";
   const leadText = "パスワードを更新する方は";
   const toLogIn = "/reset-password";
-  const readonly = true;
+  const readonly = false;
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {
     register, // TSX内でinputに渡す
@@ -56,7 +55,7 @@ export default function ProfileDisplay() {
 
         <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
         <Divider />
-        <LinkButton toProps={toEditLink} buttonTextProps={linkText} />
+        <SubmitButton isLoading={false} buttonText={submitText} />
         <NoticeModal />
       </form>
     </>

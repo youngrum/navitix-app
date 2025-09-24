@@ -32,8 +32,14 @@ export const profileSchema = z.object({
     .nonempty("メールアドレスは必須です")
     .email("正しいメールアドレスを入力してください"),
   birthDay: z
-    .date()
-    .max(today, { message: "今日以降の日付は選択できません。" })
+    .string()
+    .refine(
+      (dateString) => {
+        const date = new Date(dateString);
+        return date <= today;
+      },
+      { message: "今日以降の日付は選択できません。" }
+    )
     .optional()
     .nullable(),
 });

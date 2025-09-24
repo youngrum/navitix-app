@@ -1,74 +1,82 @@
-"use client";
-
 import {
-  FormControl,
-  InputLabel,
-  Input,
-  InputAdornment,
   Box,
+  InputAdornment,
+  InputLabel,
+  TextField,
+  Typography,
 } from "@mui/material";
-import EmailIcon from "@mui/icons-material/Email";
-import { styled } from "@mui/material/styles";
-import { UseFormRegister, FieldError } from "react-hook-form";
-import { SignUpFormValues } from "@/types/form";
+import styled from "@emotion/styled";
 import theme from "@/styles/theme";
+import {
+  FieldError,
+  FieldValues,
+  Path,
+  UseFormRegister,
+} from "react-hook-form";
+import EmailIcon from "@mui/icons-material/Email";
 
-interface FormProps {
-  registerProps: UseFormRegister<SignUpFormValues>;
+interface FormProps<T extends { email: string } & FieldValues> {
+  registerProps: UseFormRegister<T>;
   errorProps?: FieldError;
   readonlyProps?: boolean;
 }
-// Inputのデザイン定義
-const CustomInput = styled(Input)({
-  // 背景色とボーダーをカスタマイズ
-  backgroundColor: "#f5f5f5",
-  borderRadius: "4px",
-  padding: "8px 12px",
-  border: "0.8px solid #DADADA",
+
+const CustomTextField = styled(TextField)({
+  backgroundColor: `${theme.palette.grey[100]}`,
+  borderRadius: 1,
+  "& .MuiSvgIcon-root": {
+    color: `${theme.palette.grey[400]}`,
+  },
   // フォーカス時のスタイル
-  "&.Mui-focused": {
-    border: `1px solid ${theme.palette.text.secondary}`,
+  "& .Mui-focused": {
     // boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)', // フォーカス時の影
     "& .MuiSvgIcon-root": {
-      color: "text.primary",
+      color: `${theme.palette.grey[600]}`,
     },
   },
 });
 
-export default function InputEmailArea({
-  registerProps,
-  errorProps,
-  readonlyProps,
-}: FormProps) {
+export default function InputEmailArea<
+  T extends { email: string } & FieldValues
+>({ registerProps, errorProps, readonlyProps = false }: FormProps<T>) {
   return (
-    <Box sx={{ maxWidth: "600px", mt: "50px" }}>
-      <FormControl variant="outlined" sx={{ width: "100%" }}>
-        <InputLabel
-          htmlFor="email"
-          required
-          sx={{ fontSize: "20px", fontWeight: "bold", left: "-10px" }}
+    <Box sx={{ mt: "50px" }}>
+      <InputLabel
+        htmlFor="Email"
+        required
+        sx={{ fontSize: "16px", fontWeight: "bold", bottom: 1 }}
+      >
+        Email
+      </InputLabel>
+      <CustomTextField
+        id="Email"
+        fullWidth
+        error={Boolean(errorProps)}
+        slotProps={{
+          input: {
+            readOnly: readonlyProps,
+            startAdornment: (
+              <InputAdornment position="start">
+                <EmailIcon />
+              </InputAdornment>
+            ),
+          },
+        }}
+        {...registerProps("email" as Path<T>)}
+        variant="outlined"
+      />
+      {errorProps && (
+        <Typography
+          variant="h6"
+          style={{
+            color: `${theme.palette.secondary.main}`,
+            fontSize: "14px",
+            paddingTop: "10px",
+          }}
         >
-          Email
-        </InputLabel>
-        <CustomInput
-          id="email"
-          disableUnderline={true}
-          readOnly={readonlyProps}
-          {...registerProps("email")} // ここでregisterを適用
-          error={Boolean(errorProps)} // MUIのエラー表示
-          startAdornment={
-            <InputAdornment position="start">
-              <EmailIcon color="primary" />
-            </InputAdornment>
-          }
-          placeholder="example@gmail.com"
-        />
-        {errorProps && (
-          <span style={{ color: "red", fontSize: "14px", paddingTop: "10px" }}>
-            {errorProps.message}
-          </span>
-        )}
-      </FormControl>
+          {errorProps.message}
+        </Typography>
+      )}
     </Box>
   );
 }
