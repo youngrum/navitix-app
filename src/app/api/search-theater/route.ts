@@ -1,9 +1,8 @@
 // src/api/search-theater/route.ts
 
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   theaters,
-  theater_details,
   prefectures,
   cities,
 } from "@/lib/theaterTable";
@@ -20,7 +19,6 @@ export async function GET(req: NextRequest) {
 
   const results = theaters
     .map((theater) => {
-      const detail = theater_details.find((d) => d.theater_id === theater.id);
       const prefecture = prefectures.find(
         (p) => p.id === theater.prefecture_id
       );
@@ -29,7 +27,7 @@ export async function GET(req: NextRequest) {
       // データの結合
       return {
         ...theater,
-        address: detail?.address || "",
+        address: theater?.address || "",
         prefecture_name: prefecture?.name || "",
         city_name: city?.name || "",
       };
@@ -53,8 +51,8 @@ export async function GET(req: NextRequest) {
       city: item.city_name,
       address: item.address,
       photo_path:
-        theater_details.find((d) => d.theater_id === item.id)?.photo_path || "",
+        item.photo_path || "",
     }));
 
-  return results;
+  return NextResponse.json(results);
 }

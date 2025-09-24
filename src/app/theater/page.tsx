@@ -22,7 +22,7 @@ async function getAllTheaterData(): Promise<TheaterSearchResponse[]> {
   }
 }
 
-export async function Page() {
+export default async function Page() {
   const header1Text = "Theater";
   const allTheatersData = await getAllTheaterData();
 
@@ -40,5 +40,3 @@ export async function Page() {
     </main>
   );
 }
-
-export default Page;
