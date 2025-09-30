@@ -6,6 +6,7 @@ import {
   formatMovieDetail,
 } from "@/lib/movieDetailUtils";
 import { NextRequest, NextResponse } from "next/server";
+import { ScreenSchedule } from "@/types/screen";
 
 export async function GET(
   req: NextRequest, // 第一引数にrequestオブジェクトおかないとparamsが取れない
@@ -16,7 +17,7 @@ export async function GET(
 
   if (!params || !theater_id) {
     return NextResponse.json(
-      { error: 'theater_id パラメータが見つかりませんでした' },
+      { error: "theater_id パラメータが見つかりませんでした" },
       { status: 404 }
     );
   }
@@ -31,7 +32,7 @@ export async function GET(
 
   if (!theaterData) {
     return NextResponse.json(
-      { error: '映画館は見つかりませんでした' },
+      { error: "映画館は見つかりませんでした" },
       { status: 404 }
     );
   }
@@ -42,8 +43,8 @@ export async function GET(
   );
 
   if (!auditoriumData || auditoriumData.length === 0) {
-     return NextResponse.json(
-      { error: '上映室が見つかりませんでした' },
+    return NextResponse.json(
+      { error: "上映室が見つかりませんでした" },
       { status: 404 }
     );
   }
@@ -88,47 +89,67 @@ export async function GET(
       const simplifiedMovieDetail = formatMovieDetail(movieDetail, release);
 
       // スケジュール情報を簡略化
-      const simplifiedSchedules = schedulesForAuditorium.map((schedule) => {
-        // start_timeをDateオブジェクトに変換
-        const startDate = new Date(schedule.start_time);
+      const groupedSchedules = schedulesForAuditorium.reduce(
+        (acc, schedule) => {
+          const startDate = new Date(schedule.start_time);
 
-        // 日付、曜日、開始時刻を抽出
-        const date = startDate.toLocaleDateString("ja-JP", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        });
-        const week = startDate.toLocaleDateString("ja-JP", {
-          weekday: "short",
-        });
-        const play_beginning = startDate.toLocaleTimeString("ja-JP", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+          const date = startDate.toLocaleDateString("ja-JP", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+          const week = startDate.toLocaleDateString("ja-JP", {
+            weekday: "short",
+          });
+          const play_beginning = startDate.toLocaleTimeString("ja-JP", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
 
-        return {
-          ...schedule,
-          date: date,
-          week: week,
-          play_beginning: play_beginning,
-        };
-      });
+          // date: 'YYYY/MM/DD'（例: '2025/09/26'）を '/' で分割
+          const dateParts = date.split("/");
+          // 配列の3番目の要素（インデックス2）が 'DD' の部分
+          const day = dateParts[2]; // 例: '26'
+
+          // 既存の日付グループを探す
+          const existingGroup = acc.find((g) => g.date === date);
+
+          const showtime = {
+            id: schedule.id,
+            play_beginning,
+            start_time: schedule.start_time,
+            end_time: schedule.end_time,
+          };
+
+          if (existingGroup) {
+            existingGroup.day = day;
+            existingGroup.showtimes.push(showtime);
+          } else {
+            acc.push({
+              date,
+              week,
+              day,
+              showtimes: [showtime],
+            });
+          }
+
+          return acc;
+        },
+        [] as ScreenSchedule[]
+      );
 
       return {
         ...auditorium,
         movie: simplifiedMovieDetail,
-        schedules: simplifiedSchedules,
+        schedules: groupedSchedules,
       };
     })
   );
 
   // console.log("auditoriumsWithMoviesAndSchedules>>>>>>", auditoriumsWithMoviesAndSchedules);
 
-  return NextResponse.json(
-    auditoriumsWithMoviesAndSchedules, 
-    { 
-      status: 200, 
-      headers: { "Content-Type": "application/json" }, 
-    },
-  );
+  return NextResponse.json(auditoriumsWithMoviesAndSchedules, {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }

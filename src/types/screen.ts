@@ -5,7 +5,7 @@ export interface ScreenResponse {
   total_seats: number;
   movie: ScreenMovie;
   schedules: ScreenSchedule[];
-};
+}
 
 export interface ScreenMovie {
   id: number;
@@ -19,20 +19,23 @@ export interface ScreenMovie {
   title: string;
   vote_average: number;
   vote_count: number;
-};
+}
 
 export interface ScreenGenre {
   id: number;
   name: string;
-};
+}
 
 export interface ScreenSchedule {
+  date: string; // "2025/09/26"
+  week: string; // "金"
+  day: string; // "26"
+  showtimes: Showtime[];
+}
+
+export interface Showtime {
   id: number;
-  movie_id: number;
-  auditorium_id: number;
-  start_time: string;
-  end_time: string;
-  date: string;
-  week: string;
-  play_beginning: string;
-};
+  play_beginning: string; // "10:00"
+  start_time: string; // "2025/09/26 10:00"
+  end_time: string; // "2025/09/26 12:00"
+}
