@@ -1,6 +1,12 @@
 export interface ScreenResponse {
-  id: number;
   theater_id: number;
+  theater_name: string;
+  location: string;
+  auditoriums: Auditorium[];
+}
+
+export interface Auditorium {
+  id: number;
   name: string;
   total_seats: number;
   movie: ScreenMovie;

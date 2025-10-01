@@ -6,7 +6,7 @@ import {
   formatMovieDetail,
 } from "@/lib/movieDetailUtils";
 import { NextRequest, NextResponse } from "next/server";
-import { ScreenSchedule } from "@/types/screen";
+import { ScreenResponse, ScreenSchedule } from "@/types/screen";
 
 export async function GET(
   req: NextRequest, // 第一引数にrequestオブジェクトおかないとparamsが取れない
@@ -146,9 +146,21 @@ export async function GET(
     })
   );
 
-  // console.log("auditoriumsWithMoviesAndSchedules>>>>>>", auditoriumsWithMoviesAndSchedules);
+  // console.log(
+  //   "auditoriumsWithMoviesAndSchedules>>>>>>",
+  //   auditoriumsWithMoviesAndSchedules
+  // );
 
-  return NextResponse.json(auditoriumsWithMoviesAndSchedules, {
+  const responseData = {
+    theater_id: theaterData.id, // 映画館ID
+    theater_name: theaterData.name, // 映画館名
+    location: theaterData.address, // 映画館の場所
+    auditoriums: auditoriumsWithMoviesAndSchedules, // 上映室とスケジュールデータ
+  } as ScreenResponse | null;
+
+  // console.log("responseData>>>>>>", responseData);
+
+  return NextResponse.json(responseData, {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
