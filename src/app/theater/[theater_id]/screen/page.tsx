@@ -58,14 +58,11 @@ export default async function page({
                 {/* 映画詳細コンポーネント */}
                 <_DetailInfo MovieDetailProps={auditorium.movie} />
                 {/* スクリーン名 */}
-                <Typography variant="h6" sx={{ mt: 2, fontSize: "14px" }}>
+                <Typography variant="h6" sx={{ my: 2, fontSize: "14px" }}>
                   {auditorium.name}
                 </Typography>
                 {/* スケジュール選択コンポーネント */}
-                <ScreenScheduleSelector
-                  schedulesProps={auditorium.schedules}
-                  screenNameProps={auditorium.name}
-                />
+                <ScreenScheduleSelector schedulesProps={auditorium.schedules} />
                 <Divider sx={{ my: 2 }} />
               </Box>
             ))

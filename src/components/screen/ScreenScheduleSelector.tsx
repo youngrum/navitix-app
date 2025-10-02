@@ -4,43 +4,54 @@ import { ScreenSchedule } from "@/types/screen";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-import theme from "@/styles/theme";
 import { Box, Typography } from "@mui/material";
 
 interface Props {
   schedulesProps: ScreenSchedule[];
-  screenNameProps?: string;
+}
+interface CustomButtonProps {
+  isSelected: boolean;
 }
 
 // 日付選択ボタンデザイン定義
-const CustomDateButton = styled(Button)({
+const CustomDateButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "isSelected",
+})<CustomButtonProps>(({ theme, isSelected }) => ({
   borderRadius: "4px",
-  width: "50px",
-  height: "50px",
-  margin: "4px 8px 0 0",
-  color: theme.palette.text.primary,
-  backgroundColor: theme.palette.grey[50],
+  margin: "0 12px 0 0",
+  color: isSelected
+    ? theme.palette.background.default
+    : theme.palette.text.primary,
+  backgroundColor: isSelected
+    ? theme.palette.secondary.main
+    : theme.palette.grey[50],
   border: `1px solid ${theme.palette.grey[300]}`,
   display: "flex",
   flexDirection: "column",
-});
+}));
 // 上映開始時間選択ボタンデザイン定義
-const CustomShowtimeButton = styled(Button)({
+const CustomShowtimeButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "isSelected",
+})<CustomButtonProps>(({ theme, isSelected }) => ({
   borderRadius: "4px",
-  margin: "4px 12px 0 0",
-  color: theme.palette.text.primary,
-  backgroundColor: theme.palette.grey[50],
+  margin: "4px 16px 0 0",
+  color: isSelected
+    ? theme.palette.background.default
+    : theme.palette.text.primary,
+  backgroundColor: isSelected
+    ? theme.palette.secondary.main
+    : theme.palette.grey[50],
   border: `1px solid ${theme.palette.grey[300]}`,
   display: "flex",
   flexDirection: "column",
-});
+}));
 
-export default function ScreenScheduleSelector({
-  schedulesProps,
-  screenNameProps,
-}: Props) {
+export default function ScreenScheduleSelector({ schedulesProps }: Props) {
   const [selectedDate, setSelectedDate] = useState<string>(
     schedulesProps?.[0]?.date || ""
+  );
+  const [selectedTime, setSelectedTime] = useState<string>(
+    schedulesProps?.[0]?.showtimes[0].start_time || ""
   );
 
   const selectedSchedule = schedulesProps?.find((s) => s.date === selectedDate);
@@ -49,7 +60,6 @@ export default function ScreenScheduleSelector({
   if (!schedulesProps || schedulesProps.length === 0) {
     return <div>スケジュールがありません</div>;
   }
-
   return (
     <>
       {/* 日付ボタン */}
@@ -63,10 +73,22 @@ export default function ScreenScheduleSelector({
       >
         {schedulesProps.map((schedule) => (
           <CustomDateButton
-            key={schedule.date}
-            onClick={() => setSelectedDate(schedule.date)}
+            key={schedule.day}
+            onClick={() => {
+              //日付変更時に、自動的にその日の最初の上映時間を選択する
+              setSelectedDate(schedule.date);
+              if (schedule.showtimes.length > 0) {
+                // その日付の最初の上映時間を選択
+                setSelectedTime(schedule.showtimes[0].start_time);
+              } else {
+                // スケジュールがない場合は時間をリセット
+                setSelectedTime("");
+              }
+            }}
+            // 日付ボタンの選択状態
+            isSelected={selectedDate === schedule.date}
           >
-            <Typography sx={{ fontWeight: "bold", fontSize: "16px" }}>
+            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
               {schedule.day}
             </Typography>
             <Typography sx={{ fontSize: "14px" }}>({schedule.week})</Typography>
@@ -77,7 +99,11 @@ export default function ScreenScheduleSelector({
       {/* 上映時間ボタン */}
       <Box sx={{ display: "flex", overflowX: "auto" }}>
         {selectedSchedule?.showtimes.map((showtime) => (
-          <CustomShowtimeButton key={showtime.id}>
+          <CustomShowtimeButton
+            key={showtime.id}
+            onClick={() => setSelectedTime(showtime.start_time)}
+            isSelected={selectedTime === showtime.start_time}
+          >
             {showtime.play_beginning}
           </CustomShowtimeButton>
         ))}
