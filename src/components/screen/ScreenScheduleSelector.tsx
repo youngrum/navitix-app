@@ -5,10 +5,14 @@ import { useState } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
+import LinkButton from "@/components/common/LinkButton";
 
-interface Props {
+interface ScreenProps {
   schedulesProps: ScreenSchedule[];
+  theaterId: string;
+  auditoriumId: number;
 }
+
 interface CustomButtonProps {
   isSelected: boolean;
 }
@@ -46,7 +50,11 @@ const CustomShowtimeButton = styled(Button, {
   flexDirection: "column",
 }));
 
-export default function ScreenScheduleSelector({ schedulesProps }: Props) {
+export default function ScreenScheduleSelector({
+  schedulesProps,
+  theaterId,
+  auditoriumId,
+}: ScreenProps) {
   const [selectedDate, setSelectedDate] = useState<string>(
     schedulesProps?.[0]?.date || ""
   );
@@ -54,7 +62,24 @@ export default function ScreenScheduleSelector({ schedulesProps }: Props) {
     schedulesProps?.[0]?.showtimes[0].start_time || ""
   );
 
+  // 選択された日付を取得
   const selectedSchedule = schedulesProps?.find((s) => s.date === selectedDate);
+  // 選択された上映時間を取得
+  const selectedShowtime = selectedSchedule?.showtimes.find(
+    (st) => st.start_time === selectedTime
+  );
+
+  // クエリパラメータ付きURLを動的に生成
+  const getSeatSelectionUrl = () => {
+    if (!selectedShowtime || !selectedSchedule) return "";
+
+    const params = new URLSearchParams({
+      schedule_id: selectedShowtime.id.toString(),
+      date: selectedSchedule.date,
+    });
+
+    return `/theater/${theaterId}/screen/${auditoriumId}/seat?${params.toString()}`;
+  };
 
   // schedulesが空またはundefinedの場合は何も表示しない
   if (!schedulesProps || schedulesProps.length === 0) {
@@ -108,6 +133,11 @@ export default function ScreenScheduleSelector({ schedulesProps }: Props) {
           </CustomShowtimeButton>
         ))}
       </Box>
+      {/* 座席選択へ進むボタン */}
+      <LinkButton
+        buttonTextProps="座席選択へ進む"
+        toProps={getSeatSelectionUrl()}
+      />
     </>
   );
 }

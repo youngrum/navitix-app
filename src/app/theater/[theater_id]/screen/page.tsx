@@ -62,7 +62,11 @@ export default async function page({
                   {auditorium.name}
                 </Typography>
                 {/* スケジュール選択コンポーネント */}
-                <ScreenScheduleSelector schedulesProps={auditorium.schedules} />
+                <ScreenScheduleSelector
+                  schedulesProps={auditorium.schedules}
+                  theaterId={theater_id}
+                  auditoriumId={auditorium.id}
+                />
                 <Divider sx={{ my: 2 }} />
               </Box>
             ))

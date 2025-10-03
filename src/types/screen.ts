@@ -45,3 +45,17 @@ export interface Showtime {
   start_time: string; // "2025/09/26 10:00"
   end_time: string; // "2025/09/26 12:00"
 }
+
+export const seats = [
+  // スクリーンNo.1 (150席) - 10行×15列を想定
+  ...Array.from({ length: 10 }, (_, rowIndex) =>
+    Array.from({ length: 15 }, (_, seatIndex) => ({
+      id: rowIndex * 15 + seatIndex + 1,
+      auditorium_id: 1,
+      seat_row: String.fromCharCode(65 + rowIndex), // A, B, C...
+      seat_number: (seatIndex + 1).toString(),
+      seat_type: "standard" as const,
+      is_available: true,
+    }))
+  ).flat(),
+];
