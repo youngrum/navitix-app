@@ -1,15 +1,18 @@
 // types/seat.ts
 
+import { Theater, TheaterSearchResponse } from "./theater";
+
 export type SeatType = "STANDARD"; // 将来的に "WHEELCHAIR" | "COUPLE" | "PREMIUM"なども追加可能
 export type SeatStatus = "AVAILABLE" | "RESERVED" | "LOCKED";
 
-export interface Seat {
+export interface SeatsData {
   id: number;
   auditorium_id: number;
   seat_row: string;
   seat_number: string;
   seat_type: SeatType;
   is_available: boolean;
+  fee: number;
 }
 
 export interface SeatReservation {
@@ -20,17 +23,15 @@ export interface SeatReservation {
   status: SeatStatus;
 }
 
-export interface SeatWithStatus extends Seat {
+export interface SeatWithStatus extends SeatsData {
   status: SeatStatus;
   reservation_id: number | null;
 }
 
-export interface SeatsResponse {
-  schedule_id: number;
-  auditorium_id: number;
-  theater_id: number;
-  movie_id: number;
-  start_time: string;
-  end_time: string;
-  seats: SeatWithStatus[];
+// /theater/[theater_id]/screen/[auditorium_id]/seatのAPIレスポンス型
+export interface SeatWithTheaterAndMovieResponse {
+  theaterData: Theater;
+  auditoriumName: string;
+  seatData: SeatsData[];
+  movieTitle: string;
 }

@@ -2,39 +2,84 @@
 import { notFound } from "next/navigation";
 import SeatSelection from "@/components/seat/SeatSelection";
 import { getSeatData } from "@/lib/getSeatsUtils";
+import { SeatWithTheaterAndMovieResponse } from "@/types/seat";
+import BackButton from "@/components/common/BackButton";
+import Header1 from "@/components/common/Header1";
+import Image from "next/image";
+import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
+import { Stack, Divider, Typography, Box } from "@mui/material";
 
-interface SeatPageProps {
-  params: Promise<{ theater_id: string; auditorium_id: string }>;
-  searchParams: Promise<{ date?: string; schedule_id?: string }>;
-}
+export default async function Page({
+  params,
+}: {
+  params: Promise<{
+    theater_id: string;
+    auditorium_id: string;
+  }>;
+}) {
+  const { auditorium_id } = await params;
 
-export default async function Page({ params, searchParams }: SeatPageProps) {
-  const { theater_id, auditorium_id } = await params;
-  const { date, schedule_id } = await searchParams;
+  // APIから座席データ・映画タイトル・映画館を取得
+  const responseData: SeatWithTheaterAndMovieResponse = await getSeatData(
+    auditorium_id
+  );
+  const header1Text = "座席指定";
+  const theaterName = responseData?.theaterData.name;
+  const movieTitle = responseData?.movieTitle;
+  const auditoriumName = responseData?.auditoriumName;
 
-  // クエリパラメータのバリデーション
-  if (!date || !schedule_id) {
-    notFound(); // 404ページへ
-  }
-  // APIから座席データを取得
-  const [seatData] = await Promise.all([
-    getSeatData(theater_id, auditorium_id, schedule_id),
-  ]);
-
-  if (!seatData) {
+  if (!responseData) {
     notFound();
   }
-
-  // Server Componentでデータを渡し、 Componentで座席選択UIを表示
+  console.log("seat page seatData:", responseData);
   return (
     <main>
-      <SeatSelection
-        theaterId={theater_id}
-        auditoriumId={auditorium_id}
-        date={date}
-        scheduleId={schedule_id}
-        seatData={seatData}
-      />
+      <ThemeProviderWrapper>
+        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+          <BackButton returnPath="/theater" />
+          <Header1 headerText={header1Text} />
+        </Stack>
+        <Divider />
+        {theaterName && (
+          <Typography variant="h6" sx={{ my: 1, fontSize: "14px" }}>
+            {theaterName}
+          </Typography>
+        )}
+        <Divider />
+        {movieTitle && (
+          <Typography variant="h6" sx={{ my: 1, fontSize: "14px" }}>
+            {movieTitle}
+          </Typography>
+        )}
+        <Divider />
+        {/* スクリーン表示 */}
+
+        <Box
+          sx={{
+            textAlign: "center",
+            width: "100%",
+            my: 2,
+            position: "relative",
+            height: 60,
+            mx: "auto",
+          }}
+        >
+          <Image src="/screen/screenBase.png" alt={auditoriumName} fill />
+          {auditoriumName && (
+            <Typography
+              sx={{
+                position: "absolute",
+                fontSize: "14px",
+                top: 20,
+                width: "100%",
+              }}
+            >
+              {auditoriumName}
+            </Typography>
+          )}
+        </Box>
+        <SeatSelection seatsData={responseData.seatData} />
+      </ThemeProviderWrapper>
     </main>
   );
 }
