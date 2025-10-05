@@ -1,7 +1,7 @@
 // app/api/getSeatsStatus/[theater_id]/[auditorium_id]/[schedule_id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { schedules, auditoriums } from "@/lib/screenDB";
-import { seats, seatReservations } from "@/lib/seatTable";
+import { seats, seat_reservations } from "@/lib/seatTable";
 
 interface SeatsParams {
   theater_id: string;
@@ -61,8 +61,8 @@ export async function GET(
     );
 
     // 該当するスケジュールの予約状況を取得
-    const reservations = seatReservations.filter(
-      (r) => r.schedule_id === scheduleIdNum
+    const reservations = seat_reservations.filter(
+      (reservation) => reservation.schedule_id === scheduleIdNum
     );
 
     // 座席マスタと予約状況をマージ

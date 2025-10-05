@@ -1,4 +1,4 @@
-import { seats, seatReservations } from "@/lib/seatTable";
+import { seats, seat_reservations } from "@/lib/seatTable";
 import { schedules } from "@/lib/screenDB";
 import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
 
@@ -38,7 +38,7 @@ export function getSeatsForSchedule(
   const auditoriumSeats = seats.filter((s) => s.auditorium_id === auditoriumId);
 
   // 該当するスケジュールの予約状況を取得
-  const reservations = seatReservations.filter(
+  const reservations = seat_reservations.filter(
     (r) => r.schedule_id === scheduleId
   );
 

@@ -8,21 +8,7 @@ import BackButton from "@/components/common/BackButton";
 import Header1 from "@/components/common/Header1";
 import ScreenScheduleSelector from "@/components/screen/ScreenScheduleSelector";
 import Divider from "@mui/material/Divider";
-
-async function getScreenData(
-  theater_id: string
-): Promise<ScreenResponse | null> {
-  try {
-    const res: apiResponse<ScreenResponse> = await searchTheaterLocalApi.get(
-      `/screen-schedules/${theater_id}/`
-    );
-    // console.log("%o", res.data);
-    return res.data;
-  } catch (error) {
-    console.log("Failed to fetch", error);
-    return null;
-  }
-}
+import { getScreenData } from "@/lib/getScreenUtils";
 
 export default async function page({
   params,
