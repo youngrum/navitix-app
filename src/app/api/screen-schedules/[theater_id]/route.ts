@@ -1,24 +1,12 @@
 import { theaters } from "@/lib/theaterTable";
 import { auditoriums, schedules } from "@/lib/screenDB";
-import tmdbApi from "@/services/tmdbApi";
-import { apiResponse } from "@/types/apiResponse";
-import { ResponseMovieDetail } from "@/types/movies";
+import {
+  getMovieDetailData,
+  getMovieReleaseData,
+  formatMovieDetail,
+} from "@/lib/movieDetailUtils";
 import { NextRequest, NextResponse } from "next/server";
-
-// 映画の詳細を取得
-async function getMovieDetailData(movieId: number) {
-  try {
-    const res: apiResponse<ResponseMovieDetail> = await tmdbApi.get(
-      `/movie/${movieId}`
-    );
-    const detail = res.data;
-    // console.log("Fetched movie detail:", detail);
-    return detail;
-  } catch (error) {
-    console.log("Failed to fetch movie detail", error);
-    return null;
-  }
-}
+import { ScreenResponse, ScreenSchedule } from "@/types/screen";
 
 export async function GET(
   req: NextRequest, // 第一引数にrequestオブジェクトおかないとparamsが取れない
@@ -28,12 +16,9 @@ export async function GET(
   const { theater_id } = await params;
 
   if (!params || !theater_id) {
-    return new Response(
-      JSON.stringify({ error: "theater_id パラメータが見つかりませんでした" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      }
+    return NextResponse.json(
+      { error: "theater_id パラメータが見つかりませんでした" },
+      { status: 404 }
     );
   }
 
@@ -46,12 +31,9 @@ export async function GET(
   // console.log("theaterData:",theaterData);
 
   if (!theaterData) {
-    return new Response(
-      JSON.stringify({ error: "映画館は見つかりませんでした" }),
-      {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      }
+    return NextResponse.json(
+      { error: "映画館は見つかりませんでした" },
+      { status: 404 }
     );
   }
 
@@ -61,12 +43,9 @@ export async function GET(
   );
 
   if (!auditoriumData || auditoriumData.length === 0) {
-    return new Response(
-      JSON.stringify({ error: "上映室が見つかりませんでした" }),
-      {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      }
+    return NextResponse.json(
+      { error: "上映室が見つかりませんでした" },
+      { status: 404 }
     );
   }
 
@@ -101,36 +80,87 @@ export async function GET(
         };
       }
 
+      // 映画作品のリリース情報を取得
+      const release = await getMovieReleaseData(
+        schedulesForAuditorium[0].movie_id
+      );
+
       // 映画詳細を簡略化
-      const simplifiedMovieDetail = {
-        id: movieDetail.id,
-        overview: movieDetail.overview,
-        genres: movieDetail.genres,
-        release_date: movieDetail.release_date,
-        poster_path: movieDetail.poster_path,
-        runtime: movieDetail.runtime,
-      };
+      const simplifiedMovieDetail = formatMovieDetail(movieDetail, release);
 
       // スケジュール情報を簡略化
-      const simplifiedSchedules = schedulesForAuditorium.map((schedule) => ({
-        id: schedule.id,
-        movie_id: schedule.movie_id,
-        auditorium_id: schedule.auditorium_id,
-        start_time: schedule.start_time,
-        end_time: schedule.end_time,
-      }));
+      const groupedSchedules = schedulesForAuditorium.reduce(
+        (acc, schedule) => {
+          const startDate = new Date(schedule.start_time);
+
+          const date = startDate.toLocaleDateString("ja-JP", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+          const week = startDate.toLocaleDateString("ja-JP", {
+            weekday: "short",
+          });
+          const play_beginning = startDate.toLocaleTimeString("ja-JP", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          // date: 'YYYY/MM/DD'（例: '2025/09/26'）を '/' で分割
+          const dateParts = date.split("/");
+          // 配列の3番目の要素（インデックス2）が 'DD' の部分
+          const day = dateParts[2]; // 例: '26'
+
+          // 既存の日付グループを探す
+          const existingGroup = acc.find((g) => g.date === date);
+
+          const showtime = {
+            id: schedule.id,
+            play_beginning,
+            start_time: schedule.start_time,
+            end_time: schedule.end_time,
+          };
+
+          if (existingGroup) {
+            existingGroup.day = day;
+            existingGroup.showtimes.push(showtime);
+          } else {
+            acc.push({
+              date,
+              week,
+              day,
+              showtimes: [showtime],
+            });
+          }
+
+          return acc;
+        },
+        [] as ScreenSchedule[]
+      );
 
       return {
         ...auditorium,
         movie: simplifiedMovieDetail,
-        schedules: simplifiedSchedules,
+        schedules: groupedSchedules,
       };
     })
   );
 
-  // console.log("auditoriumsWithMoviesAndSchedules>>>>>>", auditoriumsWithMoviesAndSchedules);
+  // console.log(
+  //   "auditoriumsWithMoviesAndSchedules>>>>>>",
+  //   auditoriumsWithMoviesAndSchedules
+  // );
 
-  return new NextResponse(JSON.stringify(auditoriumsWithMoviesAndSchedules), {
+  const responseData = {
+    theater_id: theaterData.id, // 映画館ID
+    theater_name: theaterData.name, // 映画館名
+    location: theaterData.address, // 映画館の場所
+    auditoriums: auditoriumsWithMoviesAndSchedules, // 上映室とスケジュールデータ
+  } as ScreenResponse | null;
+
+  // console.log("responseData>>>>>>", responseData);
+
+  return NextResponse.json(responseData, {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
