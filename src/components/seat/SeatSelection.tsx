@@ -1,18 +1,18 @@
 // components/seat/SeatSelection.tsx
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography, Button, Paper, Stack, Divider } from "@mui/material";
 import { SeatsData } from "@/types/seat";
 import { styled } from "@mui/material/styles";
-import { BorderAll, BorderColor } from "@mui/icons-material";
 import theme from "@/styles/theme";
 interface CustomButtonProps {
   isSelected: boolean;
   isAvailable: boolean;
 }
 
-interface Props {
+interface seatsProps {
   seatsData: SeatsData[];
+  onSeatsChange: (seats: number[], fee: number) => void;
 }
 
 const CustomButton = styled(Button, {
@@ -44,17 +44,20 @@ const CustomButton = styled(Button, {
 
   // 無効化（予約済）時のスタイル
   "&.Mui-disabled": {
-    backgroundColor: theme.palette.grey[300],
-    color: theme.palette.text.disabled,
+    backgroundColor: theme.palette.grey[400],
+    color: theme.palette.common.white,
     borderColor: "none",
   },
 }));
 
-export default function SeatSelection({ seatsData }: Props) {
+export default function SeatSelection({
+  seatsData,
+  onSeatsChange,
+}: seatsProps) {
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [feeSum, setFeeSum] = useState(0);
 
-  // 座席データを行ごとにグループ化してソート
+  // 座席データを行ごとにグループ化
   const seatsByRow = seatsData.reduce((acc, seat) => {
     if (!acc[seat.seat_row]) {
       acc[seat.seat_row] = [];
@@ -63,15 +66,15 @@ export default function SeatSelection({ seatsData }: Props) {
     return acc;
   }, {} as Record<string, SeatsData[]>);
 
+  // グループ化した座席をソート
   const sortedRows = Object.keys(seatsByRow).sort();
-
   sortedRows.forEach((row) => {
     seatsByRow[row].sort(
       (a, b) => parseInt(a.seat_number) - parseInt(b.seat_number)
     );
   });
 
-  // 料金合計を計算・更新するヘルパー関数を追加
+  // 料金合計を計算して返す
   const calculateFeeSum = (currentSelectedIds: number[]) => {
     const sum = seatsData.reduce((total, seat) => {
       if (currentSelectedIds.includes(seat.id)) {
@@ -80,16 +83,41 @@ export default function SeatSelection({ seatsData }: Props) {
       return total;
     }, 0);
     setFeeSum(sum);
+    return sum;
   };
 
+  // 座席選択・解放時の処理
   const handleSeatClick = (seatId: number, isAvailable: boolean) => {
     if (!isAvailable) return;
     const newSelectedSeats = selectedSeats.includes(seatId)
       ? selectedSeats.filter((id) => id !== seatId) // 選択解除
-      : [...selectedSeats, seatId]; // 新たに選択
+      : [...selectedSeats, seatId]; // 新たに追加
     setSelectedSeats(newSelectedSeats);
     calculateFeeSum(newSelectedSeats);
+    const newFeeSum = calculateFeeSum(newSelectedSeats);
+    onSeatsChange(newSelectedSeats, newFeeSum);
   };
+
+  useEffect(() => {
+    // SWR更新時に、現在選択中の座席が予約不可になっていないかチェック
+    const newlyUnavailableSeatIds = selectedSeats.filter((seatId) => {
+      const seatData = seatsData.find((s) => s.id === seatId);
+      // seatsDataに見つからない（エラー時など）または is_available が false になった座席を抽出
+      return !seatData || !seatData.is_available;
+    });
+
+    if (newlyUnavailableSeatIds.length > 0) {
+      // 予約済みになった座席を除外した新しい選択リストを作成
+      const newSelectedSeats = selectedSeats.filter(
+        (seatId) => !newlyUnavailableSeatIds.includes(seatId)
+      );
+
+      // stateと親コンポーネントの状態を更新
+      setSelectedSeats(newSelectedSeats);
+      const newFeeSum = calculateFeeSum(newSelectedSeats);
+      onSeatsChange(newSelectedSeats, newFeeSum);
+    }
+  }, [seatsData]);
 
   return (
     <Box>
@@ -171,7 +199,7 @@ export default function SeatSelection({ seatsData }: Props) {
             sx={{
               width: 20,
               height: 20,
-              bgcolor: `${theme.palette.grey[300]}`,
+              bgcolor: `${theme.palette.grey[400]}`,
               border: "none",
               borderRadius: "2px",
             }}
@@ -198,11 +226,11 @@ export default function SeatSelection({ seatsData }: Props) {
       </Stack>
 
       <Divider sx={{ my: 2 }} />
-
+      {/** 選択した座席と料金表示 */}
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
         {/** 合計金額 */}
         <Box sx={{ textAlign: "center", width: "50%", pb: 2 }}>
-          <Typography variant="body2" fontWeight="normal" fontSize="14px">
+          <Typography variant="body2" fontWeight="normal" fontSize="12px">
             合計料金(税抜)
           </Typography>
           <Typography variant="body2" fontSize="18px" sx={{ mt: 1 }}>
@@ -213,9 +241,8 @@ export default function SeatSelection({ seatsData }: Props) {
         <Divider orientation="vertical" flexItem />
 
         {/* 選択座席情報 */}
-
         <Stack sx={{ textAlign: "center", width: "50%", pb: 2 }}>
-          <Typography variant="body2" fontWeight="normal" fontSize={"14px"}>
+          <Typography variant="body2" fontWeight="normal" fontSize="12px">
             選択中の座席
           </Typography>
           <Box // Stackを使って横並びにする
@@ -236,7 +263,6 @@ export default function SeatSelection({ seatsData }: Props) {
                     py: 0.4,
                     px: 0.5,
                     mt: 1,
-                    aspectRatio: "1 / 0.6",
                     fontSize: "12px",
                   }}
                 >
@@ -250,15 +276,6 @@ export default function SeatSelection({ seatsData }: Props) {
           </Box>
         </Stack>
       </Box>
-      {/* 予約確定ボタン */}
-      <Button
-        variant="contained"
-        fullWidth
-        disabled={selectedSeats.length === 0}
-        sx={{ py: 1.5 }}
-      >
-        予約を確定する ({selectedSeats.length}席)
-      </Button>
     </Box>
   );
 }

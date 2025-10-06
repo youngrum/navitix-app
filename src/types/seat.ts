@@ -31,6 +31,7 @@ export interface SeatWithStatus extends SeatsData {
 // /theater/[theater_id]/screen/[auditorium_id]/seatのAPIレスポンス型
 export interface SeatWithTheaterAndMovieResponse {
   theaterData: Theater;
+  schedulesId: number;
   auditoriumName: string;
   seatData: SeatsData[];
   movieTitle: string;

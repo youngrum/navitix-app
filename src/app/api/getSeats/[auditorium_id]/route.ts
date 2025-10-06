@@ -46,6 +46,7 @@ export async function GET(
       { status: 404 }
     );
   }
+  const scheduleId = scheduleData.id;
 
   // スケジュールデータから movie_id を取得
   const movieId = scheduleData.movie_id;
@@ -80,6 +81,7 @@ export async function GET(
 
   const responseData: SeatWithTheaterAndMovieResponse = {
     theaterData: theaterData,
+    schedulesId: scheduleId,
     auditoriumName: auditoriumName,
     seatData: seatData,
     movieTitle: movieTitle,

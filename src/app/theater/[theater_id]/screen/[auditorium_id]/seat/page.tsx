@@ -1,6 +1,5 @@
 // app/theater/[theater_id]/screen/[auditorium_id]/seat/page.tsx
 import { notFound } from "next/navigation";
-import SeatSelection from "@/components/seat/SeatSelection";
 import { getSeatData } from "@/lib/getSeatsUtils";
 import { SeatWithTheaterAndMovieResponse } from "@/types/seat";
 import BackButton from "@/components/common/BackButton";
@@ -8,6 +7,7 @@ import Header1 from "@/components/common/Header1";
 import Image from "next/image";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Stack, Divider, Typography, Box } from "@mui/material";
+import ReservationForm from "@/components/seat/ReservationForm";
 
 export default async function Page({
   params,
@@ -27,11 +27,12 @@ export default async function Page({
   const theaterName = responseData?.theaterData.name;
   const movieTitle = responseData?.movieTitle;
   const auditoriumName = responseData?.auditoriumName;
+  const schedules_id = responseData?.schedulesId;
 
   if (!responseData) {
     notFound();
   }
-  console.log("seat page seatData:", responseData);
+
   return (
     <main>
       <ThemeProviderWrapper>
@@ -53,14 +54,13 @@ export default async function Page({
         )}
         <Divider />
         {/* スクリーン表示 */}
-
         <Box
           sx={{
             textAlign: "center",
             width: "100%",
-            my: 2,
+            my: 6,
             position: "relative",
-            height: 60,
+            height: "5rem",
             mx: "auto",
           }}
         >
@@ -70,7 +70,7 @@ export default async function Page({
               sx={{
                 position: "absolute",
                 fontSize: "14px",
-                top: 20,
+                top: 30,
                 width: "100%",
               }}
             >
@@ -78,7 +78,10 @@ export default async function Page({
             </Typography>
           )}
         </Box>
-        <SeatSelection seatsData={responseData.seatData} />
+        <ReservationForm
+          auditoriumId={Number(auditorium_id)}
+          schedulesId={schedules_id}
+        />
       </ThemeProviderWrapper>
     </main>
   );
