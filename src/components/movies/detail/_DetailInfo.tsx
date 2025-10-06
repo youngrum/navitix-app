@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  _ResponseMovieDetail
-} from "@/types/movies";
+import { _ResponseMovieDetail } from "@/types/movies";
 import React from "react";
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
@@ -14,9 +12,7 @@ interface MovieDetailInfoProps {
   MovieDetailProps: _ResponseMovieDetail | null;
 }
 
-export default function DetailInfo({
-  MovieDetailProps,
-}: MovieDetailInfoProps) {
+export default function DetailInfo({ MovieDetailProps }: MovieDetailInfoProps) {
   const theme = useTheme();
   const [isOverviewExpanded, setIsOverviewExpanded] = useState(false);
 
@@ -65,8 +61,7 @@ export default function DetailInfo({
               color: theme.palette.text.secondary,
             }}
           >
-            公開日:{" "}
-            {MovieDetailProps?.release_date}
+            公開日: {MovieDetailProps?.release_date}
           </Typography>
           <Typography
             sx={{
@@ -126,7 +121,9 @@ export default function DetailInfo({
       </ButtonBase>
       <Collapse in={isOverviewExpanded}>
         <Box sx={{ mt: 1 }}>
-          <Typography sx={{ mt: 1, fontSize: 14 }}>{MovieDetailProps?.overview}</Typography>
+          <Typography sx={{ mt: 1, fontSize: 14 }}>
+            {MovieDetailProps?.overview}
+          </Typography>
         </Box>
       </Collapse>
     </>

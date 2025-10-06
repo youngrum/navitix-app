@@ -49,6 +49,7 @@ export interface ResponseMovieDetail {
   adult: boolean;
   backdrop_path: string | null;
   belongs_to_collection: object | null;
+  certification: string;
   overview: string | null;
   budget: number;
   genres: { id: number; name: string }[];
