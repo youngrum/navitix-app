@@ -72,13 +72,7 @@ export default function ScreenScheduleSelector({
   // クエリパラメータ付きURLを動的に生成
   const getSeatSelectionUrl = () => {
     if (!selectedShowtime || !selectedSchedule) return "";
-
-    const params = new URLSearchParams({
-      schedule_id: selectedShowtime.id.toString(),
-      date: selectedSchedule.date,
-    });
-
-    return `/theater/${theaterId}/screen/${auditoriumId}/seat?${params.toString()}`;
+    return `/theater/${theaterId}/screen/${auditoriumId}/seat`;
   };
 
   // schedulesが空またはundefinedの場合は何も表示しない
