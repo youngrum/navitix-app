@@ -33,7 +33,6 @@ export default function SignupForm() {
   });
 
   const onSubmit = async (data: SignUpFormValues) => {
-    console.log(data); // 検証済みのデータ
     setIsLoading(true);
     try {
       // Supabaseにサインアップリクエストを送信
@@ -47,12 +46,19 @@ export default function SignupForm() {
       });
 
       if (error) {
+        setModalMessageHeader("Sending failed...");
         // Supabaseからの特定のエラーを処理
         console.error("Supabaseサインアップエラー:", error.message);
-        setModalMessageHeader("Sending failed...");
-        setModalMessage(
-          "メール送信に失敗しました。送信されなかった場合は、再度登録をしてください"
-        );
+        const errorMessage = error.message.trim().toLowerCase();
+        if (errorMessage === "user already registered") {
+          setModalMessage(
+            "このメールアドレスはすでに登録されています。ログイン画面からサインインしてください。"
+          );
+        } else {
+          setModalMessage(
+            "メール送信に失敗しました。送信されなかった場合は、再度登録をしてください"
+          );
+        }
         setModalOpen(true);
       } else {
         // サインアップ成功
