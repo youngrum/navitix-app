@@ -4,8 +4,8 @@ import SubText from "@/components/common/SubText";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import ProfileForm from "@/components/profile/ProfileForm";
 import { Stack } from "@mui/material";
-import { signup } from "@/lib/actions";
 import SubmitButton from "@/components/common/SubmitButton";
+import { requireAuth } from "@/lib/auth";
 
 // Server Componentの引数で searchParams を受け取る
 export default async function Page({
@@ -20,6 +20,9 @@ export default async function Page({
   // 'code'パラメータが存在すれば true
   const params = await searchParams;
   const hasAuthCode = !!params.code;
+
+  const data = await requireAuth();
+  console.log("ユーザー情報:", { user: data?.user?.email });
 
   if (hasAuthCode) {
     header1Text = "プロフィール登録";
