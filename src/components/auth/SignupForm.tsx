@@ -4,7 +4,7 @@ import InputEmailArea from "@/components/common/InputEmailArea";
 import InputPasswordArea from "@/components/common/InputPasswordArea";
 import { FieldError, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { supabase } from "@/services/supabase";
+import { supabase } from "@/utils/supabase/client";
 import SubmitButton from "@/components/common/SubmitButton";
 import NoticeModal from "@/components/common/NoticeModal";
 import SignInLeads from "@/components/common/SignInLeads";
@@ -19,6 +19,7 @@ export default function SignupForm() {
   const readOnly = false;
   const [isLoading, setIsLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessageHeader, setModalMessageHeader] = useState("");
   const [modalMessage, setModalMessage] = useState("");
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {
@@ -44,28 +45,30 @@ export default function SignupForm() {
       if (error) {
         // Supabaseからの特定のエラーを処理
         console.error("Supabaseサインアップエラー:", error.message);
-        setModalMessage("サインアップに失敗しました: " + error.message);
+        setModalMessageHeader("Sending failed...");
+        setModalMessage(
+          "メール送信に失敗しました。送信されなかった場合は、再度登録をしてください"
+        );
         setModalOpen(true);
-        // 必要に応じて setError でフォームにエラーを表示
-        // setError("email", { type: "server", message: error.message });
       } else {
         // サインアップ成功
+        setModalMessageHeader("Mail was sent!");
         setModalMessage(
           "サインアップに成功しました。認証メールをご確認ください。"
         );
         setModalOpen(true);
-        // 成功後のリダイレクト処理などをここに追加
-        // router.push('/check-email');
       }
     } catch (err) {
       // ネットワークエラーなど、予期せぬ実行時エラーを捕捉
       console.error("予期せぬエラー:", err);
+      setModalMessageHeader("Sending failed...");
       setModalMessage(
         "システムエラーが発生しました。時間をおいて再度お試しください。"
       );
       setModalOpen(true);
     } finally {
       setIsLoading(false); // 処理が完了したらローディングを解除
+      setModalOpen(true);
     }
   };
 
@@ -85,8 +88,12 @@ export default function SignupForm() {
         />
         <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
         <Divider />
-        <SubmitButton isLoading={false} buttonText={submitText} />
-        <NoticeModal />
+        <SubmitButton isLoading={isLoading} buttonText={submitText} />
+        <NoticeModal
+          openProps={modalOpen}
+          messageProps={modalMessage}
+          messageHeaderProps={modalMessageHeader}
+        />
       </form>
     </>
   );
