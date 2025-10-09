@@ -1,6 +1,12 @@
 import { Box, Button, Modal, Typography } from "@mui/material";
-import { useState } from "react";
 import ForwardToInboxOutlinedIcon from "@mui/icons-material/ForwardToInboxOutlined";
+import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
+
+export interface ModalOpenProps {
+  openProps: boolean;
+  messageProps: string | "";
+  messageHeaderProps: string | "";
+}
 
 const style = {
   position: "absolute",
@@ -15,17 +21,15 @@ const style = {
   p: 4,
 };
 
-export default function NoticeMordal() {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true); // モーダルデザイン実装用
-  const handleClose = () => setOpen(false); // モーダルデザイン実装用
-
+export default function NoticeMordal({
+  openProps,
+  messageProps,
+  messageHeaderProps,
+}: ModalOpenProps) {
   return (
     <>
-      <Button onClick={handleOpen}>Open modal</Button>
       <Modal
-        open={open}
-        onClose={handleClose}
+        open={openProps}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         slotProps={{
@@ -44,13 +48,13 @@ export default function NoticeMordal() {
             color="secondary.main"
             sx={{ textAlign: "center" }}
           >
-            Mail was Sent !
+            {messageHeaderProps}
           </Typography>
           <Box sx={{ textAlign: "center", fontSize: "5rem", my: 1 }}>
             <ForwardToInboxOutlinedIcon color="secondary" fontSize="inherit" />
           </Box>
           <Typography id="modal-modal-description" sx={{ fontSize: "14px" }}>
-            会員登録用メールを発行しました。メール内、認証リンクより会員登録手続きをしてください。
+            {messageProps}
           </Typography>
         </Box>
       </Modal>

@@ -3,7 +3,6 @@
 import InputEmailArea from "@/components/common/InputEmailArea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import SubmitButton from "@/components/common/SubmitButton";
 import NoticeModal from "@/components/common/NoticeModal";
 import SignInLeads from "@/components/common/SignInLeads";
@@ -13,7 +12,6 @@ import InputNameArea from "@/components/common/InputNameArea";
 import InputBirthdayArea from "@/components/common/InputBirthdayArea";
 
 export default function ProfileForm() {
-  const submitText = "プロフィールを修正";
   const leadText = "パスワードを更新する方は";
   const toLogIn = "/reset-password";
   const readonly = false;
@@ -36,28 +34,29 @@ export default function ProfileForm() {
   return (
     <>
       {/** handleSubmitは第1引数に渡されたonSubmit関数を呼び出す */}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <InputNameArea<ProfileFormValues>
-          registerProps={register}
-          errorProps={errors.accountName}
-          readonlyProps={readonly}
-        ></InputNameArea>
-        <InputEmailArea<ProfileFormValues>
-          registerProps={register}
-          errorProps={errors.email}
-          readonlyProps={readonly}
-        ></InputEmailArea>
-        <InputBirthdayArea<ProfileFormValues>
-          control={control}
-          errorProps={errors.birthDay}
-          readonlyProps={readonly}
-        ></InputBirthdayArea>
+      <InputNameArea<ProfileFormValues>
+        registerProps={register}
+        errorProps={errors.accountName}
+        readonlyProps={readonly}
+      ></InputNameArea>
+      <InputEmailArea<ProfileFormValues>
+        registerProps={register}
+        errorProps={errors.email}
+        readonlyProps={readonly}
+      ></InputEmailArea>
+      <InputBirthdayArea<ProfileFormValues>
+        control={control}
+        errorProps={errors.birthDay}
+        readonlyProps={readonly}
+      ></InputBirthdayArea>
 
-        <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
-        <Divider />
-        <SubmitButton isLoading={false} buttonText={submitText} />
-        <NoticeModal />
-      </form>
+      <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
+      <Divider />
+      {/* <NoticeModal
+          openProps={modalOpen}
+          messageProps={modalMessage}
+          messageHeaderProps={modalMessageHeader}
+        /> */}
     </>
   );
 }

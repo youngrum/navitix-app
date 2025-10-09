@@ -3,12 +3,9 @@ import BackButton from "@/components/common/BackButton";
 import Header1 from "@/components/common/Header1";
 import SubText from "@/components/common/SubText";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import { useAppStore } from "@/stores/useAppStore";
-import { supabase } from "@/services/supabase";
 import { Stack } from "@mui/material";
 
 export default function page() {
-  const { token, setToken } = useAppStore();
   const header1Text = "Your Profile";
   const subText = "プロフィールを完成させてください。";
 

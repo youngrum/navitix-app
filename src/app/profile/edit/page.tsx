@@ -4,8 +4,8 @@ import SubText from "@/components/common/SubText";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import ProfileForm from "@/components/profile/ProfileForm";
 import { Stack } from "@mui/material";
-import { createSupabaseServerClient } from "@/services/supabase";
-import { redirect } from "next/navigation";
+import SubmitButton from "@/components/common/SubmitButton";
+import { requireAuth } from "@/lib/auth";
 
 // Server Componentの引数で searchParams を受け取る
 export default async function Page({
@@ -13,26 +13,25 @@ export default async function Page({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const header1Text = "プロフィール修正";
-  const subText = "プロフィールを修正できます";
-
-  // Supabaseクライアントを作成（サーバーサイド用）
-  const supabase = await createSupabaseServerClient();
+  let header1Text = "";
+  let subText = "";
+  let submitText = "";
 
   // 'code'パラメータが存在すれば true
   const params = await searchParams;
   const hasAuthCode = !!params.code;
 
-  if (!hasAuthCode) {
-    // 認証コードがない場合（通常のアクセス）のみセッションチェックを実行
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+  const data = await requireAuth();
+  console.log("ユーザー情報:", { user: data?.user?.email });
 
-    if (!session) {
-      // 認証済みセッションがない場合はリダイレクト
-      redirect("/signin");
-    }
+  if (hasAuthCode) {
+    header1Text = "プロフィール登録";
+    subText = "プロフィールを登録してください";
+    submitText = "プロフィールを登録";
+  } else {
+    header1Text = "プロフィール修正";
+    subText = "プロフィールを修正してください";
+    submitText = "プロフィールを修正";
   }
 
   return (
@@ -49,6 +48,7 @@ export default async function Page({
         </Stack>
         <SubText subText={subText} />
         <ProfileForm />
+        <SubmitButton isLoading={false} buttonText={submitText} />
       </ThemeProviderWrapper>
     </main>
   );
