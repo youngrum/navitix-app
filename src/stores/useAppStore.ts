@@ -4,8 +4,10 @@ import Cookies from "js-cookie";
 interface AppLoginState {
   token: string | null; // 認証トークン
   authName: string | null; // ログインユーザー名
+  userId: string | null; // ユーザーID
   setToken: (token: string | null) => void; // トークンの取得
   setAuthName: (authName: string | null) => void; //ログインユーザー名の取得
+  setUserId: (userId: string | null) => void; // ユーザーIDの取得
   clearAuth: () => void; // 認証情報解放
 }
 
@@ -13,10 +15,12 @@ interface AppLoginState {
 const getInitialState = (): {
   token: string | null;
   authName: string | null;
+  userId: string | null;
 } => {
   const token = Cookies.get("token") || null;
+  const userId = Cookies.get("userId") || null;
   const authName = Cookies.get("authName") || null;
-  return { token, authName };
+  return { token, authName, userId };
 };
 
 export const useAppStore = create<AppLoginState>((set) => ({
@@ -40,9 +44,20 @@ export const useAppStore = create<AppLoginState>((set) => ({
       Cookies.remove("token"); // nullの場合はCookieを削除
     }
   },
+  setUserId: (userId) => {
+    // userIdの更新
+    set({ userId });
+    if (userId) {
+      Cookies.set("userId", userId, { expires: 7 }); // Cookieに保存 (7日間有効)
+    } else {
+      Cookies.remove("userId"); // nullの場合はCookieを削除
+    }
+  },
   clearAuth: () => {
-    set({ authName: null, token: null });
+    // set({ authName: null, token: null });
+    set({ token: null });
     Cookies.remove("authName");
     Cookies.remove("token");
+    Cookies.remove("userId");
   },
 }));
