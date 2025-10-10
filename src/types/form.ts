@@ -12,7 +12,7 @@ export const signUpSchema = z.object({
     .nonempty("パスワードは必須です")
     .min(8, "8文字以上、英数字と記号を含めてください")
     .regex(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/,
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
       "8文字以上、英数字と記号を含めてください"
     ),
 });
@@ -46,3 +46,27 @@ export const profileSchema = z.object({
 
 // プロフィール入力フォームの型
 export type ProfileFormValues = z.infer<typeof profileSchema>;
+
+export const ReservationRequestSchema = z.object({
+  // 選択された座席IDの配列
+  selected_seat_ids: z
+    .array(z.number().int().positive())
+    .min(1, { message: "座席を1つ以上選択してください。" }),
+  // 上映室ID
+  auditorium_id: z
+    .number({ message: "映画館情報が取得できませんでした" })
+    .int()
+    .positive(),
+  // スケジュールID
+  schedules_id: z
+    .number({ message: "スケジュール情報が取得できませんでした" })
+    .int()
+    .positive(),
+  // 合計金額
+  total_amount: z
+    .number({ message: "合計料金の形式が不正です" })
+    .multipleOf(0.01)
+    .nonnegative(),
+});
+
+export type ReservationRequest = z.infer<typeof ReservationRequestSchema>;

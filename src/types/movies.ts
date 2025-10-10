@@ -49,6 +49,7 @@ export interface ResponseMovieDetail {
   adult: boolean;
   backdrop_path: string | null;
   belongs_to_collection: object | null;
+  certification: string;
   overview: string | null;
   budget: number;
   genres: { id: number; name: string }[];
@@ -113,4 +114,19 @@ export interface ResponseMovieCredits {
   character: string;
   credit_id: string;
   order: number;
+}
+
+// movie/get-detail/[movie_id]/のレスポンス型
+export interface _ResponseMovieDetail {
+    id : number,
+    genres: { id: number; name: string }[] | string;
+    overview: number | string;
+    poster_path: string;
+    release_date: string;
+    revenue: number | string;
+    runtime: number | string;
+    title: string;
+    vote_average: number;
+    vote_count: number;
+    certification: string;
 }

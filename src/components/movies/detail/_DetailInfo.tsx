@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  ResponseMovieDetail,
-  ResponseMovieVideos,
-  ResponseReleaseDates_release_dates,
-} from "@/types/movies";
+import { _ResponseMovieDetail } from "@/types/movies";
 import React from "react";
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
@@ -13,50 +9,16 @@ import { Box, ButtonBase, Stack, Typography, Collapse } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 
 interface MovieDetailInfoProps {
-  MovieDetailProps: ResponseMovieDetail | null;
-  ReleaseInfoProps: ResponseReleaseDates_release_dates | null;
+  MovieDetailProps: _ResponseMovieDetail | null;
 }
 
-export default function DetailInfo({
-  MovieDetailProps,
-  ReleaseInfoProps,
-}: MovieDetailInfoProps) {
+export default function DetailInfo({ MovieDetailProps }: MovieDetailInfoProps) {
   const theme = useTheme();
   const [isOverviewExpanded, setIsOverviewExpanded] = useState(false);
 
   const handleOverviewToggle = () => {
     setIsOverviewExpanded((prev) => !prev);
   };
-
-  // 年齢制限
-  const certification =
-    ReleaseInfoProps?.release_dates?.[0]?.certification === ""
-      ? "-"
-      : ReleaseInfoProps?.release_dates?.[0]?.certification;
-  console.log(certification);
-  // 公開日
-  const release_date =
-    MovieDetailProps?.release_date === null
-      ? "-"
-      : MovieDetailProps?.release_date;
-  // console.log(release_date);
-
-  // 上映時間
-  const runtime =
-    MovieDetailProps?.runtime === null ? "-" : MovieDetailProps?.runtime;
-
-  // ジャンル
-  const genres = MovieDetailProps?.genres
-    ? MovieDetailProps.genres.map((genre) => genre.name).join(", ")
-    : "-";
-  // console.log(genres);
-
-  // あらすじ
-  const overview =
-    MovieDetailProps?.overview === "" || MovieDetailProps?.overview === null
-      ? "解説・あらすじを取得できませんでした"
-      : MovieDetailProps?.overview;
-  console.log(overview);
 
   return (
     <>
@@ -90,7 +52,7 @@ export default function DetailInfo({
         {/* タイトルと詳細情報のコンテナ */}
         <Box sx={{ flex: 1, minWidth: "30%" }}>
           <Typography sx={{ fontSize: "18px", fontWeight: "bold", mb: "15px" }}>
-            {MovieDetailProps?.title ?? "-"}
+            {MovieDetailProps?.title ?? "タイトル不明"}
           </Typography>
           <Typography
             sx={{
@@ -99,10 +61,7 @@ export default function DetailInfo({
               color: theme.palette.text.secondary,
             }}
           >
-            公開日:{" "}
-            {release_date
-              ? new Date(release_date).toLocaleDateString()
-              : "不明"}
+            公開日: {MovieDetailProps?.release_date}
           </Typography>
           <Typography
             sx={{
@@ -111,7 +70,7 @@ export default function DetailInfo({
               color: theme.palette.text.secondary,
             }}
           >
-            上映時間: {runtime} min
+            上映時間: {MovieDetailProps?.runtime} min
           </Typography>
           <Typography
             sx={{
@@ -120,7 +79,7 @@ export default function DetailInfo({
               color: theme.palette.text.secondary,
             }}
           >
-            レーティング: {certification}
+            レーティング: {MovieDetailProps?.certification}
           </Typography>
           <Typography
             sx={{
@@ -129,7 +88,7 @@ export default function DetailInfo({
               color: theme.palette.text.secondary,
             }}
           >
-            ジャンル: {genres}
+            ジャンル: {MovieDetailProps?.genres as string}
           </Typography>
         </Box>
       </Stack>
@@ -162,7 +121,9 @@ export default function DetailInfo({
       </ButtonBase>
       <Collapse in={isOverviewExpanded}>
         <Box sx={{ mt: 1 }}>
-          <Typography sx={{ mt: 1, fontSize: 14 }}>{overview}</Typography>
+          <Typography sx={{ mt: 1, fontSize: 14 }}>
+            {MovieDetailProps?.overview}
+          </Typography>
         </Box>
       </Collapse>
     </>
