@@ -4,7 +4,7 @@ import InputEmailArea from "@/components/common/InputEmailArea";
 import InputPasswordArea from "@/components/common/InputPasswordArea";
 import { FieldError, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient, createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import SubmitButton from "@/components/common/SubmitButton";
 import NoticeModal from "@/components/common/NoticeModal";
 import SignInLeads from "@/components/common/SignInLeads";
