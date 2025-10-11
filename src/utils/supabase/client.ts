@@ -8,5 +8,3 @@ const supabasePublishableKey =
 export const createClient = () => {
   return createBrowserClient(supabaseUrl, supabasePublishableKey);
 };
-// 後方互換性のため
-export const supabase = createClient();
