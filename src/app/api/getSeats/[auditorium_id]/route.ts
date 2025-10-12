@@ -1,8 +1,6 @@
-import { seats } from "@/lib/seatTable";
-import { theaters } from "@/lib/theaterTable";
-import { SeatsData, SeatWithTheaterAndMovieResponse } from "@/types/seat";
+import { createServerSupabaseClient } from "@/utils/supabase/server";
+import { SeatWithTheaterAndMovieResponse } from "@/types/seat";
 import { schedules } from "@/lib/screenDB";
-import { auditoriums } from "@/lib/screenDB";
 import { NextRequest, NextResponse } from "next/server";
 import { getMovieDetailData } from "@/lib/movieDetailUtils";
 import { Theater } from "@/types/theater";
@@ -15,27 +13,51 @@ export async function GET(
 
   const auditoriumId = Number(auditorium_id);
 
-  // パスパラメーターのauditorium_idから映画館レコードを取得
-  const theaterData: Theater | undefined = theaters.find(
-    (theater) => theater.id === auditoriumId
-  );
-  if (!theaterData) {
-    return NextResponse.json({ error: "Theater not found" }, { status: 404 });
+  // supabaseクライアント宣言
+  const supabase = await createServerSupabaseClient();
+
+  // ユーザーチェック
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    // 認証されていない場合は 401 Unauthorized を返す
+    return NextResponse.json(
+      { error: "Authentication required to view seat data." },
+      { status: 401 }
+    );
   }
 
-  // auditorium_id からスクリーン名称を取得
-  const auditoriumsData = auditoriums.find(
-    (auditorium) => auditorium.id === auditoriumId
-  );
-  if (!auditoriumsData) {
+  // パスパラメーターのauditorium_idから上映室レコードを取得
+  const { data: auditoriumsData, error: auditoriumError } = await supabase
+    .from("auditoriums") // テーブル名: 'auditoriums'
+    .select("id, theater_id, name") // 必要なカラムを選択
+    .eq("id", auditoriumId)
+    .maybeSingle(); // 1件のみ取得
+
+  if (auditoriumError || !auditoriumsData) {
+    console.error("Supabase auditorium data fetch error:", auditoriumError);
     return NextResponse.json(
       { error: "Auditorium not found" },
       { status: 404 }
     );
   }
   const auditoriumName = auditoriumsData.name;
+  const theaterId = auditoriumsData.theater_id;
 
-  //スケジュールデータを取得
+  // theatersテーブルから対象の上映室を持つ映画館レコードを取得
+  const { data: theaterData, error: theaterError } = await supabase
+    .from("theaters") // テーブル名: 'theaters'
+    .select("id, name, address") // 必要なカラムを選択（Theater型に合わせる）
+    .eq("id", theaterId)
+    .maybeSingle<Theater>();
+
+  if (theaterError || !theaterData) {
+    console.error("Supabase theater data fetch error:", theaterError);
+    return NextResponse.json({ error: "Theater not found" }, { status: 404 });
+  }
+  //スケジュールデータを取得 schedulesテーブルは配列で疑似的なテーブルを構成
   const scheduleData = schedules.find(
     (schedule) => schedule.auditorium_id === auditoriumId
   );
@@ -68,15 +90,15 @@ export async function GET(
 
   const movieTitle = movieData.title;
 
-  const seatData: SeatsData[] = seats.filter(
-    (seat) => seat.auditorium_id === auditoriumId
-  );
+  // seatsテーブルから対象の上映室を持つレコードを取得
+  const { data: seatData, error: seatError } = await supabase
+    .from("seats") // テーブル名: 'seats'
+    .select("*") // 全ての座席データを取得
+    .eq("auditorium_id", auditoriumId);
 
-  if (!seatData || seatData.length === 0) {
-    return NextResponse.json(
-      { error: "Auditorium not found" },
-      { status: 404 }
-    );
+  if (seatError || !seatData || seatData.length === 0) {
+    console.error("Supabase seat data fetch error:", seatError);
+    return NextResponse.json({ error: "Seat data not found" }, { status: 404 });
   }
 
   const responseData: SeatWithTheaterAndMovieResponse = {
