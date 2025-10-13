@@ -8,6 +8,7 @@ import SeatSelection from "./SeatSelection"; // 修正した子コンポーネ�
 import SubmitButton from "../common/SubmitButton";
 import { ReservationRequestSchema } from "@/types/form";
 import theme from "@/styles/theme";
+import { getSeatDataForClient } from "@/actions/seatActions";
 
 interface reservationProps {
   auditoriumId: number;
@@ -15,7 +16,15 @@ interface reservationProps {
 }
 
 // SWR データ取得用fetcher関数
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (auditoriumId: number) => {
+  // Server Action を呼び出す
+  const data = await getSeatDataForClient(String(auditoriumId));
+  if (!data) {
+    // データが null の場合は SWR にエラーをスローさせる
+    throw new Error("認証エラー 座席データの取得に失敗しました");
+  }
+  return data;
+};
 
 export default function ReservationForm({
   auditoriumId,
@@ -33,10 +42,9 @@ export default function ReservationForm({
   };
 
   // SWRで座席データをフェッチ
-  const apiEndpoint = `/api/getSeats/${auditoriumId}/`;
   const { data, error, isLoading, mutate } =
-    useSWR<SeatWithTheaterAndMovieResponse>(apiEndpoint, fetcher, {
-      // 再検証の間隔を設定
+    useSWR<SeatWithTheaterAndMovieResponse>(String(auditoriumId), fetcher, {
+      // 第一引数を auditoriumId に変更
       revalidateOnFocus: true,
       refreshInterval: 10000,
     });

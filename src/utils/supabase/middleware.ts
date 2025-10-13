@@ -35,6 +35,11 @@ export async function updateSession(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
 
+  const pathname = request.nextUrl.pathname;
+  // 座席選択ページは認証必須
+  // /theater/{theater_id}/screen/{auditorium_id}/seat/
+  const isSeatPage = /^\/theater\/[^\/]+\/screen\/[^\/]+\/seat/.test(pathname);
+
   // IMPORTANT: DO NOT REMOVE auth.getUser()
 
   const {
@@ -42,31 +47,26 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (
+    //認証できない かつ 認証必要ページへのアクセスの場合は/loginにリダイレクト
     !user &&
+    request.nextUrl.pathname !== "/" &&
     !request.nextUrl.pathname.startsWith("/login") &&
     !request.nextUrl.pathname.startsWith("/signup") &&
     !request.nextUrl.pathname.startsWith("/auth") &&
-    !request.nextUrl.pathname.startsWith("/profile/edit") &&
-    !request.nextUrl.pathname.startsWith("/error")
+    !request.nextUrl.pathname.startsWith("/error") &&
+    !request.nextUrl.pathname.startsWith("/movies/**") &&
+    request.nextUrl.pathname !== "/theater" &&
+    !request.nextUrl.pathname.startsWith("/theater/**/screen") &&
+    !(
+      request.nextUrl.pathname.startsWith("/theater/") &&
+      request.nextUrl.pathname.match(/^\/theater\/[^\/]+\/screen\/?$/) !== null
+    )
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
-
-  // IMPORTANT: You *must* return the supabaseResponse object as it is.
-  // If you're creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
 
   return supabaseResponse;
 }

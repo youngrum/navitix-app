@@ -1,6 +1,6 @@
 // types/seat.ts
 
-import { Theater, TheaterSearchResponse } from "./theater";
+import { Theater } from "./theater";
 
 export type SeatType = "STANDARD"; // 将来的に "WHEELCHAIR" | "COUPLE" | "PREMIUM"なども追加可能
 export type SeatStatus = "AVAILABLE" | "RESERVED" | "LOCKED";

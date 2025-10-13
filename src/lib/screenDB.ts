@@ -1,11 +1,5 @@
 import { generateScheduleData } from "./getScreenUtils";
 
-export const auditoriums = [
-  { id: 1, theater_id: 1, name: "スクリーンNo.1", total_seats: 110 },
-  { id: 2, theater_id: 1, name: "スクリーンNo.2", total_seats: 90 },
-  { id: 3, theater_id: 1, name: "スクリーンNo.3", total_seats: 100 },
-];
-
 export const schedules = generateScheduleData();
 // export const schedules = [
 //   // 上映時間 90分 のスケジュール

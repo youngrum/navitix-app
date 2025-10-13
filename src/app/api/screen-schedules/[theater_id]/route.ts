@@ -1,5 +1,5 @@
-import { theaters } from "@/lib/theaterTable";
-import { auditoriums, schedules } from "@/lib/screenDB";
+import { schedules } from "@/lib/screenDB"; // 上映時間はソースコードで管理
+import { createPublicSupabaseClient } from "@/utils/supabase/public";
 import {
   getMovieDetailData,
   getMovieReleaseData,
@@ -25,10 +25,23 @@ export async function GET(
   // パスパラメーターを数値に変換
   const theaterId = Number(theater_id);
 
-  // パスパラメーターのtheaterIdから映画館レコードを取得
-  const theaterData = theaters.find((theater) => theater.id === theaterId);
+  // supabaseクライアント宣言
+  const supabase = createPublicSupabaseClient();
 
-  // console.log("theaterData:",theaterData);
+  // パスパラメーターのtheaterIdから映画館レコードを取得
+  const { data: theaterData, error: theaterError } = await supabase
+    .from("theaters")
+    .select("id, name, address")
+    .eq("id", theaterId)
+    .maybeSingle(); // 1件のみ取得
+
+  if (theaterError) {
+    console.error("Supabase theater data fetch error:", theaterError);
+    return NextResponse.json(
+      { error: "映画館データの取得に失敗しました" },
+      { status: 500 }
+    );
+  }
 
   if (!theaterData) {
     return NextResponse.json(
@@ -38,9 +51,18 @@ export async function GET(
   }
 
   // 映画館の上映室取得
-  const auditoriumData = auditoriums.filter(
-    (auditorium) => auditorium.theater_id === theaterId
-  );
+  const { data: auditoriumData, error: auditoriumError } = await supabase
+    .from("auditoriums") // テーブル名を仮に 'auditoriums' とします
+    .select("*") // 全てのカラムを取得（または必要なカラムを選択）
+    .eq("theater_id", theaterId);
+
+  if (auditoriumError) {
+    console.error("Supabase auditorium data fetch error:", auditoriumError);
+    return NextResponse.json(
+      { error: "上映室データの取得に失敗しました" },
+      { status: 500 }
+    );
+  }
 
   if (!auditoriumData || auditoriumData.length === 0) {
     return NextResponse.json(

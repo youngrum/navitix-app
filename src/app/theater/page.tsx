@@ -23,7 +23,7 @@ async function getAllTheaterData(): Promise<TheaterSearchResponse[]> {
 }
 
 export default async function Page() {
-  const header1Text = "Theater";
+  const header1Text = "映画館";
   const allTheatersData = await getAllTheaterData();
 
   return (

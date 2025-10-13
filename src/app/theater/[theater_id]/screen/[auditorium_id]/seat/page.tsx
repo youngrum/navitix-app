@@ -20,18 +20,16 @@ export default async function Page({
   const { auditorium_id } = await params;
 
   // APIから座席データ・映画タイトル・映画館を取得
-  const responseData: SeatWithTheaterAndMovieResponse = await getSeatData(
-    auditorium_id
-  );
+  const responseData: SeatWithTheaterAndMovieResponse | null =
+    await getSeatData(auditorium_id);
+  if (!responseData) {
+    notFound();
+  }
   const header1Text = "座席指定";
   const theaterName = responseData?.theaterData.name;
   const movieTitle = responseData?.movieTitle;
   const auditoriumName = responseData?.auditoriumName;
   const schedules_id = responseData?.schedulesId;
-
-  if (!responseData) {
-    notFound();
-  }
 
   return (
     <main>
