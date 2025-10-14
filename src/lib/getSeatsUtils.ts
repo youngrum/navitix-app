@@ -61,6 +61,13 @@ export async function getSeatData(auditoriumId: string) {
   if (!movieId) {
     return null;
   }
+  const startTime = scheduleData.start_time;
+  const endTime = scheduleData.end_time;
+
+  if (!startTime || !endTime) {
+    console.error("上映時間情報取得エラー");
+    return null;
+  }
 
   // movie_id を使用して、座席データをフィルタリング
   const movieData = await getMovieDetailData(movieId);
@@ -87,6 +94,9 @@ export async function getSeatData(auditoriumId: string) {
     auditoriumName: auditoriumName,
     seatData: seatData,
     movieTitle: movieTitle,
+    movieId: movieId,
+    startTime: startTime,
+    endTime: endTime,
   };
 
   return responseData;

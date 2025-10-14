@@ -8,6 +8,7 @@ import Image from "next/image";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Stack, Divider, Typography, Box } from "@mui/material";
 import ReservationForm from "@/components/seat/ReservationForm";
+import { formatTimestampToJST } from "@/lib/getShowTimeUtils";
 
 export default async function Page({
   params,
@@ -28,8 +29,10 @@ export default async function Page({
   const header1Text = "座席指定";
   const theaterName = responseData?.theaterData.name;
   const movieTitle = responseData?.movieTitle;
+  const movie_id = responseData?.movieId;
   const auditoriumName = responseData?.auditoriumName;
   const schedules_id = responseData?.schedulesId;
+  const showtime = formatTimestampToJST(responseData?.startTime);
 
   return (
     <main>
@@ -48,6 +51,12 @@ export default async function Page({
         {movieTitle && (
           <Typography variant="h6" sx={{ my: 1, fontSize: "14px" }}>
             {movieTitle}
+          </Typography>
+        )}
+        <Divider />
+        {showtime && (
+          <Typography variant="h6" sx={{ my: 1, fontSize: "14px" }}>
+            {showtime}
           </Typography>
         )}
         <Divider />
@@ -79,6 +88,7 @@ export default async function Page({
         <ReservationForm
           auditoriumId={Number(auditorium_id)}
           schedulesId={schedules_id}
+          movieId={movie_id}
         />
       </ThemeProviderWrapper>
     </main>
