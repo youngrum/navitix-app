@@ -35,4 +35,7 @@ export interface SeatWithTheaterAndMovieResponse {
   auditoriumName: string;
   seatData: SeatsData[];
   movieTitle: string;
+  movieId: number;
+  startTime: string; // ISO 8601形式の日時文字列
+  endTime: string; // ISO 8601形式の日時文字列
 }
