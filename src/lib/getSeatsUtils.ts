@@ -87,6 +87,7 @@ export async function getSeatData(auditoriumId: string) {
     console.error("Supabase seat data fetch error:", seatError);
     return null;
   }
+  // console.log("seatData>>>>>>", seatData);
 
   const responseData: SeatWithTheaterAndMovieResponse = {
     theaterData: theaterData,

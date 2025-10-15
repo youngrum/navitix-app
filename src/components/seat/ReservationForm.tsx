@@ -11,11 +11,16 @@ import theme from "@/styles/theme";
 import { getSeatDataForClient } from "@/actions/seatActions";
 import { createReservation } from "@/actions/reservationActions";
 import { useRouter } from "next/navigation";
+import { Showtime } from "../../types/screen";
 
 interface reservationProps {
+  theaterName: string;
   auditoriumId: number;
+  auditoriumName: string;
   schedulesId: number;
   movieId: number;
+  movieTitle: string;
+  showtime: string;
 }
 
 // SWR データ取得用fetcher関数
@@ -28,9 +33,13 @@ const fetcher = async (auditoriumId: number) => {
 };
 
 export default function ReservationForm({
+  theaterName,
   auditoriumId,
+  auditoriumName,
   schedulesId,
   movieId,
+  movieTitle,
+  showtime,
 }: reservationProps) {
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [feeSum, setFeeSum] = useState<number>(0);
@@ -74,10 +83,14 @@ export default function ReservationForm({
 
     // 予約送信前のデータ
     const payload = {
+      theater_name: theaterName,
       selected_seat_ids: selectedSeats,
       auditorium_id: auditoriumId,
+      auditorium_name: auditoriumName,
       schedules_id: schedulesId,
       movie_id: movieId,
+      movie_title: movieTitle,
+      showtime: showtime,
       total_amount: feeSum,
     };
 
