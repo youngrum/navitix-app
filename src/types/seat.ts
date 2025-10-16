@@ -36,6 +36,7 @@ export interface SeatWithTheaterAndMovieResponse {
   seatData: SeatsData[];
   movieTitle: string;
   movieId: number;
+  posterPath: string;
   startTime: string; // ISO 8601形式の日時文字列
   endTime: string; // ISO 8601形式の日時文字列
 }

@@ -11,7 +11,6 @@ import theme from "@/styles/theme";
 import { getSeatDataForClient } from "@/actions/seatActions";
 import { createReservation } from "@/actions/reservationActions";
 import { useRouter } from "next/navigation";
-import { Showtime } from "../../types/screen";
 
 interface reservationProps {
   theaterName: string;
@@ -20,6 +19,7 @@ interface reservationProps {
   schedulesId: number;
   movieId: number;
   movieTitle: string;
+  posterPath: string;
   showtime: string;
 }
 
@@ -39,6 +39,7 @@ export default function ReservationForm({
   schedulesId,
   movieId,
   movieTitle,
+  posterPath,
   showtime,
 }: reservationProps) {
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
@@ -90,6 +91,7 @@ export default function ReservationForm({
       schedules_id: schedulesId,
       movie_id: movieId,
       movie_title: movieTitle,
+      poster_path: posterPath,
       showtime: showtime,
       total_amount: feeSum,
     };
