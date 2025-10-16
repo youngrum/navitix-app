@@ -10,19 +10,23 @@ import { Stack, Divider, Typography, Box } from "@mui/material";
 import ReservationForm from "@/components/seat/ReservationForm";
 import { formatTimestampToJST } from "@/lib/getShowTimeUtils";
 
-export default async function Page({
-  params,
-}: {
+interface SeatPageProps {
   params: Promise<{
     theater_id: string;
     auditorium_id: string;
   }>;
-}) {
+  searchParams: Promise<{
+    scheduleId: string; // クエリパラメータとして渡されることを期待
+  }>;
+}
+
+export default async function Page({ params, searchParams }: SeatPageProps) {
   const { auditorium_id } = await params;
+  const { scheduleId } = await searchParams;
 
   // APIから座席データ・映画タイトル・映画館を取得
   const responseData: SeatWithTheaterAndMovieResponse | null =
-    await getSeatData(auditorium_id);
+    await getSeatData(auditorium_id, scheduleId);
   if (!responseData) {
     notFound();
   }
