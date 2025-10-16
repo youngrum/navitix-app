@@ -1,4 +1,4 @@
-import { SeatWithTheaterAndMovieResponse } from "@/types/seat";
+import { SeatsData, SeatWithTheaterAndMovieResponse } from "@/types/seat";
 import { Theater } from "@/types/theater";
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import { getMovieDetailData } from "./movieDetailUtils";
@@ -109,7 +109,7 @@ export async function getSeatData(auditoriumId: string, scheduleId: string) {
           .eq("start_time", startTime)
           .eq("end_time", endTime)
           .in("payment_status", ["PAID", "PENDING"])
-      ).data?.map((r: any) => r.id) || []
+      ).data?.map((r) => r.id) || []
     );
 
   if (reservedSeatsError) {
@@ -118,12 +118,10 @@ export async function getSeatData(auditoriumId: string, scheduleId: string) {
   }
 
   // 予約済み座席のIDをセットで保持（検索効率化）
-  const reservedSeatIds = new Set(
-    (reservedSeats || []).map((r: any) => r.seat_id)
-  );
+  const reservedSeatIds = new Set((reservedSeats || []).map((r) => r.seat_id));
 
   // 座席データに is_available フラグを追加
-  const seatsWithAvailability = seatData.map((seat: any) => ({
+  const seatsWithAvailability = seatData.map((seat: SeatsData) => ({
     ...seat,
     is_available: !reservedSeatIds.has(seat.id),
   }));
