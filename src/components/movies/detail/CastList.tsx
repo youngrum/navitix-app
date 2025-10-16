@@ -2,7 +2,6 @@ import { ResponseMovieCredits } from "@/types/movies";
 import { Box, Stack } from "@mui/material";
 import React from "react";
 import Image from "next/image";
-import { get } from "http";
 
 interface CastListProps {
   castsProps: ResponseMovieCredits[] | null;

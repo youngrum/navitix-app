@@ -1,3 +1,5 @@
+import { Resend } from "resend";
+
 /**
  * 決済メール送信処理
  */
@@ -12,7 +14,6 @@ export async function sendPaymentEmail(
 ) {
   if (process.env.RESEND_API_KEY) {
     try {
-      const { Resend } = require("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({

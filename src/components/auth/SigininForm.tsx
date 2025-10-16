@@ -35,7 +35,7 @@ export default function SigninForm() {
     register, // TSX内でinputに渡す
     handleSubmit, // サブミットイベントのラッパー関数
     formState: { errors },
-    setError, // バックエンドからのエラーメッセージを格納
+    // setError, // バックエンドからのエラーメッセージを格納
   } = useForm<SigninFormValues>({
     resolver: zodResolver(signinSchema),
     mode: "onBlur", //フォーカスが外れた時をトリガーとする
@@ -99,7 +99,7 @@ export default function SigninForm() {
         />
         <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
         <Divider />
-        <SubmitButton isLoading={false} buttonText={submitText} />
+        <SubmitButton isLoading={isLoading} buttonText={submitText} />
         <NoticeModal
           openProps={modalOpen}
           messageProps={modalMessage}

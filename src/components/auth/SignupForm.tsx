@@ -26,7 +26,7 @@ export default function SignupForm() {
     register, // TSX内でinputに渡す
     handleSubmit, // サブミットイベントのラッパー関数
     formState: { errors },
-    setError, // バックエンドからのエラーメッセージを格納
+    // setError, // バックエンドからのエラーメッセージを格納
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     mode: "onBlur", //フォーカスが外れた時をトリガーとする

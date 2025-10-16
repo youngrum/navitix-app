@@ -17,7 +17,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
           supabaseResponse = NextResponse.next({
@@ -35,10 +35,10 @@ export async function updateSession(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
 
-  const pathname = request.nextUrl.pathname;
+  // const pathname = request.nextUrl.pathname;
   // 座席選択ページは認証必須
   // /theater/{theater_id}/screen/{auditorium_id}/seat/
-  const isSeatPage = /^\/theater\/[^\/]+\/screen\/[^\/]+\/seat/.test(pathname);
+  // const isSeatPage = /^\/theater\/[^\/]+\/screen\/[^\/]+\/seat/.test(pathname);
 
   // IMPORTANT: DO NOT REMOVE auth.getUser()
 

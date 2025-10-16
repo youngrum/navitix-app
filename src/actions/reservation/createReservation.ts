@@ -10,17 +10,7 @@ import {
 } from "@/actions/validation/reservationValidation";
 import { createStripeSession } from "@/actions/payment/createStripeSession";
 import { sendPaymentEmail } from "@/actions/payment/sendPaymentEmail";
-
-interface CreateReservationParams {
-  theater_name: string;
-  selected_seat_ids: number[];
-  auditorium_id: number;
-  auditorium_name: string;
-  schedules_id: number;
-  movie_title: string;
-  showtime: string;
-  total_amount: number;
-}
+import { CreateReservationParams } from "@/types/reservation";
 
 /**
  * メイン予約作成処理
@@ -153,27 +143,6 @@ export async function createReservation(formData: CreateReservationParams) {
       return {
         success: false,
         error: "座席予約の作成中にエラーが発生しました",
-      };
-    }
-
-    const { error: seatsUpdateError } = await supabase
-      .from("seats")
-      .update({ is_available: false })
-      .in("id", selected_seat_ids);
-
-    if (seatsUpdateError) {
-      console.error("Seats update to FALSE error:", seatsUpdateError);
-
-      // seatsの更新に失敗したら、直前のDB操作もロールバックする
-      await supabase
-        .from("seat_reservations")
-        .delete()
-        .eq("reservation_id", reservation.id);
-      await supabase.from("reservations").delete().eq("id", reservation.id);
-
-      return {
-        success: false,
-        error: "座席の最終ロックに失敗しました",
       };
     }
 
