@@ -24,10 +24,14 @@ interface reservationProps {
 }
 
 // SWR データ取得用fetcher関数
-const fetcher = async (auditoriumId: number) => {
-  const data = await getSeatDataForClient(String(auditoriumId));
+const fetcher = async ([auditoriumId, schedulesId]: [number, number]) => {
+  // "seats-1-3" から ["1", "3"] を抽出
+  const data = await getSeatDataForClient(
+    String(auditoriumId),
+    String(schedulesId)
+  );
   if (!data) {
-    throw new Error("認証エラー 座席データの取得に失敗しました");
+    throw new Error("座席データの取得に失敗しました");
   }
   return data;
 };
@@ -57,16 +61,22 @@ export default function ReservationForm({
 
   // SWRで座席データをフェッチ
   const { data, error, isLoading, mutate } =
-    useSWR<SeatWithTheaterAndMovieResponse>(String(auditoriumId), fetcher, {
-      revalidateOnFocus: true,
-      refreshInterval: 10000,
-    });
+    useSWR<SeatWithTheaterAndMovieResponse>(
+      [auditoriumId, schedulesId],
+      fetcher,
+      {
+        revalidateOnFocus: true,
+        refreshInterval: 10000,
+      }
+    );
 
   // ロード中・エラーの処理
-  if (error)
+  if (error) {
+    console.log(error);
     return (
       <Typography color="error">座席データの取得に失敗しました。</Typography>
     );
+  }
   if (isLoading || !data)
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
