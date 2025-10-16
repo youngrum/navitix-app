@@ -61,6 +61,13 @@ export async function getSeatData(auditoriumId: string) {
   if (!movieId) {
     return null;
   }
+  const startTime = scheduleData.start_time;
+  const endTime = scheduleData.end_time;
+
+  if (!startTime || !endTime) {
+    console.error("上映時間情報取得エラー");
+    return null;
+  }
 
   // movie_id を使用して、座席データをフィルタリング
   const movieData = await getMovieDetailData(movieId);
@@ -69,6 +76,7 @@ export async function getSeatData(auditoriumId: string) {
   }
 
   const movieTitle = movieData.title;
+  const posterPath = movieData.poster_path ?? "-";
 
   // seatsテーブルから対象の上映室を持つレコードを取得
   const { data: seatData, error: seatError } = await supabase
@@ -80,6 +88,7 @@ export async function getSeatData(auditoriumId: string) {
     console.error("Supabase seat data fetch error:", seatError);
     return null;
   }
+  // console.log("seatData>>>>>>", seatData);
 
   const responseData: SeatWithTheaterAndMovieResponse = {
     theaterData: theaterData,
@@ -87,6 +96,10 @@ export async function getSeatData(auditoriumId: string) {
     auditoriumName: auditoriumName,
     seatData: seatData,
     movieTitle: movieTitle,
+    movieId: movieId,
+    posterPath: posterPath,
+    startTime: startTime,
+    endTime: endTime,
   };
 
   return responseData;

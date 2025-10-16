@@ -10,7 +10,7 @@ import Divider from "@mui/material/Divider";
 import { profileSchema, ProfileFormValues } from "@/types/form";
 import InputNameArea from "@/components/common/InputNameArea";
 import InputBirthdayArea from "@/components/common/InputBirthdayArea";
-import { supabase } from "@/services/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CircularProgress } from "@mui/material";
@@ -61,6 +61,7 @@ export default function ProfileForm({
     console.log(data); // 検証済みのデータ
 
     try {
+      const supabase = createClient();
       // 更新: UPDATE
       const { error } = await supabase
         .from("profiles")
