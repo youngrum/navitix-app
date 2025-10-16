@@ -85,9 +85,11 @@ export async function createReservation(formData: {
   auditorium_name: string;
   schedules_id: number;
   movie_title: string;
+  poster_path: string;
   showtime: string;
   total_amount: number;
 }) {
+  console.log("formData>>>>>>>", formData);
   try {
     const supabase = await createServerSupabaseClient();
 
@@ -196,6 +198,11 @@ export async function createReservation(formData: {
 
     // ユニークコード生成
     const uniqueCode = generateUniqueCode();
+
+    // レコードに渡す変数
+    const movieTitle = formData?.movie_title;
+    const posterPath = formData?.poster_path;
+
     // reservationsテーブルにレコード作成
     const { data: reservation, error: reservationError } = await supabase
       .from("reservations")
@@ -205,6 +212,8 @@ export async function createReservation(formData: {
         payment_status: "PENDING",
         unique_code: uniqueCode,
         movie_id: scheduleData.movie_id,
+        movie_title: movieTitle,
+        poster_path: posterPath,
         auditorium_id: auditorium_id,
         start_time: scheduleData.start_time,
         end_time: scheduleData.end_time,
@@ -286,7 +295,6 @@ export async function createReservation(formData: {
     // 決済フォームに渡す予約情報
     const theaterName = formData?.theater_name;
     const auditoriumName = formData?.auditorium_name;
-    const movieTitle = formData?.movie_title;
     const Showtime = formData?.showtime;
 
     // Stripe Checkout セッション作成

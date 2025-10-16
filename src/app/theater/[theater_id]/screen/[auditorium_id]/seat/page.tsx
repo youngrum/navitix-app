@@ -9,7 +9,6 @@ import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Stack, Divider, Typography, Box } from "@mui/material";
 import ReservationForm from "@/components/seat/ReservationForm";
 import { formatTimestampToJST } from "@/lib/getShowTimeUtils";
-import { Auditorium, Showtime } from "../../../../../../types/screen";
 
 export default async function Page({
   params,
@@ -31,6 +30,7 @@ export default async function Page({
   const theater_name = responseData?.theaterData.name;
   const movie_title = responseData?.movieTitle;
   const movie_id = responseData?.movieId;
+  const posert_path = responseData?.posterPath;
   const auditorium_name = responseData?.auditoriumName;
   const schedules_id = responseData?.schedulesId;
   const showtime = formatTimestampToJST(responseData?.startTime);
@@ -93,6 +93,7 @@ export default async function Page({
           schedulesId={schedules_id}
           movieId={movie_id}
           movieTitle={movie_title}
+          posterPath={posert_path}
           showtime={showtime}
         />
       </ThemeProviderWrapper>
