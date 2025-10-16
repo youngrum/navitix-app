@@ -1,6 +1,6 @@
 // app/tickets/page.tsx
 import { createServerSupabaseClient } from "@/utils/supabase/server";
-import TicketsList from "@/components/tickets/TicketList";
+import TicketList from "@/components/tickets/TicketList";
 import { Box, Stack } from "@mui/material";
 import { ReservationData } from "@/types/tickets";
 import { requireAuth } from "@/lib/auth";
@@ -49,7 +49,7 @@ export default async function Page() {
           <BackButton returnPath="/movies" />
           <Header1 headerText={header1Text} />
         </Stack>
-        <TicketsList reservations={reservationsData as ReservationData[]} />
+        <TicketList reservations={reservationsData as ReservationData[]} />
       </ThemeProviderWrapper>
     </main>
   );
