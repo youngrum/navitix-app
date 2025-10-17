@@ -10,7 +10,8 @@ import { getSeatData } from "@/lib/getSeatsUtils";
  * @returns 座席データ、または null (エラー時)
  */
 export async function getSeatDataForClient(
-  auditoriumId: string
+  auditoriumId: string,
+  schedulesId: string
 ): Promise<SeatWithTheaterAndMovieResponse | null> {
-  return await getSeatData(auditoriumId);
+  return await getSeatData(auditoriumId, schedulesId);
 }

@@ -1,14 +1,4 @@
 // src/app/test/page.tsx
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material/";
 import ClientPageContent from "@/components/ClientPageContent";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import SubmitButton from "@/components/common/SubmitButton";
@@ -73,10 +63,10 @@ export default function TestPage() {
     //   </TableContainer>
 
     //   {/* テーマが必要な部分だけをクライアントコンポーネントに */}
-      <ThemeProviderWrapper>
-        <SubmitButton isLoading={false} buttonText={"テスト"} ></SubmitButton>
-        <ClientPageContent />
-      </ThemeProviderWrapper>
+    <ThemeProviderWrapper>
+      <SubmitButton isLoading={false} buttonText={"テスト"}></SubmitButton>
+      <ClientPageContent />
+    </ThemeProviderWrapper>
     // </Box>
   );
 }

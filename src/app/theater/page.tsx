@@ -1,7 +1,7 @@
 import BackButton from "@/components/common/BackButton";
 import Header1 from "@/components/common/Header1";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
-import { Stack, Button } from "@mui/material";
+import { Stack } from "@mui/material";
 import React from "react";
 import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
 import { TheaterSearchResponse } from "@/types/theater";
@@ -14,7 +14,7 @@ async function getAllTheaterData(): Promise<TheaterSearchResponse[]> {
   try {
     const res: apiResponse<TheaterSearchResponse[]> =
       await searchTheaterLocalApi.get("/all-theaters");
-    console.log(res.data);
+    // console.log("("/all-theaters")>>>>>>>>>>>>>>",res.data);
     return res.data;
   } catch (error) {
     console.log("Failed to fetch", error);
