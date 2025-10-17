@@ -3,6 +3,8 @@
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import { ReservationRequestSchema } from "@/types/form";
 import { schedules } from "@/lib/screenDB";
+import { Resend } from "resend";
+
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
@@ -26,7 +28,6 @@ async function sendPaymentEmail(
 ) {
   if (process.env.RESEND_API_KEY) {
     try {
-      const { Resend } = require("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
@@ -38,8 +39,8 @@ async function sendPaymentEmail(
             <h2 style="color: #333;">映画チケット予約受付完了</h2>
             <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
               <p><strong>予約番号:</strong> ${uniqueCode}</p>
-              <p><strong>映画館：</strong> ${theaterName}</p>
-              <p><strong>上映作品：</strong> ${movieTitle}</p>
+              <p><strong>映画館:</strong> ${theaterName}</p>
+              <p><strong>上映作品:</strong> ${movieTitle}</p>
               <p><strong>座席(${seatCount}):</strong> ${seatInfo}</p>
             </div>
             <p>以下のリンクから決済を完了してください。</p>
@@ -170,7 +171,7 @@ export async function createReservation(formData: {
       console.error("Reservation check error:", reservationCheckError);
       return {
         success: false,
-        error: "座席の予約状況確認に失敗しました",
+        error: "座席の予約状態確認に失敗しました",
       };
     }
 
@@ -271,27 +272,6 @@ export async function createReservation(formData: {
       };
     }
 
-    const { error: seatsUpdateError } = await supabase
-      .from("seats")
-      .update({ is_available: false })
-      .in("id", selected_seat_ids);
-
-    if (seatsUpdateError) {
-      console.error("Seats update to FALSE error:", seatsUpdateError);
-
-      // seatsの更新に失敗したら、直前のDB操作もロールバックする
-      await supabase
-        .from("seat_reservations")
-        .delete()
-        .eq("reservation_id", reservation.id);
-      await supabase.from("reservations").delete().eq("id", reservation.id);
-
-      return {
-        success: false,
-        error: "座席の最終ロックに失敗しました",
-      };
-    }
-
     // 決済フォームに渡す予約情報
     const theaterName = formData?.theater_name;
     const auditoriumName = formData?.auditorium_name;
@@ -314,7 +294,7 @@ export async function createReservation(formData: {
                 name: `映画チケット予約：${movieTitle}\n`,
                 description: `【映画館】${theaterName} 【スクリーン】${auditoriumName} 【上映開始時刻】${Showtime} 【座席】 ${seatInfo}`,
               },
-              unit_amount: total_amount, // 既に円単位で渡されている想定
+              unit_amount: total_amount, // 既に単位は渡されている想定
             },
             quantity: 1,
           },

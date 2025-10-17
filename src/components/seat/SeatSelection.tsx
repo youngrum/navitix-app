@@ -1,7 +1,7 @@
 // components/seat/SeatSelection.tsx
 "use client";
-import { useEffect, useState } from "react";
-import { Box, Typography, Button, Paper, Stack, Divider } from "@mui/material";
+import { useEffect, useState, useCallback } from "react";
+import { Box, Typography, Button, Stack, Divider } from "@mui/material";
 import { SeatsData } from "@/types/seat";
 import { styled } from "@mui/material/styles";
 import theme from "@/styles/theme";
@@ -31,16 +31,16 @@ const CustomButton = styled(Button, {
   backgroundColor: isSelected
     ? theme.palette.secondary.main // 選択中
     : isAvailable // 空席
-    ? theme.palette.background.default
-    : theme.palette.grey[100], // 予約済
+      ? theme.palette.background.default
+      : theme.palette.grey[100], // 予約済
   color: isSelected ? theme.palette.common.white : theme.palette.common.black,
 
   // ボーダーの設定
   borderColor: isSelected
     ? "none" // 選択中
     : isAvailable // 空席
-    ? "none"
-    : theme.palette.grey[300],
+      ? "none"
+      : theme.palette.grey[300],
 
   // 無効化（予約済）時のスタイル
   "&.Mui-disabled": {
@@ -58,13 +58,16 @@ export default function SeatSelection({
   const [feeSum, setFeeSum] = useState(0);
 
   // 座席データを行ごとにグループ化
-  const seatsByRow = seatsData.reduce((acc, seat) => {
-    if (!acc[seat.seat_row]) {
-      acc[seat.seat_row] = [];
-    }
-    acc[seat.seat_row].push(seat);
-    return acc;
-  }, {} as Record<string, SeatsData[]>);
+  const seatsByRow = seatsData.reduce(
+    (acc, seat) => {
+      if (!acc[seat.seat_row]) {
+        acc[seat.seat_row] = [];
+      }
+      acc[seat.seat_row].push(seat);
+      return acc;
+    },
+    {} as Record<string, SeatsData[]>
+  );
 
   // グループ化した座席をソート
   const sortedRows = Object.keys(seatsByRow).sort();
@@ -75,16 +78,19 @@ export default function SeatSelection({
   });
 
   // 料金合計を計算して返す
-  const calculateFeeSum = (currentSelectedIds: number[]) => {
-    const sum = seatsData.reduce((total, seat) => {
-      if (currentSelectedIds.includes(seat.id)) {
-        return total + seat.fee;
-      }
-      return total;
-    }, 0);
-    setFeeSum(sum);
-    return sum;
-  };
+  const calculateFeeSum = useCallback(
+    (currentSelectedIds: number[]) => {
+      const sum = seatsData.reduce((total, seat) => {
+        if (currentSelectedIds.includes(seat.id)) {
+          return total + seat.fee;
+        }
+        return total;
+      }, 0);
+      setFeeSum(sum);
+      return sum;
+    },
+    [seatsData] // 依存配列に seatsData を含める
+  );
 
   // 座席選択・解放時の処理
   const handleSeatClick = (seatId: number, isAvailable: boolean) => {
@@ -117,7 +123,7 @@ export default function SeatSelection({
       const newFeeSum = calculateFeeSum(newSelectedSeats);
       onSeatsChange(newSelectedSeats, newFeeSum);
     }
-  }, [seatsData]);
+  }, [seatsData, calculateFeeSum, onSeatsChange, selectedSeats]);
 
   return (
     <Box>

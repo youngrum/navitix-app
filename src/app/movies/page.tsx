@@ -12,7 +12,7 @@ async function getNowPlayingMovieData() {
   try {
     const res: apiResponse<ResponseMovies_results<ResponseMovies[]>> =
       await tmdbApi.get("/movie/now_playing");
-    console.log(res.data.results);
+    // console.log("/movie/now_playing>>>>>>>",res.data.results);
     return res.data.results;
   } catch (error) {
     console.log("Failed to fetch", error);
