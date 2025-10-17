@@ -45,7 +45,7 @@ export default async function Page() {
   return (
     <main>
       <ThemeProviderWrapper>
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
           <BackButton returnPath="/movies" />
           <Header1 headerText={header1Text} />
         </Stack>

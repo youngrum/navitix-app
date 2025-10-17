@@ -8,89 +8,134 @@ import {
 } from "@mui/material";
 import { ReservationsTable } from "@/types/reservation";
 
+import {
+  formatCurrency,
+  formatDate,
+  formatTime,
+  formatPaidAt,
+} from "@/lib/formatter";
+import theme from "@/styles/theme";
+
 interface ReservationDetailProps {
   // 予約データ
   ticketData: ReservationsTable;
   // 画像には含まれていないが、表示に必要な情報をPropsで渡す
-  theaterName: string;
-  screenName: string; // No.3など
 }
 
-const ReservationDetailCard: React.FC<ReservationDetailProps> = ({
-  ticketData,
-  theaterName,
-  screenName,
-}) => {
-  // 💡 seatsカラムのカンマ区切りを画像のような形式に変換（例: A列5番, A列6番 -> A5, A6）
-  // 実際のデータ形式に応じて調整してください
-  const formattedSeats = ticketData.seats
-    .split(", ")
-    .map((s) => s.replace(/列|番/g, "").trim())
-    .join(", ");
-
-  // 合計金額を税込みの日本円表示に変換
-  const formattedTotalAmount = new Intl.NumberFormat("ja-JP", {
-    style: "currency",
-    currency: "JPY",
-  }).format(ticketData.total_amount);
-
-  // 詳細アイテム表示用のヘルパーコンポーネント
-  const DetailItem: React.FC<{ label: string; value: string | number }> = ({
-    label,
-    value,
-  }) => (
-    <Grid container spacing={1} sx={{ marginBottom: 0.5 }}>
-      <Grid item xs={6}>
-        <Typography variant="body2" color="text.secondary">
-          {label}
-        </Typography>
-      </Grid>
-      <Grid item xs={6} sx={{ textAlign: "right" }}>
-        <Typography variant="body2" fontWeight="bold">
-          {value}
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-
+export function TicketDetailCard({ ticketData }: ReservationDetailProps) {
   return (
-    <Card sx={{ maxWidth: 400, margin: "auto", borderRadius: 2, boxShadow: 3 }}>
-      <CardContent>
-        {/* === タイトル部分 === */}
-        <Typography variant="h6" gutterBottom fontWeight="bold">
+    <Card
+      sx={{
+        width: "100%",
+        borderRadius: 1,
+        border: `1px solid ${theme.palette.grey[300]}`,
+        bgcolor: `${theme.palette.grey[50]}`,
+        mt: 2,
+      }}
+    >
+      <CardContent sx={{ padding: "16px", "&:last-child": { pb: 2 } }}>
+        {/* タイトル */}
+        <Typography
+          variant="subtitle2"
+          fontWeight="bold"
+          sx={{ mb: 1.5, fontSize: "16px" }}
+        >
           予約詳細
         </Typography>
-        <Divider sx={{ mb: 2 }} />
+        <Divider sx={{ my: 1 }} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+          }}
+        >
+          {/* 映画館 */}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography color="text.secondary" fontSize={14}>
+              映画館
+            </Typography>
+            <Typography fontWeight="500" fontSize={14}>
+              {ticketData.theater_name}
+            </Typography>
+          </Box>
 
-        {/* === 詳細情報 === */}
-        <Box>
-          <DetailItem label="映画館" value={theaterName} />
-          <DetailItem label="スクリーン" value={screenName} />
+          {/* スクリーン */}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography color="text.secondary" fontSize={14}>
+              スクリーン
+            </Typography>
+            <Typography fontWeight="500" fontSize={14}>
+              {ticketData.auditorium_name}
+            </Typography>
+          </Box>
 
-          {/* 複数の座席をスペース区切りで表示する場合 */}
-          <DetailItem label="座席" value={formattedSeats} />
+          {/* 座席 */}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography color="text.secondary" fontSize={14}>
+              座席
+            </Typography>
+            <Typography fontWeight="500" fontSize={14}>
+              {ticketData.seats}
+            </Typography>
+          </Box>
 
-          <DetailItem label="日程" value={ticketData.start_time} />
-          <DetailItem
-            label="時間"
-            value={`${ticketData.start_time} ~ ${ticketData.end_time}`}
-          />
+          {/* 日程 */}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography color="text.secondary" fontSize={14}>
+              日程
+            </Typography>
+            <Typography fontWeight="500" fontSize={14}>
+              {formatDate(ticketData.start_time)}
+            </Typography>
+          </Box>
+          {/* 日程 */}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography color="text.secondary" fontSize={14}>
+              時間
+            </Typography>
+            <Typography fontWeight="500" fontSize={14}>
+              {formatTime(ticketData.start_time)} ～{" "}
+              {formatTime(ticketData.end_time)}
+            </Typography>
+          </Box>
+          {/* 予約番号 */}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography color="text.secondary" fontSize={14}>
+              予約番号
+            </Typography>
+            <Typography fontWeight="500" fontSize={14}>
+              {ticketData.unique_code}
+            </Typography>
+          </Box>
 
-          <DetailItem label="予約番号" value={ticketData.unique_code} />
+          {/* 決済日時 */}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography color="text.secondary" fontSize={14}>
+              決済日時
+            </Typography>
+            <Typography fontWeight="500" fontSize={14}>
+              {formatPaidAt(ticketData.paid_at)}
+            </Typography>
+          </Box>
 
-          <DetailItem
-            label="決済日時"
-            // paid_atはstring | nullなので、nullの場合は適切な表示に
-            value={ticketData.paid_at ? ticketData.paid_at : "未決済"}
-          />
-
-          <Divider sx={{ mt: 2, mb: 2 }} />
-
-          <DetailItem label="支払金額(税込)" value={formattedTotalAmount} />
+          {/* 支払金額 */}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography color="text.secondary" fontSize={14}>
+              支払金額(税込)
+            </Typography>
+            <Typography
+              variant="caption"
+              fontWeight="500"
+              sx={{ fontSize: "14px", color: "#000" }}
+            >
+              {formatCurrency(ticketData.total_amount)}
+            </Typography>
+          </Box>
         </Box>
       </CardContent>
     </Card>
   );
-};
+}
 
-export default ReservationDetailCard;
+export default TicketDetailCard;

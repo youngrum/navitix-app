@@ -20,6 +20,8 @@ export interface ReservationsTable {
   cancelled_at: string | null;
   movie_id: number;
   auditorium_id: number;
+  auditorium_name: string;
+  theater_name: string;
   start_time: string;
   end_time: string;
   movie_title: string;
