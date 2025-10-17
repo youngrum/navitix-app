@@ -76,6 +76,11 @@ export async function createReservation(formData: CreateReservationParams) {
     }
     const seats = availabilityCheck.seats!;
 
+    // 座席情報を整形
+    const seatInfo = seats
+      .map((s) => `${s.seat_row}列${s.seat_number}番`)
+      .join(", ");
+
     // ユニークコード生成
     const uniqueCode = generateUniqueCode();
 
@@ -88,9 +93,12 @@ export async function createReservation(formData: CreateReservationParams) {
         payment_status: "PENDING",
         unique_code: uniqueCode,
         movie_id: scheduleData.movie_id,
+        movie_title: formData.movie_title,
+        poster_path: formData.poster_path,
         auditorium_id: auditorium_id,
         start_time: scheduleData.start_time,
         end_time: scheduleData.end_time,
+        seats: seatInfo,
       })
       .select()
       .single();
@@ -145,11 +153,6 @@ export async function createReservation(formData: CreateReservationParams) {
         error: "座席予約の作成中にエラーが発生しました",
       };
     }
-
-    // 座席情報を整形
-    const seatInfo = seats
-      .map((s) => `${s.seat_row}列${s.seat_number}番`)
-      .join(", ");
 
     // Stripe Checkout セッション作成
     const stripeResult = await createStripeSession({

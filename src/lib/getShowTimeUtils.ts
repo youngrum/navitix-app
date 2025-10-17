@@ -28,3 +28,28 @@ export const formatTimestampToJST = (utcTimestamp: string): string => {
   // 4. 末尾に「～」を追加して返す
   return `${formattedString}～`;
 };
+
+//  export const startTimeFormatted (utcTimestamp: string): string => {
+//    new Date(    target
+//   ).toLocaleTimeString("ja-JP", {
+//     hour: "2-digit",
+//     minute: "2-digit",
+//   });
+// }
+
+//  export endTimeFormatted = new Date(reservation.end_time).toLocaleTimeString(
+//    "ja-JP",
+//    {
+//      hour: "2-digit",
+//      minute: "2-digit",
+//    }
+//  );
+
+//  export dateFormatted = new Date(reservation.start_time).toLocaleDateString(
+//     "ja-JP",
+//     {
+//       year: "numeric",
+//       month: "2-digit",
+//       day: "2-digit",
+//     }
+//   );
