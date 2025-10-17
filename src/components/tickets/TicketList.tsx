@@ -29,14 +29,11 @@ export default function TicketList({ reservations }: TicketsListProps) {
 
   return (
     <Stack spacing={3} sx={{ py: 2 }}>
-      {/* チケットカード一覧 */}
       <Box>
         {currentReservations.map((reservation) => (
           <TicketItem key={reservation.id} reservation={reservation} />
         ))}
       </Box>
-
-      {/* ページネーション */}
       {totalPages > 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
           <Pagination

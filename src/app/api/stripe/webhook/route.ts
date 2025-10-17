@@ -75,7 +75,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   console.log("Using Service Role Key:", key?.substring(0, 15) + "...");
 
   try {
-    // IDの型を確認して適切に変換
+    // IDの型を数値型に変換
     const idToQuery = isNaN(Number(reservationId))
       ? reservationId
       : Number(reservationId);
@@ -105,12 +105,17 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       );
       return;
     }
+    const paidAt =
+      session.payment_status === "paid" && session.created
+        ? new Date(session.created * 1000).toISOString()
+        : new Date().toISOString();
 
     // 更新実行
     const { data: reservationData, error: reservationError } = await supabase
       .from("reservations")
       .update({
         payment_status: "PAID",
+        paid_at: paidAt,
       })
       .eq("id", idToQuery)
       .eq("payment_status", "PENDING")
