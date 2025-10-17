@@ -9,7 +9,7 @@ import SubmitButton from "@/components/common/SubmitButton";
 import { ReservationRequestSchema } from "@/types/form";
 import theme from "@/styles/theme";
 import { getSeatDataForClient } from "@/actions/seatActions";
-import { createReservation } from "@/actions/reservationActions";
+import { createReservation } from "@/actions/reservation/createReservation";
 import { useRouter } from "next/navigation";
 
 interface reservationProps {
