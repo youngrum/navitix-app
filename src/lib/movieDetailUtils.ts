@@ -1,6 +1,12 @@
+import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
 import tmdbApi from "@/services/tmdbApi";
 import { apiResponse } from "@/types/apiResponse";
-import { _ResponseMovieDetail, ResponseMovieDetail, ResponseReleaseDates_release_dates, ResponseReleaseDates_results } from "@/types/movies";
+import {
+  _ResponseMovieDetail,
+  ResponseMovieDetail,
+  ResponseReleaseDates_release_dates,
+  ResponseReleaseDates_results,
+} from "@/types/movies";
 
 // 映画の詳細を取得
 export async function getMovieDetailData(movieId: number) {
@@ -13,6 +19,19 @@ export async function getMovieDetailData(movieId: number) {
     return detail;
   } catch (error) {
     console.log("Failed to fetch movie detail", error);
+    return null;
+  }
+}
+
+// DetailInfoコンポーネント用映画情報詳細レスポンスAPI
+export async function newGetMovileDetail(movie_id: string) {
+  try {
+    const res: apiResponse<_ResponseMovieDetail> =
+      await searchTheaterLocalApi.get(`/movie/get-detail/${movie_id}/`);
+    // console.log("/movie/get-detail/${movie_id}/>>>>>>>>",res.data);
+    return res.data;
+  } catch (error) {
+    console.log("Failed to fetch", error);
     return null;
   }
 }

@@ -9,3 +9,23 @@ export interface CreateReservationParams {
   showtime: string;
   total_amount: number;
 }
+
+export interface ReservationsTable {
+  id: number;
+  user_id: string;
+  reserved_at: string;
+  total_amount: number;
+  payment_status: PaymentStatus;
+  unique_code: string;
+  cancelled_at: string | null;
+  movie_id: number;
+  auditorium_id: number;
+  start_time: string;
+  end_time: string;
+  movie_title: string;
+  poster_path: string | null;
+  seats: string;
+  paid_at: string | null;
+}
+
+export type PaymentStatus = "PENDING" | "PAID" | "EXPIRED" | "CANCELLED";

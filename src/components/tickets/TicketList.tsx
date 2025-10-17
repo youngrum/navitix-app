@@ -40,7 +40,7 @@ export default function TicketList({ reservations }: TicketsListProps) {
             count={totalPages}
             page={currentPage}
             onChange={handlePageChange}
-            color="primary"
+            color="secondary"
             size="large"
             sx={{
               "& .MuiPaginationItem-root": {
