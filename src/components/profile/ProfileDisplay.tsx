@@ -34,7 +34,7 @@ export default function ProfileDisplay({
     handleSubmit, // サブミットイベントのラッパー関数
     control,
     formState: { errors },
-    setError, // バックエンドからのエラーメッセージを格納
+    // setError, // バックエンドからのエラーメッセージを格納
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     mode: "onBlur", //フォーカスが外れた時をトリガーとする

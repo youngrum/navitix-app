@@ -5,7 +5,6 @@ import {
   ResponseMovieDetail,
   ResponseMovieVideos,
   ResponseMovies_results,
-  ResponseReleaseDates_results,
   ResponseCredits_casts,
   _ResponseMovieDetail,
 } from "@/types/movies";
@@ -35,7 +34,7 @@ async function getMovieDetailData(movieId: string) {
       `/movie/${movieId}`
     );
     const detail = res.data;
-    console.log("detail>>>>>>>>>>>>>>>>>>>>>",detail);
+    console.log("detail>>>>>>>>>>>>>>>>>>>>>", detail);
     return detail;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -43,19 +42,6 @@ async function getMovieDetailData(movieId: string) {
   }
 }
 
-// 映画のリリースを取得
-async function getMovieReleaseData(movieId: string) {
-  try {
-    const res: apiResponse<ResponseReleaseDates_results> = await tmdbApi.get(
-      `/movie/${movieId}/release_dates`
-    );
-    const releaseData = res.data.results;
-    return releaseData;
-  } catch (error) {
-    console.log("Failed to fetch", error);
-    return null;
-  }
-}
 // 映画の動画情報を取得
 async function getMovieVideoData(movieId: string) {
   try {
@@ -76,7 +62,7 @@ async function getMovieCasts(movie_id: string) {
       `/movie/${movie_id}/credits`
     );
     const castsData = res.data.cast;
-    console.log(castsData);
+    // console.log("castsData>>>>>>>>",castsData);
     return castsData;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -84,12 +70,11 @@ async function getMovieCasts(movie_id: string) {
   }
 }
 
-async function newGetMovileDetail(movie_id: string){
+async function newGetMovileDetail(movie_id: string) {
   try {
-    const res: apiResponse<_ResponseMovieDetail> = await searchTheaterLocalApi.get(
-      `/movie/get-detail/${movie_id}/`
-    );
-    console.log(res.data);
+    const res: apiResponse<_ResponseMovieDetail> =
+      await searchTheaterLocalApi.get(`/movie/get-detail/${movie_id}/`);
+    // console.log("/movie/get-detail/${movie_id}/>>>>>>>>",res.data);
     return res.data;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -104,16 +89,9 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
 
   // APIにリクエストを送信
   const detail = await getMovieDetailData(movie_id);
-  const release = await getMovieReleaseData(movie_id);
   const videos = await getMovieVideoData(movie_id);
   const casts = await getMovieCasts(movie_id);
-
   const newDetail = await newGetMovileDetail(movie_id);
-
-  // 日本でのリリース情報を取得
-  const releaseInfo =
-    release?.find((result) => result.iso_3166_1 === "JP") || null;
-
   const getLatestOfficialTrailerKey = (videoList: ResponseMovieVideos[]) => {
     if (!videoList || videoList.length === 0) {
       return null; // データが存在しない場合はnullを返す
@@ -141,7 +119,7 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
 
     // ソート後の配列の最初の要素（最も新しいもの）のキーを返す
     return filtered_videos[0].key;
-  }
+  };
 
   // 最新の公式予告編のキーを取得
   let trailerKey = null;
@@ -156,9 +134,7 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
           <BackButton returnPath="/movies" />
           <Header1 headerText="detail" />
         </Stack>
-        <_DetailInfo
-          MovieDetailProps={newDetail}
-        />
+        <_DetailInfo MovieDetailProps={newDetail} />
         <Header2 headerText="トレーラー" />
         <VideoContainer trailerKeyProps={trailerKey} />
         <Header2 headerText="キャスト" />

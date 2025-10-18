@@ -4,27 +4,54 @@ import { useState } from "react";
 import useSWR from "swr";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { SeatWithTheaterAndMovieResponse } from "@/types/seat";
-import SeatSelection from "./SeatSelection"; // 修正した子コンポーネントをインポート
-import SubmitButton from "../common/SubmitButton";
+import SeatSelection from "@/components/seat/SeatSelection";
+import SubmitButton from "@/components/common/SubmitButton";
 import { ReservationRequestSchema } from "@/types/form";
 import theme from "@/styles/theme";
+import { getSeatDataForClient } from "@/actions/seatActions";
+import { createReservation } from "@/actions/reservation/createReservation";
+import { useRouter } from "next/navigation";
 
 interface reservationProps {
+  theaterName: string;
   auditoriumId: number;
+  auditoriumName: string;
   schedulesId: number;
+  movieId: number;
+  movieTitle: string;
+  posterPath: string;
+  showtime: string;
 }
 
 // SWR データ取得用fetcher関数
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async ([auditoriumId, schedulesId]: [number, number]) => {
+  // "seats-1-3" から ["1", "3"] を抽出
+  const data = await getSeatDataForClient(
+    String(auditoriumId),
+    String(schedulesId)
+  );
+  if (!data) {
+    throw new Error("座席データの取得に失敗しました");
+  }
+  return data;
+};
 
 export default function ReservationForm({
+  theaterName,
   auditoriumId,
+  auditoriumName,
   schedulesId,
+  movieId,
+  movieTitle,
+  posterPath,
+  showtime,
 }: reservationProps) {
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [feeSum, setFeeSum] = useState<number>(0);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const submitText = "予約する";
+  const router = useRouter();
 
   const handleSeatsChange = (seats: number[], fee: number) => {
     setSelectedSeats(seats);
@@ -33,51 +60,87 @@ export default function ReservationForm({
   };
 
   // SWRで座席データをフェッチ
-  const apiEndpoint = `/api/getSeats/${auditoriumId}/`;
   const { data, error, isLoading, mutate } =
-    useSWR<SeatWithTheaterAndMovieResponse>(apiEndpoint, fetcher, {
-      // 再検証の間隔を設定
-      revalidateOnFocus: true,
-      refreshInterval: 10000,
-    });
+    useSWR<SeatWithTheaterAndMovieResponse>(
+      [auditoriumId, schedulesId],
+      fetcher,
+      {
+        revalidateOnFocus: true,
+        refreshInterval: 10000,
+      }
+    );
+
   // ロード中・エラーの処理
-  if (error)
+  if (error) {
+    console.log(error);
     return (
       <Typography color="error">座席データの取得に失敗しました。</Typography>
     );
+  }
   if (isLoading || !data)
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
         <CircularProgress />
       </Box>
     );
+
   // SWRで取得した最新の座席データ
   const latesSeatstData = data?.seatData;
 
   // 送信処理
   const handleReservation = async () => {
+    setIsSubmitting(true);
+    setValidationErrors([]);
+
     // 予約送信前のデータ
     const payload = {
+      theater_name: theaterName,
       selected_seat_ids: selectedSeats,
-      auditorium_id: auditoriumId, // 上映室ID 映画館＋上映作品が紐づく
-      schedules_id: schedulesId, // 上映スケジュールID
-      total_amount: feeSum, // クライアント側で計算した料金
+      auditorium_id: auditoriumId,
+      auditorium_name: auditoriumName,
+      schedules_id: schedulesId,
+      movie_id: movieId,
+      movie_title: movieTitle,
+      poster_path: posterPath,
+      showtime: showtime,
+      total_amount: feeSum,
     };
 
-    //Zod バリデーションの実行
+    // Zod バリデーションの実行
     const validationResult = ReservationRequestSchema.safeParse(payload);
-    // バリデーションエラーメッセージをstateに代入
+
     if (!validationResult.success) {
       const errorMessages = validationResult.error.issues.map(
         (issue) => issue.message
       );
       setValidationErrors(errorMessages);
+      setIsSubmitting(false);
       return;
     }
-    setValidationErrors([]); //バリデーションエラー初期化
 
-    // バリデーション成功後の処理 APIリクエスト
-    alert(JSON.stringify(payload, null, 2));
+    // Server Actionを呼び出し
+    try {
+      const result = await createReservation(payload);
+
+      if (result.success) {
+        // 成功時の処理
+        alert(
+          `予約が完了しました！\n予約コード: ${result.uniqueCode}\n予約ID: ${result.reservationId}`
+        );
+        // 予約完了ページへリダイレクト
+        router.push(`/reservations/${result.reservationId}`);
+      } else {
+        // エラー時の処理
+        setValidationErrors([result.error || "予約に失敗しました"]);
+      }
+    } catch (error) {
+      console.error("Reservation error:", error);
+      setValidationErrors(["予期しないエラーが発生しました"]);
+    } finally {
+      setIsSubmitting(false);
+      // 座席データを再取得
+      mutate();
+    }
   };
 
   return (
@@ -105,7 +168,7 @@ export default function ReservationForm({
       )}
       <form action={handleReservation}>
         <SubmitButton
-          isLoading={isLoading}
+          isLoading={isSubmitting}
           buttonText={submitText}
         ></SubmitButton>
       </form>

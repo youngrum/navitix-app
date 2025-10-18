@@ -1,6 +1,3 @@
-import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
-import { apiResponse } from "@/types/apiResponse";
-import { ScreenResponse } from "@/types/screen";
 import _DetailInfo from "@/components/movies/detail/_DetailInfo";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Box, Stack, Typography } from "@mui/material";

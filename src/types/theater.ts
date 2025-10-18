@@ -4,7 +4,7 @@ export interface TheaterSearchResponse {
   prefecture: string;
   city: string;
   address: string;
-  photoPath: string;
+  photo_path: string;
 }
 
 export interface Theater {

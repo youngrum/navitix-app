@@ -1,6 +1,6 @@
 // types/seat.ts
 
-import { Theater, TheaterSearchResponse } from "./theater";
+import { Theater } from "./theater";
 
 export type SeatType = "STANDARD"; // 将来的に "WHEELCHAIR" | "COUPLE" | "PREMIUM"なども追加可能
 export type SeatStatus = "AVAILABLE" | "RESERVED" | "LOCKED";
@@ -35,4 +35,8 @@ export interface SeatWithTheaterAndMovieResponse {
   auditoriumName: string;
   seatData: SeatsData[];
   movieTitle: string;
+  movieId: number;
+  posterPath: string;
+  startTime: string; // ISO 8601形式の日時文字列
+  endTime: string; // ISO 8601形式の日時文字列
 }
