@@ -33,7 +33,7 @@ export default function SearchTheaterAutocomplete({
           theater.name.includes(newInputValue) ||
           theater.address.includes(newInputValue)
       );
-      console.log(filtered);
+      // console.log("filtered>>>>>>>>>",filtered);
       setSuggestions(filtered);
       setData(filtered);
       setBoolean(true);
@@ -70,7 +70,9 @@ export default function SearchTheaterAutocomplete({
           setOpen(false);
           searchHundler(inputValue);
         }}
-        onClick={()=>{setOpen(false)}}
+        onClick={() => {
+          setOpen(false);
+        }}
         renderInput={(params) => (
           <TextField
             {...params}

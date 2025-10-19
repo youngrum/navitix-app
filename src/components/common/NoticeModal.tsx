@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Modal,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Modal, Typography } from "@mui/material";
 import ForwardToInboxOutlinedIcon from "@mui/icons-material/ForwardToInboxOutlined";
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";

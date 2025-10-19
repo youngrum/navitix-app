@@ -34,8 +34,8 @@ type Schedule = {
  * @returns Scheduleオブジェクトの配列
  */
 export const generateScheduleData = (): Schedule[] => {
-  const START_DATE = "2025-10-10";
-  const END_DATE = "2025-10-31";
+  const START_DATE = "2025-10-12";
+  const END_DATE = "2025-10-19";
   const TOTAL_AUDITORIUMS = 90;
   const schedules: Schedule[] = [];
   let idCounter = 1;
@@ -43,17 +43,17 @@ export const generateScheduleData = (): Schedule[] => {
   // 映画ごとの上映時間と開始時刻の定義
   const movieConfigs = [
     {
-      movieId: 101,
+      movieId: 533533,
       durationMinutes: 90,
       startTimes: ["10:00:00", "12:00:00", "14:00:00", "16:00:00", "18:00:00"],
     },
     {
-      movieId: 102,
+      movieId: 1218925,
       durationMinutes: 110,
       startTimes: ["10:10:00", "12:20:00", "14:30:00", "16:40:00", "19:00:00"],
     },
     {
-      movieId: 103,
+      movieId: 1249423,
       durationMinutes: 90,
       startTimes: ["10:30:00", "12:30:00", "14:30:00", "16:30:00", "18:30:00"],
     },
@@ -61,9 +61,9 @@ export const generateScheduleData = (): Schedule[] => {
 
   // 日付の範囲をループ
   const currentDate = new Date(START_DATE);
-  const end = new Date(END_DATE);
+  const endDate = new Date(END_DATE);
 
-  while (currentDate <= end) {
+  while (currentDate <= endDate) {
     const dateString = currentDate.toISOString().split("T")[0];
 
     // 1. 上映室のIDをループ
@@ -91,6 +91,6 @@ export const generateScheduleData = (): Schedule[] => {
     // 次の日へ進める
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  console.log(schedules);
+  // console.log(schedules);
   return schedules;
 };

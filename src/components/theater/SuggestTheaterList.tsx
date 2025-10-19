@@ -3,7 +3,7 @@ import { Box, Typography, Divider } from "@mui/material";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import theme from "@/styles/theme";
 import Image from "next/image";
-import LinkButton from '@/components/common/LinkButton';
+import LinkButton from "@/components/common/LinkButton";
 
 interface theaterlistProps {
   theaterlist: TheaterSearchResponse[];
@@ -24,18 +24,26 @@ export default function SuggestTheaterList({
                 <Typography variant="h2" sx={{ fontSize: 20 }}>
                   {theater.name}
                 </Typography>
-                <Typography
-                  variant="h6"
+                <Box
                   sx={{
-                    fontSize: 14,
+                    display: "flex",
                     color: theme.palette.grey[500],
-                    alienItems: "center",
+                    fontSize: 14,
+                    alignItems: "center",
+                    my: 0.5,
                   }}
                 >
-                  <FmdGoodOutlinedIcon sx={{ height: 24, width: 24, pt: 1 }} />
-                  {theater.prefecture}
-                  {theater.city}
-                </Typography>
+                  <FmdGoodOutlinedIcon sx={{ fontSize: 16 }} />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontSize: 14,
+                      alienItems: "center",
+                    }}
+                  >
+                    {theater.address}
+                  </Typography>
+                </Box>
                 <Box
                   sx={{
                     borderRadius: 3,
@@ -48,7 +56,7 @@ export default function SuggestTheaterList({
                   }}
                 >
                   <Image
-                    src={theater.photoPath}
+                    src={theater.photo_path}
                     alt={`${theater.name}_photo`}
                     fill // 親要素のサイズに合わせて画像を拡大・縮小
                     style={{ objectFit: "cover" }} // 画像をトリミングして親要素にフィットさせる
@@ -56,8 +64,11 @@ export default function SuggestTheaterList({
                     sizes="30vw"
                   ></Image>
                 </Box>
-                <LinkButton buttonTextProps={"上映作品を確認する"} toProps={`/theater/${theater.id}/screen`} ></LinkButton>
-                <Divider />
+                <LinkButton
+                  buttonTextProps={"上映作品を確認する"}
+                  toProps={`/theater/${theater.id}/screen`}
+                ></LinkButton>
+                <Divider sx={{ my: 2 }} />
               </Box>
             )
         )

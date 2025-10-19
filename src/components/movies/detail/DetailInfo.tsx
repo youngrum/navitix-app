@@ -2,7 +2,6 @@
 
 import {
   ResponseMovieDetail,
-  ResponseMovieVideos,
   ResponseReleaseDates_release_dates,
 } from "@/types/movies";
 import React from "react";
@@ -56,7 +55,7 @@ export default function DetailInfo({
     MovieDetailProps?.overview === "" || MovieDetailProps?.overview === null
       ? "解説・あらすじを取得できませんでした"
       : MovieDetailProps?.overview;
-  console.log(overview);
+  // console.log("overview>>>>>>>>>>>",overview);
 
   return (
     <>
