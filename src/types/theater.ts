@@ -5,6 +5,7 @@ export interface TheaterSearchResponse {
   city: string;
   address: string;
   photo_path: string;
+  isShowingMovie: boolean;
 }
 
 export interface Theater {

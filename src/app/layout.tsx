@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { createServerSupabaseClient } from "@/utils/supabase/server";
 import MobileBottomNav from "@/components/common/BottomNavigation";
 
 const geistSans = Geist({
@@ -24,16 +23,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const isAuthenticated = !!session;
   return (
-    <html lang="en">
+    <html lang="ja">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
-        {isAuthenticated && <MobileBottomNav />}
+        <MobileBottomNav />
       </body>
     </html>
   );

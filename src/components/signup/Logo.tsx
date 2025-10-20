@@ -8,13 +8,11 @@ export default function LogoWithFade() {
   const [inProp, setInProp] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
-      setInProp(true);
-    });
+    setInProp(true);
   }, []);
 
   return (
-    <Grow in={inProp} timeout={1000}>
+    <Grow in={inProp}>
       <Box
         sx={{
           position: "relative",
