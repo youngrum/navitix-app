@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import HomeIcon from "@mui/icons-material/Home";
@@ -9,10 +9,16 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { usePathname, useRouter } from "next/navigation";
 import theme from "@/styles/theme";
+import { Grow } from "@mui/material";
 
 export default function MobileBottomNav() {
-  const pathname = usePathname(); // 現在のパスを取得
+  const pathname = usePathname();
   const router = useRouter();
+  const [inProp, setInProp] = useState(false);
+
+  useEffect(() => {
+    setInProp(true);
+  }, []);
 
   // パスから BottomNavigation の value を決定するヘルパー
   const getValueFromPath = (p: string | null | undefined) => {
@@ -25,7 +31,6 @@ export default function MobileBottomNav() {
     return ""; // 該当なし
   };
 
-  // value -> パス の逆マッピング（onChange で使用）
   const mapValueToPath = (v: string) => {
     switch (v) {
       case "home":
@@ -44,51 +49,53 @@ export default function MobileBottomNav() {
   const value = getValueFromPath(pathname);
 
   return (
-    <BottomNavigation
-      showLabels
-      value={value}
-      onChange={(_, newValue) => {
-        const path = mapValueToPath(String(newValue));
-        // 同じパスの場合は何もしない（余計な遷移抑制）
-        if (path !== pathname) {
-          router.push(path);
-        }
-      }}
-      sx={{
-        width: "100%",
-        position: "fixed",
-        bottom: 0,
-        zIndex: 100,
-        // 必要なら背景色やボックスシャドウなどここで調整
-      }}
-    >
-      <BottomNavigationAction
-        label="Home"
-        value="home"
-        icon={<HomeIcon />}
-        sx={{ "&.Mui-selected": { color: theme.palette.secondary.main } }}
-      />
+    <Grow in={inProp}>
+      <BottomNavigation
+        showLabels
+        value={value}
+        onChange={(_, newValue) => {
+          const path = mapValueToPath(String(newValue));
+          // 同じパスの場合は何もしない（余計な遷移抑制）
+          if (path !== pathname) {
+            router.push(path);
+          }
+        }}
+        sx={{
+          width: "100%",
+          position: "fixed",
+          bottom: 0,
+          zIndex: 100,
+          boxShadow: 8,
+        }}
+      >
+        <BottomNavigationAction
+          label="Home"
+          value="home"
+          icon={<HomeIcon />}
+          sx={{ "&.Mui-selected": { color: theme.palette.secondary.main } }}
+        />
 
-      <BottomNavigationAction
-        label="Theater"
-        value="theater"
-        icon={<SearchIcon />}
-        sx={{ "&.Mui-selected": { color: theme.palette.secondary.main } }}
-      />
+        <BottomNavigationAction
+          label="Theater"
+          value="theater"
+          icon={<SearchIcon />}
+          sx={{ "&.Mui-selected": { color: theme.palette.secondary.main } }}
+        />
 
-      <BottomNavigationAction
-        label="tickets"
-        value="tickets"
-        icon={<ConfirmationNumberIcon />}
-        sx={{ "&.Mui-selected": { color: theme.palette.secondary.main } }}
-      />
+        <BottomNavigationAction
+          label="tickets"
+          value="tickets"
+          icon={<ConfirmationNumberIcon />}
+          sx={{ "&.Mui-selected": { color: theme.palette.secondary.main } }}
+        />
 
-      <BottomNavigationAction
-        label="Account"
-        value="account"
-        icon={<AccountCircleIcon />}
-        sx={{ "&.Mui-selected": { color: theme.palette.secondary.main } }}
-      />
-    </BottomNavigation>
+        <BottomNavigationAction
+          label="Account"
+          value="account"
+          icon={<AccountCircleIcon />}
+          sx={{ "&.Mui-selected": { color: theme.palette.secondary.main } }}
+        />
+      </BottomNavigation>
+    </Grow>
   );
 }

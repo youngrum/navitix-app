@@ -7,7 +7,7 @@ import { Stack } from "@mui/material";
 import React from "react";
 
 export default function page() {
-  const header1Text = "Welcome Back!";
+  const header1Text = "ログイン";
   const subText = "メールアドレスとパスワードを入力してログインしてください";
 
   return (

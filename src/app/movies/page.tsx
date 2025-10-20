@@ -61,7 +61,7 @@ export default async function Page() {
     getUpcomingMovieData(),
     getTop5MovieData(),
   ]);
-  const header1Text = "movies";
+  const header1Text = "映画作品";
   const header2TextNowPlaying = "上映中";
   const header2TextUpcoming = "公開予定";
 
