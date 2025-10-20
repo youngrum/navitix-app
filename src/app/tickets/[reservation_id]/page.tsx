@@ -1,6 +1,6 @@
 import { newGetMovileDetail } from "@/lib/movieDetailUtils";
 import { createServerSupabaseClient } from "@/utils/supabase/server";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
 import React from "react";
 import _DetailInfo from "@/components/movies/detail/_DetailInfo";
 import BackButton from "@/components/common/BackButton";
@@ -8,6 +8,7 @@ import Header1 from "@/components/common/Header1";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { ReservationsTable } from "@/types/reservation";
 import TicketDetailCard from "@/components/tickets/TicketDetailCard";
+import { FormButtonWrapper } from "@/components/common/FormButtonWrapper";
 
 export default async function page({
   params,
@@ -35,17 +36,19 @@ export default async function page({
   }
   const ticketData: ReservationsTable = reservationData[0];
   const newDetail = await newGetMovileDetail(reservationData[0].movie_id);
+  const isCancelled = !!ticketData.cancelled_at;
 
   return (
     <main>
       <ThemeProviderWrapper>
         <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-          <BackButton returnPath="/movies" />
+          <BackButton returnPath="/tickets" />
           <Header1 headerText={header1Text} />
         </Stack>
         <_DetailInfo MovieDetailProps={newDetail} />
         <TicketDetailCard ticketData={ticketData} />
         <Divider sx={{ my: 4 }} />
+        <FormButtonWrapper reservationId={reservationId} />
       </ThemeProviderWrapper>
     </main>
   );
