@@ -34,8 +34,8 @@ type Schedule = {
  * @returns Scheduleオブジェクトの配列
  */
 export const generateScheduleData = (): Schedule[] => {
-  const START_DATE = "2025-10-12";
-  const END_DATE = "2025-10-19";
+  const START_DATE = "2025-10-20";
+  const END_DATE = "2025-11-19";
   const TOTAL_AUDITORIUMS = 90;
   const schedules: Schedule[] = [];
   let idCounter = 1;

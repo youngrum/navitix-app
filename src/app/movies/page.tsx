@@ -25,7 +25,7 @@ async function getUpcomingMovieData() {
   try {
     const res: apiResponse<ResponseMovies_results<ResponseMovies[]>> =
       await tmdbApi.get("/movie/upcoming");
-    console.log(res.data.results);
+    //  console.log("/movie/upcoming>>>>>>>",res.data.results);
     return res.data.results;
   } catch (error) {
     console.log("Failed to fetch", error);
