@@ -9,6 +9,8 @@ import { profileSchema, ProfileFormValues } from "@/types/form";
 import InputNameArea from "@/components/common/InputNameArea";
 import InputBirthdayArea from "@/components/common/InputBirthdayArea";
 import LinkButton from "@/components/common/LinkButton";
+import SubmitButtonOL from "@/components/common/SubmitButtonOL";
+import { logout } from "@/actions/logoutActions";
 
 export interface ProfileDisplayProps {
   userEmail: string;
@@ -25,6 +27,7 @@ export default function ProfileDisplay({
   const toEditLink = "profile/edit";
   const linkText = "プロフィールを修正";
   const leadText = "パスワードを更新する方は";
+  const submitText = "ログアウト";
   const toLogIn = "/reset-password";
   const readonly = true;
 
@@ -45,33 +48,29 @@ export default function ProfileDisplay({
     },
   });
 
-  const onSubmit = (data: ProfileFormValues) => {
-    console.log(data); // 検証済みのデータ
-  };
-
   return (
     <>
       {/** handleSubmitは第1引数に渡されたonSubmit関数を呼び出す */}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <InputNameArea<ProfileFormValues>
-          registerProps={register}
-          errorProps={errors.accountName}
-          readonlyProps={readonly}
-        ></InputNameArea>
-        <InputEmailArea<ProfileFormValues>
-          registerProps={register}
-          errorProps={errors.email}
-          readonlyProps={readonly}
-        ></InputEmailArea>
-        <InputBirthdayArea<ProfileFormValues>
-          control={control}
-          errorProps={errors.birthDay}
-          readonlyProps={readonly}
-        ></InputBirthdayArea>
-
-        <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
-        <Divider />
-        <LinkButton toProps={toEditLink} buttonTextProps={linkText} />
+      <InputNameArea<ProfileFormValues>
+        registerProps={register}
+        errorProps={errors.accountName}
+        readonlyProps={readonly}
+      ></InputNameArea>
+      <InputEmailArea<ProfileFormValues>
+        registerProps={register}
+        errorProps={errors.email}
+        readonlyProps={readonly}
+      ></InputEmailArea>
+      <InputBirthdayArea<ProfileFormValues>
+        control={control}
+        errorProps={errors.birthDay}
+        readonlyProps={readonly}
+      ></InputBirthdayArea>
+      <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
+      <Divider />
+      <LinkButton toProps={toEditLink} buttonTextProps={linkText} />
+      <form action={logout}>
+        <SubmitButtonOL isLoading={false} buttonText={submitText} />
       </form>
     </>
   );

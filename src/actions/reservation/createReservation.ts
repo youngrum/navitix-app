@@ -76,6 +76,11 @@ export async function createReservation(formData: CreateReservationParams) {
     }
     const seats = availabilityCheck.seats!;
 
+    // 座席情報を整形
+    const seatInfo = seats
+      .map((s) => `${s.seat_row}列${s.seat_number}番`)
+      .join(", ");
+
     // ユニークコード生成
     const uniqueCode = generateUniqueCode();
 
@@ -88,9 +93,14 @@ export async function createReservation(formData: CreateReservationParams) {
         payment_status: "PENDING",
         unique_code: uniqueCode,
         movie_id: scheduleData.movie_id,
+        movie_title: formData.movie_title,
+        poster_path: formData.poster_path,
+        theater_name: formData.theater_name,
         auditorium_id: auditorium_id,
+        auditorium_name: formData.auditorium_name,
         start_time: scheduleData.start_time,
         end_time: scheduleData.end_time,
+        seats: seatInfo,
       })
       .select()
       .single();
@@ -146,11 +156,6 @@ export async function createReservation(formData: CreateReservationParams) {
       };
     }
 
-    // 座席情報を整形
-    const seatInfo = seats
-      .map((s) => `${s.seat_row}列${s.seat_number}番`)
-      .join(", ");
-
     // Stripe Checkout セッション作成
     const stripeResult = await createStripeSession({
       movieTitle: formData.movie_title,
@@ -177,6 +182,28 @@ export async function createReservation(formData: CreateReservationParams) {
         error: stripeResult.error || "決済セッションの作成に失敗しました",
       };
     }
+
+    const paymentIntentId = stripeResult.session.payment_intent as string;
+    const sessionId = stripeResult.session.id;
+
+    const { error: updateError } = await supabase
+      .from("reservations")
+      .update({
+        stripe_payment_id: paymentIntentId,
+        stripe_session_id: sessionId,
+      })
+      .eq("id", reservation.id);
+
+    if (updateError) {
+      console.error("Failed to save Stripe payment info:", updateError);
+      console.warn("Continuing despite payment info save error");
+    } else {
+      console.log(
+        `Stripe payment info saved for reservation ${reservation.id}`
+      );
+    }
+
+    // ===================================================
 
     // メール送信
     if (stripeResult.session.url && user.email) {

@@ -1,5 +1,7 @@
 import { TheaterSearchResponse } from "@/types/theater";
-import { Box, Typography, Divider } from "@mui/material";
+import { Box, Typography, Divider, Chip } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import theme from "@/styles/theme";
 import Image from "next/image";
@@ -21,9 +23,29 @@ export default function SuggestTheaterList({
           (theater) =>
             theater && (
               <Box key={theater.id}>
-                <Typography variant="h2" sx={{ fontSize: 20 }}>
-                  {theater.name}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography variant="h2" sx={{ fontSize: 20 }}>
+                    {theater.name}
+                  </Typography>
+                  {theater.isShowingMovie !== undefined && (
+                    <Chip
+                      icon={
+                        theater.isShowingMovie ? (
+                          <CheckCircleIcon />
+                        ) : (
+                          <CancelIcon />
+                        )
+                      }
+                      label={theater.isShowingMovie ? "上映中" : "上映なし"}
+                      size="small"
+                      color={theater.isShowingMovie ? "secondary" : "primary"}
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: 12,
+                      }}
+                    />
+                  )}
+                </Box>
                 <Box
                   sx={{
                     display: "flex",

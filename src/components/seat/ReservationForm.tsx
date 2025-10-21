@@ -9,7 +9,7 @@ import SubmitButton from "@/components/common/SubmitButton";
 import { ReservationRequestSchema } from "@/types/form";
 import theme from "@/styles/theme";
 import { getSeatDataForClient } from "@/actions/seatActions";
-import { createReservation } from "@/actions/reservationActions";
+import { createReservation } from "@/actions/reservation/createReservation";
 import { useRouter } from "next/navigation";
 
 interface reservationProps {
@@ -128,7 +128,7 @@ export default function ReservationForm({
           `予約が完了しました！\n予約コード: ${result.uniqueCode}\n予約ID: ${result.reservationId}`
         );
         // 予約完了ページへリダイレクト
-        router.push(`/reservations/${result.reservationId}`);
+        router.push(`/tickets/${result.reservationId}`);
       } else {
         // エラー時の処理
         setValidationErrors([result.error || "予約に失敗しました"]);

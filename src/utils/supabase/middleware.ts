@@ -54,7 +54,7 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith("/signup") &&
     !request.nextUrl.pathname.startsWith("/auth") &&
     !request.nextUrl.pathname.startsWith("/error") &&
-    !request.nextUrl.pathname.startsWith("/movies/**") &&
+    !request.nextUrl.pathname.startsWith("/movies") &&
     request.nextUrl.pathname !== "/theater" &&
     !request.nextUrl.pathname.startsWith("/theater/**/screen") &&
     !(

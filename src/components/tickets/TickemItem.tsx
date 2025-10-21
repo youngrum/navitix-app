@@ -1,6 +1,6 @@
 "use client";
 import { formatTimestampToJST } from "@/lib/getShowTimeUtils";
-import { ReservationData } from "@/types/tickets";
+import { ReservationsTable } from "@/types/reservation";
 import {
   Card,
   CardMedia,
@@ -13,38 +13,15 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import theme from "@/styles/theme";
+import { formatDate } from "@/lib/formatter";
 
 type TicketItemProps = {
-  reservation: ReservationData;
+  reservation: ReservationsTable;
 };
 
 export default function TicketItem({ reservation }: TicketItemProps) {
   const isCancelled = !!reservation.cancelled_at;
-
-  const startTimeFormatted = new Date(
-    reservation.start_time
-  ).toLocaleTimeString("ja-JP", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  const endTimeFormatted = new Date(reservation.end_time).toLocaleTimeString(
-    "ja-JP",
-    {
-      hour: "2-digit",
-      minute: "2-digit",
-    }
-  );
-
-  const dateFormatted = new Date(reservation.start_time).toLocaleDateString(
-    "ja-JP",
-    {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }
-  );
-
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
       case "PAID":
@@ -54,7 +31,7 @@ export default function TicketItem({ reservation }: TicketItemProps) {
       case "EXPIRED":
         return "error";
       case "CANCELLED":
-        return "default";
+        return "secondary";
       default:
         return "default";
     }
@@ -65,7 +42,7 @@ export default function TicketItem({ reservation }: TicketItemProps) {
       PAID: "支払済",
       PENDING: "未決済",
       EXPIRED: "期限切れ",
-      CANCELLED: "キャンセル済",
+      CANCELLED: "キャンセル",
     };
     return labels[status] || status;
   };
@@ -74,32 +51,37 @@ export default function TicketItem({ reservation }: TicketItemProps) {
     <MuiLink
       component={NextLink}
       href={`/tickets/${reservation.id}`}
-      sx={{ textDecoration: "none" }}
+      underline="none"
     >
       <Card
         sx={{
           display: "flex",
           my: 4,
-          transition: "transform 0.2s, box-shadow 0.2s",
-          "&:hover": {
-            transform: "translateY(-2px)",
-            boxShadow: 4,
-          },
-          opacity: isCancelled ? 0.6 : 1,
+          p: 2,
+          alignItems: "center",
+          border: `1px solid ${theme.palette.grey[300]}`,
         }}
       >
-        {/* ポスター画像 */}
-        <CardMedia
-          component="img"
+        <Box
           sx={{
-            width: 120,
-            height: 160,
-            objectFit: "cover",
-            flexShrink: 0,
+            aspectRatio: 1 / 1.5,
+            maxWidh: "100%",
+            position: "relative",
           }}
-          image={`https://image.tmdb.org/t/p/w500${reservation.poster_path || "/images/placeholder.jpg"}`}
-          alt={reservation.movie_title}
-        />
+        >
+          {/* ポスター画像 */}
+          <CardMedia
+            component="img"
+            sx={{
+              width: 120,
+              height: 180,
+              objectFit: "cover",
+              flexShrink: 0,
+            }}
+            image={`https://image.tmdb.org/t/p/w500${reservation.poster_path || "/images/placeholder.jpg"}`}
+            alt={reservation.movie_title}
+          />
+        </Box>
 
         {/* コンテンツ */}
         <CardContent
@@ -121,16 +103,15 @@ export default function TicketItem({ reservation }: TicketItemProps) {
           >
             <Typography
               variant="h6"
+              fontSize={16}
               sx={{
                 fontWeight: 600,
                 flex: 1,
                 pr: 1,
-                textDecoration: isCancelled ? "line-through" : "none",
               }}
             >
               {reservation.movie_title}
             </Typography>
-            <ChevronRightIcon sx={{ color: "text.secondary" }} />
           </Box>
 
           {/* ステータスチップ */}
@@ -141,22 +122,12 @@ export default function TicketItem({ reservation }: TicketItemProps) {
               color={getPaymentStatusColor(reservation.payment_status)}
               variant={isCancelled ? "outlined" : "filled"}
             />
-            {isCancelled && (
-              <Chip
-                label="キャンセル"
-                size="small"
-                color="error"
-                variant="outlined"
-                sx={{ ml: 1 }}
-              />
-            )}
           </Box>
 
           {/* 上映時刻と日付 */}
           <Stack spacing={0.5} sx={{ mb: 1 }}>
             <Typography variant="body2" color="text.secondary">
-              <strong>{dateFormatted}</strong> · {startTimeFormatted} -{" "}
-              {endTimeFormatted}
+              {formatTimestampToJST(reservation.start_time)}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               スクリーン {reservation.auditorium_id}
@@ -166,11 +137,13 @@ export default function TicketItem({ reservation }: TicketItemProps) {
           {/* キャンセル日時（キャンセルされた場合） */}
           {isCancelled && (
             <Typography variant="caption" color="error" sx={{ mt: "auto" }}>
-              キャンセル日:{" "}
-              {formatTimestampToJST(String(reservation.cancelled_at))}
+              キャンセル日: {formatDate(String(reservation.cancelled_at))}
             </Typography>
           )}
         </CardContent>
+        <Box>
+          <ChevronRightIcon sx={{ color: "text.secondary" }} />
+        </Box>
       </Card>
     </MuiLink>
   );

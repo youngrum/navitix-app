@@ -2,7 +2,7 @@
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import TicketList from "@/components/tickets/TicketList";
 import { Box, Stack } from "@mui/material";
-import { ReservationData } from "@/types/tickets";
+import { ReservationsTable } from "@/types/reservation";
 import { requireAuth } from "@/lib/auth";
 import BackButton from "@/components/common/BackButton";
 import Header1 from "@/components/common/Header1";
@@ -45,11 +45,11 @@ export default async function Page() {
   return (
     <main>
       <ThemeProviderWrapper>
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
           <BackButton returnPath="/movies" />
           <Header1 headerText={header1Text} />
         </Stack>
-        <TicketList reservations={reservationsData as ReservationData[]} />
+        <TicketList reservations={reservationsData as ReservationsTable[]} />
       </ThemeProviderWrapper>
     </main>
   );
