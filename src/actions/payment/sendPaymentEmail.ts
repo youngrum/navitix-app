@@ -17,7 +17,7 @@ export async function sendPaymentEmail(
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: "onboarding@resend.dev",
+        from: `${process.env.EMAIL_FROM_NAME}`,
         to: email,
         subject: "【映画予約】決済手続のご案内",
         html: `
