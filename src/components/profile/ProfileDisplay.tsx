@@ -34,7 +34,7 @@ export default function ProfileDisplay({
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {
     register, // TSX内でinputに渡す
-    handleSubmit, // サブミットイベントのラッパー関数
+    //handleSubmit, // サブミットイベントのラッパー関数
     control,
     formState: { errors },
     // setError, // バックエンドからのエラーメッセージを格納

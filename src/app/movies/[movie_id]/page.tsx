@@ -1,5 +1,4 @@
 // app/movies/[movie_id]/page.tsx
-import { _ResponseMovieDetail } from "@/types/movies";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import Header1 from "@/components/common/Header1";
 import VideoContainer from "@/components/movies/detail/VideoContainer";
@@ -29,9 +28,10 @@ interface MovieIdProps {
 export default async function MovieDetailsPage({ params }: MovieIdProps) {
   // paramsから動的なIDを取得
   const { movie_id } = await params;
+  const movieId = Number(movie_id);
 
   // APIにリクエストを送信
-  const detail = await getMovieDetailData(movie_id);
+  const detail = await getMovieDetailData(movieId);
   const videos = await getMovieVideoData(movie_id);
   const casts = await getMovieCasts(movie_id);
   const newDetail = await newGetMovileDetail(movie_id);

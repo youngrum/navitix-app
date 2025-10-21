@@ -36,7 +36,6 @@ export default async function page({
   }
   const ticketData: ReservationsTable = reservationData[0];
   const newDetail = await newGetMovileDetail(reservationData[0].movie_id);
-  const isCancelled = !!ticketData.cancelled_at;
 
   return (
     <main>
