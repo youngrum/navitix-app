@@ -25,7 +25,7 @@ async function getUpcomingMovieData() {
   try {
     const res: apiResponse<ResponseMovies_results<ResponseMovies[]>> =
       await tmdbApi.get("/movie/upcoming");
-    console.log(res.data.results);
+    //  console.log("/movie/upcoming>>>>>>>",res.data.results);
     return res.data.results;
   } catch (error) {
     console.log("Failed to fetch", error);
@@ -61,7 +61,7 @@ export default async function Page() {
     getUpcomingMovieData(),
     getTop5MovieData(),
   ]);
-  const header1Text = "movies";
+  const header1Text = "映画作品";
   const header2TextNowPlaying = "上映中";
   const header2TextUpcoming = "公開予定";
 

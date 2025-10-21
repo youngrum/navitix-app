@@ -1,13 +1,4 @@
 // app/movies/[movie_id]/page.tsx
-import tmdbApi from "@/services/tmdbApi";
-import { apiResponse } from "@/types/apiResponse";
-import {
-  ResponseMovieDetail,
-  ResponseMovieVideos,
-  ResponseMovies_results,
-  ResponseCredits_casts,
-  _ResponseMovieDetail,
-} from "@/types/movies";
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import Header1 from "@/components/common/Header1";
 import VideoContainer from "@/components/movies/detail/VideoContainer";
@@ -16,9 +7,15 @@ import Header2 from "@/components/common/Header2";
 import RatingStar from "@/components/movies/detail/RatingStar";
 import { Stack } from "@mui/material";
 import BackButton from "@/components/common/BackButton";
-import SubmitButton from "@/components/common/SubmitButton";
-import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
 import _DetailInfo from "@/components/movies/detail/_DetailInfo";
+import LinkButton from "@/components/common/LinkButton";
+import {
+  getMovieDetailData,
+  getMovieVideoData,
+  getMovieCasts,
+  newGetMovileDetail,
+  getLatestOfficialTrailerKey,
+} from "@/lib/movieDetailUtils";
 
 // propsの型定義
 interface MovieIdProps {
@@ -27,99 +24,17 @@ interface MovieIdProps {
   }>;
 }
 
-// 映画の詳細を取得
-async function getMovieDetailData(movieId: string) {
-  try {
-    const res: apiResponse<ResponseMovieDetail> = await tmdbApi.get(
-      `/movie/${movieId}`
-    );
-    const detail = res.data;
-    console.log("detail>>>>>>>>>>>>>>>>>>>>>", detail);
-    return detail;
-  } catch (error) {
-    console.log("Failed to fetch", error);
-    return null;
-  }
-}
-
-// 映画の動画情報を取得
-async function getMovieVideoData(movieId: string) {
-  try {
-    const res: apiResponse<ResponseMovies_results<ResponseMovieVideos[]>> =
-      await tmdbApi.get(`/movie/${movieId}/videos`);
-    const videoData = res.data.results;
-    // console.log(videoData);
-    return videoData;
-  } catch (error) {
-    console.log("Failed to fetch", error);
-    return null;
-  }
-}
-// 映画のキャスト情報を取得
-async function getMovieCasts(movie_id: string) {
-  try {
-    const res: apiResponse<ResponseCredits_casts> = await tmdbApi.get(
-      `/movie/${movie_id}/credits`
-    );
-    const castsData = res.data.cast;
-    // console.log("castsData>>>>>>>>",castsData);
-    return castsData;
-  } catch (error) {
-    console.log("Failed to fetch", error);
-    return [];
-  }
-}
-
-async function newGetMovileDetail(movie_id: string) {
-  try {
-    const res: apiResponse<_ResponseMovieDetail> =
-      await searchTheaterLocalApi.get(`/movie/get-detail/${movie_id}/`);
-    // console.log("/movie/get-detail/${movie_id}/>>>>>>>>",res.data);
-    return res.data;
-  } catch (error) {
-    console.log("Failed to fetch", error);
-    return null;
-  }
-}
-
 // SSRコンポーネントだからasync/await
 export default async function MovieDetailsPage({ params }: MovieIdProps) {
   // paramsから動的なIDを取得
   const { movie_id } = await params;
+  const movieId = Number(movie_id);
 
   // APIにリクエストを送信
-  const detail = await getMovieDetailData(movie_id);
+  const detail = await getMovieDetailData(movieId);
   const videos = await getMovieVideoData(movie_id);
   const casts = await getMovieCasts(movie_id);
   const newDetail = await newGetMovileDetail(movie_id);
-  const getLatestOfficialTrailerKey = (videoList: ResponseMovieVideos[]) => {
-    if (!videoList || videoList.length === 0) {
-      return null; // データが存在しない場合はnullを返す
-    }
-
-    // 条件に合う動画をフィルタリング
-    const filtered_videos = videoList.filter(
-      (video) =>
-        (video.type === "Trailer" || video.type === "Teaser") &&
-        video.site === "YouTube"
-    );
-
-    // フィルタリングされた動画が存在しない場合はnullを返す
-    if (filtered_videos.length === 0) {
-      return null;
-    }
-
-    // published_atが最新のものを見つけるためにソート
-    filtered_videos.sort((a, b) => {
-      // 日付文字列を比較して新しい順に並べる
-      return (
-        new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
-      );
-    });
-
-    // ソート後の配列の最初の要素（最も新しいもの）のキーを返す
-    return filtered_videos[0].key;
-  };
 
   // 最新の公式予告編のキーを取得
   let trailerKey = null;
@@ -141,7 +56,10 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
         <CastList castsProps={casts} />
         <Header2 headerText="評価" />
         <RatingStar MovieDetailProps={detail} />
-        <SubmitButton isLoading={false} buttonText="予約する" />
+        <LinkButton
+          buttonTextProps="予約する"
+          toProps={`/theater?movie_id=${movie_id}`}
+        />
       </ThemeProviderWrapper>
     </main>
   );

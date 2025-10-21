@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
-import { ReservationData } from "@/types/tickets";
+import { ReservationsTable } from "@/types/reservation";
 import { Box, Pagination, Stack } from "@mui/material";
 import TicketItem from "@/components/tickets/TickemItem";
 
 type TicketsListProps = {
-  reservations: ReservationData[];
+  reservations: ReservationsTable[];
 };
 
 const ITEMS_PER_PAGE = 10;
@@ -23,8 +23,6 @@ export default function TicketList({ reservations }: TicketsListProps) {
     page: number
   ) => {
     setCurrentPage(page);
-    // ページ変更時にスクロール
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

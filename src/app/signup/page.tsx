@@ -1,11 +1,11 @@
 import ThemeProviderWrapper from "@/components/ThemeProviderWrapper";
 import { Box } from "@mui/material";
 import React from "react";
-import Image from "next/image";
 import Header1 from "@/components/common/Header1";
 import SubText from "@/components/common/SubText";
 import SignInLeads from "@/components/common/SignInLeads";
 import LinkButton from "@/components/common/LinkButton";
+import Logo from "@/components/signup/Logo";
 
 export default function Home() {
   const h1Title = "NaviTix";
@@ -17,18 +17,7 @@ export default function Home() {
   return (
     <main>
       <ThemeProviderWrapper>
-        <Box
-          sx={{
-            position: "relative",
-            margin: "4rem auto 1rem",
-            width: "36vw",
-            height: "24vh",
-            minHeight: "15vh",
-            maxHeight: "24vh",
-          }}
-        >
-          <Image src="/logo.svg" fill alt="logoImage"></Image>
-        </Box>
+        <Logo />
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Header1 headerText={h1Title} />
         </Box>

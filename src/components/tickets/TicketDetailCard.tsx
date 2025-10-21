@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  Grid,
-  Box,
-} from "@mui/material";
+import { Card, CardContent, Typography, Divider, Box } from "@mui/material";
 import { ReservationsTable } from "@/types/reservation";
 
 import {
@@ -132,6 +125,16 @@ export function TicketDetailCard({ ticketData }: ReservationDetailProps) {
               {formatCurrency(ticketData.total_amount)}
             </Typography>
           </Box>
+          {ticketData.cancelled_at && (
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography color="text.secondary" fontSize={14}>
+                キャンセル日時
+              </Typography>
+              <Typography fontWeight="500" fontSize={14}>
+                {formatDate(ticketData.cancelled_at)}
+              </Typography>
+            </Box>
+          )}
         </Box>
       </CardContent>
     </Card>
