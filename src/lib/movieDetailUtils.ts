@@ -12,7 +12,7 @@ import {
 } from "@/types/movies";
 
 // 映画の詳細を取得
-export async function getMovieDetailData(movie_id: string) {
+export async function getMovieDetailData(movie_id: number) {
   try {
     const res: apiResponse<ResponseMovieDetail> = await tmdbApi.get(
       `/movie/${movie_id}`

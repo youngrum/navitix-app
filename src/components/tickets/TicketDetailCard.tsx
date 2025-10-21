@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  Grid,
-  Box,
-} from "@mui/material";
+import { Card, CardContent, Typography, Divider, Box } from "@mui/material";
 import { ReservationsTable } from "@/types/reservation";
 
 import {
