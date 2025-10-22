@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SignInLeads from "@/components/common/SignInLeads";
 import Divider from "@mui/material/Divider";
-import { profileSchema, ProfileFormValues } from "@/types/form";
+import { ProfileFormValues, profileDisplaySchema } from "@/types/form";
 import InputNameArea from "@/components/common/InputNameArea";
 import InputBirthdayArea from "@/components/common/InputBirthdayArea";
 import LinkButton from "@/components/common/LinkButton";
@@ -39,8 +39,8 @@ export default function ProfileDisplay({
     formState: { errors },
     // setError, // バックエンドからのエラーメッセージを格納
   } = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema),
-    mode: "onBlur", //フォーカスが外れた時をトリガーとする
+    resolver: zodResolver(profileDisplaySchema),
+    mode: "onBlur",
     defaultValues: {
       email: userEmail,
       accountName: initialData?.name || "",

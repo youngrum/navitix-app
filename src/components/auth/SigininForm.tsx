@@ -12,13 +12,7 @@ import Divider from "@mui/material/Divider";
 import { SigninFormValues, signinSchema } from "@/types/form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-type modalStatus =
-  | "mail-success"
-  | "mail-error"
-  | "locked"
-  | "notice"
-  | "progress";
+import { modalStatus } from "@/types/modalStatus";
 
 export default function SigninForm() {
   const submitText = "サインイン";
