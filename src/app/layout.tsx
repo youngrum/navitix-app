@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "navitix-app",
-  description: "これはNext.j(app router)で作成したポートフォリオアプリです",
+  description: "これはNext.js(app router)で作成したポートフォリオアプリです",
 };
 
 export default function RootLayout({
