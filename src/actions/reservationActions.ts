@@ -4,17 +4,11 @@ import { createServerSupabaseClient } from "@/utils/supabase/server";
 import { ReservationRequestSchema } from "@/types/form";
 import { schedules } from "@/lib/screenDB";
 import { Resend } from "resend";
+import { generateUniqueCode } from "./utils/generateUniqueCode";
 
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-
-// ユニークコード生成関数
-function generateUniqueCode(): string {
-  const timestamp = Date.now().toString(36);
-  const randomStr = Math.random().toString(36).substring(2, 10);
-  return `${timestamp}-${randomStr}`.toUpperCase();
-}
 
 // メール送信関数
 async function sendPaymentEmail(
@@ -31,7 +25,7 @@ async function sendPaymentEmail(
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: "onboarding@resend.dev", // テスト用アドレス
+        from: `${process.env.EMAIL_FROM_NAME}`,
         to: email,
         subject: "【映画予約】決済手続きのご案内",
         html: `
@@ -439,6 +433,39 @@ export async function lockSeats(
       success: true,
       lockedUntil: lockedUntil.toISOString(),
       lockedCount: seatIds.length,
+    };
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    return {
+      success: false,
+      error: "予期しないエラーが発生しました",
+    };
+  }
+}
+
+// 期限切れの仮予約を削除するクリーンアップ関数
+export async function cleanupExpiredLocks() {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    const { data, error } = await supabase
+      .from("seat_reservations")
+      .delete()
+      .eq("status", "LOCKED")
+      .lt("locked_until", new Date().toISOString())
+      .select();
+
+    if (error) {
+      console.error("Cleanup expired locks error:", error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      success: true,
+      deletedCount: data?.length || 0,
     };
   } catch (error) {
     console.error("Unexpected error:", error);
