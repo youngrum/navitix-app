@@ -10,6 +10,12 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 // Supabaseクライアント Service Role
 const supabase = createAdminClient();
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");

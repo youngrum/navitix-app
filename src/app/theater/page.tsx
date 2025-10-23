@@ -35,7 +35,7 @@ export default async function Page({
   const header1Text = "映画館";
   const { movie_id } = await searchParams;
   const allTheatersData = await getAllTheaterData(movie_id);
-  console.log(allTheatersData);
+  // console.log("allTheatersData>>>>>>>>>", allTheatersData);
 
   return (
     <main>

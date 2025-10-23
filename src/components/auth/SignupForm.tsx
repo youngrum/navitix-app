@@ -109,6 +109,7 @@ export default function SignupForm() {
           openProps={modalOpen}
           messageProps={modalMessage}
           messageHeaderProps={modalMessageHeader}
+          stausProps={modalIconStaus}
         />
       </form>
     </>

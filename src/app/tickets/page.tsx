@@ -1,7 +1,7 @@
 // app/tickets/page.tsx
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import TicketList from "@/components/tickets/TicketList";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { ReservationsTable } from "@/types/reservation";
 import { requireAuth } from "@/lib/auth";
 import BackButton from "@/components/common/BackButton";
@@ -23,7 +23,6 @@ export default async function Page() {
 
   if (error) {
     console.error("予約の取得エラー:", error);
-    // ユーザーにエラーメッセージを表示
     return (
       <Box sx={{ color: "#FFFFFF", padding: 4 }}>
         チケット情報の取得に失敗しました。時間をおいて再度お試しください。
@@ -31,17 +30,6 @@ export default async function Page() {
     );
   }
 
-  // 4. データがない場合のハンドリング（オプション）
-  if (!reservationsData || reservationsData.length === 0) {
-    return (
-      <Box sx={{ color: "#FFFFFF", padding: 4 }}>
-        現在、予約済みのチケットはありません。
-      </Box>
-    );
-  }
-
-  // 5. 取得したデータをコンポーネントに渡して表示
-  // 取得したデータは、型キャストするか、Supabaseのジェネリック型を使用するのが理想です
   return (
     <main>
       <ThemeProviderWrapper>
@@ -49,7 +37,11 @@ export default async function Page() {
           <BackButton returnPath="/movies" />
           <Header1 headerText={header1Text} />
         </Stack>
-        <TicketList reservations={reservationsData as ReservationsTable[]} />
+        {reservationsData ? (
+          <TicketList reservations={reservationsData as ReservationsTable[]} />
+        ) : (
+          <Typography>予約済みのチケットはありません</Typography>
+        )}
       </ThemeProviderWrapper>
     </main>
   );

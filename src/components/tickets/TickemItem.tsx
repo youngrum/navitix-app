@@ -42,7 +42,7 @@ export default function TicketItem({ reservation }: TicketItemProps) {
       PAID: "支払済",
       PENDING: "未決済",
       EXPIRED: "期限切れ",
-      CANCELLED: "キャンセル",
+      CANCELLED: "キャンセル済",
     };
     return labels[status] || status;
   };
@@ -78,7 +78,11 @@ export default function TicketItem({ reservation }: TicketItemProps) {
               objectFit: "cover",
               flexShrink: 0,
             }}
-            image={`https://image.tmdb.org/t/p/w500${reservation.poster_path || "/images/placeholder.jpg"}`}
+            image={
+              !reservation.poster_path
+                ? "/noPosterImage.png"
+                : `https://image.tmdb.org/t/p/w500${reservation.poster_path}`
+            }
             alt={reservation.movie_title}
           />
         </Box>

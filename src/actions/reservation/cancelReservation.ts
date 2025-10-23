@@ -41,7 +41,7 @@ export async function cancelReservation(
 
     const { reservationId, reason } = params;
 
-    console.log(`\n=== キャンセル処理開始: reservation ${reservationId} ===`);
+    // console.log(`\n=== キャンセル処理開始: reservation ${reservationId} ===`);
 
     // 予約情報を取得
     const { data: reservations, error: fetchError } = await supabase
@@ -59,8 +59,8 @@ export async function cancelReservation(
     }
 
     const reservation = reservations[0];
-    console.log(`Payment Status: ${reservation.payment_status}`);
-    console.log(`Stripe Payment ID: ${reservation.stripe_payment_id}`);
+    // console.log(`Payment Status: ${reservation.payment_status}`);
+    // console.log(`Stripe Payment ID: ${reservation.stripe_payment_id}`);
 
     // キャンセル済みまたは期限切れの予約はキャンセル不可
     if (
@@ -75,7 +75,7 @@ export async function cancelReservation(
 
     // PAID状態の場合、Stripeで払い戻し処理を行う
     if (reservation.payment_status === "PAID") {
-      console.log("PAID状態 → Stripe払い戻し処理を実行");
+      // console.log("PAID状態 → Stripe払い戻し処理を実行");
       const refundResult = await refundStripePayment(reservationId);
 
       if (!refundResult.success) {
@@ -105,7 +105,7 @@ export async function cancelReservation(
 
     if (seatReservations && seatReservations.length > 0) {
       const seatIds = seatReservations.map((s) => s.seat_id);
-      console.log(`座席を復元: ${seatIds.join(", ")}`);
+      // console.log(`座席を復元: ${seatIds.join(", ")}`);
 
       // 座席の可用性を復元
       const { error: seatsUpdateError } = await supabase
