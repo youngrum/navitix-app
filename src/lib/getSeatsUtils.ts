@@ -81,7 +81,7 @@ export async function getSeatData(auditoriumId: string, scheduleId: string) {
   }
 
   const movieTitle = movieData.title;
-  const posterPath = movieData.poster_path ?? "-";
+  const posterPath = movieData.poster_path ?? "";
 
   // seatsテーブルから対象の上映室を持つレコードを取得
   const { data: seatData, error: seatError } = await supabase

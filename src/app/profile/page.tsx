@@ -9,7 +9,7 @@ import { createServerSupabaseClient } from "@/utils/supabase/server";
 
 export default async function page() {
   const header1Text = "Your Profile";
-  const subText = "プロフィールを完成させてください。";
+  const subText = "プロフィールを完成してください";
   // 既存のプロフィール情報を取得
   const data = await requireAuth();
   const userId = data.user?.id;

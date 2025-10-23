@@ -35,6 +35,7 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
   const videos = await getMovieVideoData(movie_id);
   const casts = await getMovieCasts(movie_id);
   const newDetail = await newGetMovileDetail(movie_id);
+  const header1Text = "映画詳細";
 
   // 最新の公式予告編のキーを取得
   let trailerKey = null;
@@ -47,7 +48,7 @@ export default async function MovieDetailsPage({ params }: MovieIdProps) {
       <ThemeProviderWrapper>
         <Stack direction="row" alignItems="center" spacing={2}>
           <BackButton returnPath="/movies" />
-          <Header1 headerText="detail" />
+          <Header1 headerText={header1Text} />
         </Stack>
         <_DetailInfo MovieDetailProps={newDetail} />
         <Header2 headerText="トレーラー" />

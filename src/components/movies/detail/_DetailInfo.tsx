@@ -22,7 +22,7 @@ export default function DetailInfo({ MovieDetailProps }: MovieDetailInfoProps) {
 
   return (
     <>
-      <Stack direction="row" spacing={1} sx={{ width: "100%" }}>
+      <Stack direction="row" spacing={1} sx={{ width: "100%", mt: 4 }}>
         {/* 画像コンテナ */}
         <Box
           sx={{
@@ -33,14 +33,14 @@ export default function DetailInfo({ MovieDetailProps }: MovieDetailInfoProps) {
             flexShrink: 0, // Stackにスペースが足りなくても、縮小させない
             flexBasis: "55%", // Stackの幅の55%
             aspectRatio: "1 / 1.5", // ポスターのアスペクト比を維持して、Boxの高さを確保
-            mx: { xs: "auto", md: "unset" }, //
+            mx: { xs: "auto", md: "unset" },
           }}
         >
           <Image
             src={
-              MovieDetailProps?.poster_path !== ""
-                ? `https://image.tmdb.org/t/p/w500${MovieDetailProps?.poster_path}`
-                : ""
+              !MovieDetailProps?.poster_path
+                ? "/noPosterImage.png"
+                : `https://image.tmdb.org/t/p/w500${MovieDetailProps?.poster_path}`
             }
             alt={MovieDetailProps?.title ?? "タイトル不明"}
             fill // 親要素のBoxいっぱいに広がる

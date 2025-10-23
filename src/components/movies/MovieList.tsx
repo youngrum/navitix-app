@@ -38,7 +38,11 @@ export default function MovieList({ movies }: MovieListProps) {
               }}
             >
               <Image
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                src={
+                  !movie.poster_path
+                    ? "/noPosterImage.png"
+                    : `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                }
                 alt={`${movie.title}`}
                 width={200}
                 height={300}
