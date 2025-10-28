@@ -66,7 +66,7 @@ export const getCertification = (
   const certifiedItem = release_dates?.find(
     (item) => item.certification !== ""
   );
-  console.log("certifiedItem>>>>>>>>>", certifiedItem);
+  // console.log("certifiedItem>>>>>>>>>", certifiedItem);
 
   // 条件に合う要素が見つかればそのcertificationを、なければ'-'を返す
   return certifiedItem ? certifiedItem.certification : "-";

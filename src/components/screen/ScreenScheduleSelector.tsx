@@ -1,11 +1,15 @@
 // components/screen/ScreenScheduleSelector.tsx
 "use client";
 import { ScreenSchedule } from "@/types/screen";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import LinkButton from "@/components/common/LinkButton";
+import {
+  findFirstAvailableTime,
+  isShowtimeDisabled,
+} from "@/lib/getScreenUtils";
 
 interface ScreenProps {
   schedulesProps: ScreenSchedule[];
@@ -55,11 +59,15 @@ export default function ScreenScheduleSelector({
   theaterId,
   auditoriumId,
 }: ScreenProps) {
+  // 日付のstatue
   const [selectedDate, setSelectedDate] = useState<string>(
     schedulesProps?.[0]?.date || ""
   );
-  const [selectedTime, setSelectedTime] = useState<string>(
-    schedulesProps?.[0]?.showtimes[0].start_time || ""
+  // 現在時刻のstate
+  const [currentTime] = useState(() => new Date());
+  // 上映時刻のstate
+  const [selectedTime, setSelectedTime] = useState<string>(() =>
+    findFirstAvailableTime(schedulesProps, currentTime)
   );
 
   // 選択された日付を取得
@@ -68,6 +76,26 @@ export default function ScreenScheduleSelector({
   const selectedShowtime = selectedSchedule?.showtimes.find(
     (st) => st.start_time === selectedTime
   );
+
+  // 上映時刻が過ぎた時刻の選択回避するための監視
+  useEffect(() => {
+    if (selectedTime && isShowtimeDisabled(selectedTime, currentTime)) {
+      // 選択中の時刻が締切を過ぎた場合、その日の次の予約可能な時刻を検索
+      const nextAvailableShowtime = selectedSchedule?.showtimes.find(
+        (showtime) =>
+          // 現在選択中の時刻より後にあり、かつ予約可能な時刻
+          showtime.start_time > selectedTime &&
+          !isShowtimeDisabled(showtime.start_time, currentTime)
+      );
+
+      if (nextAvailableShowtime) {
+        setSelectedTime(nextAvailableShowtime.start_time);
+      } else {
+        // 次の時刻がない場合、選択を解除
+        setSelectedTime("");
+      }
+    }
+  }, [currentTime, selectedTime, selectedSchedule]);
 
   // クエリパラメータ付きURLを動的に生成
   const getSeatSelectionUrl = () => {
@@ -117,15 +145,28 @@ export default function ScreenScheduleSelector({
 
       {/* 上映時間ボタン */}
       <Box sx={{ display: "flex", overflowX: "auto" }}>
-        {selectedSchedule?.showtimes.map((showtime) => (
-          <CustomShowtimeButton
-            key={showtime.id}
-            onClick={() => setSelectedTime(showtime.start_time)}
-            isSelected={selectedTime === showtime.start_time}
-          >
-            {showtime.play_beginning}
-          </CustomShowtimeButton>
-        ))}
+        {selectedSchedule?.showtimes.map((showtime) => {
+          // 選択不可フラグを計算
+          const isDisabled = isShowtimeDisabled(
+            showtime.start_time,
+            currentTime
+          );
+          if (isDisabled) {
+            return null; // 予約不可の場合はボタンをレンダリングしない
+          }
+          return (
+            <CustomShowtimeButton
+              key={showtime.id}
+              onClick={() => {
+                setSelectedTime(showtime.start_time);
+              }}
+              // 選択状態
+              isSelected={selectedTime === showtime.start_time && !isDisabled}
+            >
+              {showtime.play_beginning}
+            </CustomShowtimeButton>
+          );
+        })}
       </Box>
       {/* 座席選択へ進むボタン */}
       <LinkButton

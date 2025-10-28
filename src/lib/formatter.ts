@@ -97,3 +97,23 @@ export function formatPaidAt(timestamp: string | Date | null): string {
   }
   return formatDate(timestamp);
 }
+
+/**
+ * Dateオブジェクトを日本時間(JST)のISO 8601形式文字列（タイムゾーンオフセット付き）に変換する
+ * 例: "2025-10-28T10:00:00+09:00"
+ */
+export const toJSTISOString = (date: Date): string => {
+  const pad = (num: number): string => num.toString().padStart(2, "0");
+  // ローカル（JST）の時刻要素を取得
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1); // getMonth()は0から始まる
+  const day = pad(date.getDate());
+  const hour = pad(date.getHours());
+  const minute = pad(date.getMinutes());
+  const second = pad(date.getSeconds());
+
+  // 日本時間（JST）のタイムゾーンオフセットを付与
+  const timezoneOffset = "+09:00";
+
+  return `${year}-${month}-${day}T${hour}:${minute}:${second}${timezoneOffset}`;
+};
