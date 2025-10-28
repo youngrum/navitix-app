@@ -1,5 +1,6 @@
 "use server";
 
+import { toJSTISOString } from "@/lib/formatter";
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 
 /**
@@ -66,7 +67,7 @@ export async function lockSeats(
     const lockData = seatIds.map((seatId) => ({
       seat_id: seatId,
       status: "LOCKED" as const,
-      locked_until: lockedUntil.toISOString(),
+      locked_until: toJSTISOString(lockedUntil),
       reservation_id: null,
     }));
 
@@ -87,7 +88,7 @@ export async function lockSeats(
 
     return {
       success: true,
-      lockedUntil: lockedUntil.toISOString(),
+      lockedUntil: toJSTISOString(lockedUntil),
       lockedCount: seatIds.length,
     };
   } catch (error) {

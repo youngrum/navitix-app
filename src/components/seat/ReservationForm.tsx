@@ -133,9 +133,11 @@ export default function ReservationForm({
         // 成功時の処理
         setModalMessageHeader("Reservation Complete!");
         setModalIconStatus("mail-success");
-        setModalMessage(
-          `予約が完了しました!\n予約コード: ${result.uniqueCode}\n予約ID: ${result.reservationId}`
-        );
+        setModalMessage(`
+        予約が完了しました。
+        確認メールをお送りしましたので、
+        ご確認ください。
+        `);
         setModalOpen(true);
 
         // 予約完了ページへリダイレクト
@@ -193,6 +195,7 @@ export default function ReservationForm({
         messageProps={modalMessage}
         messageHeaderProps={modalMessageHeader}
         stausProps={modalIconStatus}
+        onCloseProps={() => setModalOpen(false)}
       />
     </Box>
   );

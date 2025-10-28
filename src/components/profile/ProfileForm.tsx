@@ -131,6 +131,7 @@ export default function ProfileForm({
           messageProps={modalMessage}
           messageHeaderProps={modalMessageHeader}
           stausProps={mobalIconStatus}
+          onCloseProps={() => setModalOpen(false)}
         />
       </form>
       {isLoading && <CircularProgress color="secondary" />}

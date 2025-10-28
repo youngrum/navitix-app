@@ -76,7 +76,13 @@ export default async function Page({ params, searchParams }: SeatPageProps) {
             mx: "auto",
           }}
         >
-          <Image src="/screen/screenBase.png" alt={auditorium_name} fill />
+          <Image
+            src="/screen/screenBase.png"
+            alt={auditorium_name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={true}
+          />
           {auditorium_name && (
             <Typography
               sx={{

@@ -4,6 +4,7 @@
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import Stripe from "stripe";
+import { toJSTISOString } from "@/lib/formatter";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -139,7 +140,7 @@ export async function cancelReservation(
       .from("reservations")
       .update({
         payment_status: "CANCELLED",
-        cancelled_at: new Date().toISOString(),
+        cancelled_at: toJSTISOString(new Date()),
         cancellation_reason: reason || null,
       })
       .eq("id", reservationId);
@@ -321,7 +322,7 @@ export async function handleChargeRefunded(event: Stripe.Event): Promise<void> {
     .from("reservations")
     .update({
       payment_status: "REFUNDED",
-      refunded_at: new Date().toISOString(),
+      refunded_at: toJSTISOString(new Date()),
     })
     .eq("id", reservation.id);
 

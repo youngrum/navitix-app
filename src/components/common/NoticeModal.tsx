@@ -16,6 +16,7 @@ export interface ModalOpenProps {
     | "locked"
     | "notice"
     | "progress";
+  onCloseProps: () => void;
 }
 
 const style = {
@@ -36,6 +37,7 @@ export default function NoticeModal({
   messageProps,
   messageHeaderProps,
   stausProps = "mail-success",
+  onCloseProps,
 }: ModalOpenProps) {
   const getIconAndColor = () => {
     switch (stausProps) {
@@ -74,6 +76,13 @@ export default function NoticeModal({
   };
   const { icon } = getIconAndColor();
 
+  const handleContentClick = () => {
+    // progress状態ではない場合のみ、モーダルを閉じる処理を実行
+    if (stausProps !== "progress") {
+      onCloseProps();
+    }
+  };
+
   return (
     <>
       <Modal
@@ -89,7 +98,7 @@ export default function NoticeModal({
           },
         }}
       >
-        <Box sx={style}>
+        <Box sx={style} onClick={handleContentClick}>
           <Typography
             id="modal-modal-title"
             variant="h5"
@@ -107,7 +116,10 @@ export default function NoticeModal({
           >
             {icon}
           </Box>
-          <Typography id="modal-modal-description" sx={{ fontSize: "14px" }}>
+          <Typography
+            id="modal-modal-description"
+            sx={{ fontSize: "14px", whiteSpace: "pre-wrap" }}
+          >
             {messageProps}
           </Typography>
         </Box>

@@ -30,6 +30,7 @@ export async function sendPaymentEmail(
               <p><strong>座席(${seatCount}):</strong> ${seatInfo}</p>
             </div>
             <p>以下のリンクから決済を完了してください。</p>
+            <p>テスト用クレカのカード番号は、「4242424242424242」です。 </p>
             <p style="color: #d9534f;"><strong>有効期限: 1時間</strong></p>
             <div style="text-align: center; margin: 30px 0;">
               <a href="${checkoutUrl}" 
