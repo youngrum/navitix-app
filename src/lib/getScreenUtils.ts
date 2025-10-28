@@ -40,7 +40,7 @@ export const generateScheduleData = (): Schedule[] => {
   let idCounter = 1;
 
   const formatDate = (date: Date): string => {
-    return date.toISOString().split("T")[0];
+    return toJSTISOString(date).split("T")[0];
   };
 
   const today = new Date();
@@ -77,7 +77,7 @@ export const generateScheduleData = (): Schedule[] => {
   const endDate = new Date(END_DATE_ISO);
 
   while (currentDate <= endDate) {
-    const dateString = currentDate.toISOString().split("T")[0];
+    const dateString = toJSTISOString(currentDate).split("T")[0];
 
     // 1. 上映室のIDをループ
     for (let audId = 1; audId <= TOTAL_AUDITORIUMS; audId++) {

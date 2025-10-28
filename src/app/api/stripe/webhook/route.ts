@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import Stripe from "stripe";
 import { handleChargeRefunded } from "@/actions/reservation/cancelReservation";
+import { toJSTISOString } from "@/lib/formatter";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
@@ -128,8 +129,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
     const paidAt =
       session.payment_status === "paid" && session.created
-        ? new Date(session.created * 1000).toISOString()
-        : new Date().toISOString();
+        ? toJSTISOString(new Date(session.created * 1000))
+        : toJSTISOString(new Date());
 
     // 予約ステータスを PAID に更新 + stripe_payment_idを保存
     const { data: reservationData, error: reservationError } = await supabase

@@ -53,7 +53,7 @@ export async function createStripeSession(
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/reservation/complete?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/tickets/{reservation_id}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/reservation/cancel?reservation_id=${reservationId}`,
       metadata: {
         reservation_id: reservationId.toString(),

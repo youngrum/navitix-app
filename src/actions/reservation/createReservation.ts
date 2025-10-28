@@ -11,6 +11,7 @@ import {
 import { createStripeSession } from "@/actions/payment/createStripeSession";
 import { sendPaymentEmail } from "@/actions/payment/sendPaymentEmail";
 import { CreateReservationParams } from "@/types/reservation";
+import { toJSTISOString } from "@/lib/formatter";
 
 /**
  * メイン予約作成処理
@@ -115,7 +116,9 @@ export async function createReservation(formData: CreateReservationParams) {
 
     // 予約日時＋1時間のタイムスタンプを生成
     const now = new Date();
-    const lockedUntil = new Date(now.getTime() + 60 * 60 * 1000).toISOString();
+    const lockedUntil = toJSTISOString(
+      new Date(now.getTime() + 60 * 60 * 1000)
+    );
 
     // seat_reservationsテーブルに複数レコードを一括作成
     const seatReservationsData = selected_seat_ids.map((seatId) => ({

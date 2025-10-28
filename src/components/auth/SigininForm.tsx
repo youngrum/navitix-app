@@ -102,6 +102,7 @@ export default function SigninForm() {
           messageProps={modalMessage}
           messageHeaderProps={modalMessageHeader}
           stausProps={modalIconStaus}
+          onCloseProps={() => setModalOpen(false)}
         />
       </form>
     </>

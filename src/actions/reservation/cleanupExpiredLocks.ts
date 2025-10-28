@@ -1,5 +1,6 @@
 "use server";
 
+import { toJSTISOString } from "@/lib/formatter";
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 
 /**
@@ -13,7 +14,7 @@ export async function cleanupExpiredLocks() {
       .from("seat_reservations")
       .delete()
       .eq("status", "LOCKED")
-      .lt("locked_until", new Date().toISOString())
+      .lt("locked_until", toJSTISOString(new Date()))
       .select();
 
     if (error) {
