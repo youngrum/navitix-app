@@ -11,6 +11,7 @@ import SignInLeads from "@/components/common/SignInLeads";
 import Divider from "@mui/material/Divider";
 import { SignUpFormValues, signUpSchema } from "@/types/form";
 import { useState } from "react";
+import { modalStatus } from "@/types/modalStatus";
 
 export default function SignupForm() {
   const submitText = "アカウント作成";
@@ -20,13 +21,15 @@ export default function SignupForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessageHeader, setModalMessageHeader] = useState("");
+  const [modalIconStaus, setModalIconStatus] =
+    useState<modalStatus>("mail-success");
   const [modalMessage, setModalMessage] = useState("");
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
   const {
     register, // TSX内でinputに渡す
     handleSubmit, // サブミットイベントのラッパー関数
     formState: { errors },
-    setError, // バックエンドからのエラーメッセージを格納
+    // setError, // バックエンドからのエラーメッセージを格納
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     mode: "onBlur", //フォーカスが外れた時をトリガーとする
@@ -41,13 +44,13 @@ export default function SignupForm() {
         email: data.email,
         password: data.password,
         options: {
-          emailRedirectTo:
-            "http://localhost:3000/auth/callback?next=/profile/edit",
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/profile/edit`,
         },
       });
 
       if (error) {
         setModalMessageHeader("Sending failed...");
+        setModalIconStatus("notice");
         // Supabaseからの特定のエラーを処理
         console.error("Supabaseサインアップエラー:", error.message);
         const errorMessage = error.message.trim().toLowerCase();
@@ -64,6 +67,7 @@ export default function SignupForm() {
       } else {
         // サインアップ成功
         setModalMessageHeader("Mail was sent!");
+        setModalIconStatus("mail-success");
         setModalMessage(
           "サインアップに成功しました。認証メールをご確認ください。"
         );
@@ -73,6 +77,7 @@ export default function SignupForm() {
       // ネットワークエラーなど、予期せぬ実行時エラーを捕捉
       console.error("予期せぬエラー:", err);
       setModalMessageHeader("Sending failed...");
+      setModalIconStatus("notice");
       setModalMessage(
         "システムエラーが発生しました。時間をおいて再度お試しください。"
       );
@@ -104,6 +109,7 @@ export default function SignupForm() {
           openProps={modalOpen}
           messageProps={modalMessage}
           messageHeaderProps={modalMessageHeader}
+          stausProps={modalIconStaus}
         />
       </form>
     </>

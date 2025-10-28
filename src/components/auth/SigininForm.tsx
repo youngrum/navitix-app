@@ -11,19 +11,15 @@ import SignInLeads from "@/components/common/SignInLeads";
 import Divider from "@mui/material/Divider";
 import { SigninFormValues, signinSchema } from "@/types/form";
 import { useState } from "react";
-
-type modalStatus =
-  | "mail-success"
-  | "mail-error"
-  | "locked"
-  | "notice"
-  | "progress";
+import { useRouter } from "next/navigation";
+import { modalStatus } from "@/types/modalStatus";
 
 export default function SigninForm() {
   const submitText = "サインイン";
   const leadText = "パスワードを忘れた方は";
   const toLogIn = "/reset-password";
   const readOnly = false;
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessageHeader, setModalMessageHeader] = useState("");
@@ -35,7 +31,7 @@ export default function SigninForm() {
     register, // TSX内でinputに渡す
     handleSubmit, // サブミットイベントのラッパー関数
     formState: { errors },
-    setError, // バックエンドからのエラーメッセージを格納
+    // setError, // バックエンドからのエラーメッセージを格納
   } = useForm<SigninFormValues>({
     resolver: zodResolver(signinSchema),
     mode: "onBlur", //フォーカスが外れた時をトリガーとする
@@ -67,6 +63,7 @@ export default function SigninForm() {
         setModalMessage("このままお待ちください");
         setModalIconStatus("progress");
         setModalOpen(true);
+        router.push(`/`);
       }
     } catch (err) {
       // ネットワークエラーなど、予期せぬ実行時エラーを捕捉
@@ -99,7 +96,7 @@ export default function SigninForm() {
         />
         <SignInLeads leadTextProps={leadText} toProps={toLogIn} />
         <Divider />
-        <SubmitButton isLoading={false} buttonText={submitText} />
+        <SubmitButton isLoading={isLoading} buttonText={submitText} />
         <NoticeModal
           openProps={modalOpen}
           messageProps={modalMessage}

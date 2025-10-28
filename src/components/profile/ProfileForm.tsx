@@ -14,6 +14,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CircularProgress } from "@mui/material";
+import { modalStatus } from "@/types/modalStatus";
 
 export interface ProfileFormProps {
   userId: string;
@@ -38,6 +39,8 @@ export default function ProfileForm({
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessageHeader, setModalMessageHeader] = useState("");
   const [modalMessage, setModalMessage] = useState("");
+  const [mobalIconStatus, setModalIconStatus] =
+    useState<modalStatus>("success");
   const router = useRouter();
 
   // React Hook Formがzodスキーマ定義でバリデーションできるように宣言
@@ -46,7 +49,7 @@ export default function ProfileForm({
     handleSubmit, // サブミットイベントのラッパー関数
     control,
     formState: { errors },
-    setError, // バックエンドからのエラーメッセージを格納
+    // setError, // バックエンドからのエラーメッセージを格納
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     mode: "onBlur", //フォーカスが外れた時をトリガーとする
@@ -74,20 +77,23 @@ export default function ProfileForm({
       if (error) {
         console.error("プロフィール更新エラー:", error);
         setModalMessageHeader("Update failed...");
+        setModalIconStatus("notice");
         setModalMessage(
           "プロフィールの更新に失敗しました。もう一度お試しください。"
         );
       } else {
         setModalMessageHeader("Update successful!");
+        setModalIconStatus("success");
         setModalMessage("プロフィールを更新しました。");
         // 成功後、リフレッシュまたはリダイレクト
         setTimeout(() => {
-          router.refresh();
+          router.push("/profile");
         }, 2000);
       }
     } catch (err) {
       console.error("予期せぬエラー:", err);
       setModalMessageHeader("Error occurred...");
+      setModalIconStatus("notice");
       setModalMessage(
         "システムエラーが発生しました。時間をおいて再度お試しください。"
       );
@@ -124,6 +130,7 @@ export default function ProfileForm({
           openProps={modalOpen}
           messageProps={modalMessage}
           messageHeaderProps={modalMessageHeader}
+          stausProps={mobalIconStatus}
         />
       </form>
       {isLoading && <CircularProgress color="secondary" />}

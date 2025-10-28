@@ -132,14 +132,6 @@ export default function ScreenScheduleSelector({
         buttonTextProps="座席選択へ進む"
         toProps={getSeatSelectionUrl()}
       />
-      <Button
-        onClick={() => {
-          console.log(selectedSchedule);
-          console.log(selectedShowtime);
-        }}
-      >
-        テスト
-      </Button>
     </>
   );
 }

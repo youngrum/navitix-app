@@ -6,6 +6,10 @@ interface MovieContainerProps {
 }
 
 function VideoContainer({ trailerKeyProps }: MovieContainerProps) {
+  if (!trailerKeyProps) {
+    return <Typography>トレーラーが見つかりません</Typography>;
+  }
+
   return (
     <>
       <Box
@@ -16,7 +20,7 @@ function VideoContainer({ trailerKeyProps }: MovieContainerProps) {
           aspectRatio: "16 / 9", // 16:9のアスペクト比を維持 (9 / 16 * 100)
         }}
       >
-        {trailerKeyProps && (
+        {
           <iframe
             src={`https://www.youtube.com/embed/${trailerKeyProps}`}
             title="official video"
@@ -30,7 +34,7 @@ function VideoContainer({ trailerKeyProps }: MovieContainerProps) {
               height: "100%",
             }}
           ></iframe>
-        )}
+        }
       </Box>
     </>
   );

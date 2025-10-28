@@ -13,7 +13,7 @@ interface CarouselMovieListProps {
   movies: ResponseMovies[];
 }
 
-// カルーセルのドットをカスタマイズする
+// カルーセルのドットをカスタマイズ
 const StyledSlider = styled(Slider)(({ theme }) => ({
   "& .slick-dots": {
     bottom: "50px", // ドットの位置を調整
@@ -40,7 +40,7 @@ export default function CarouselMovieList({ movies }: CarouselMovieListProps) {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: "auto" }}>
+    <Box sx={{ maxWidth: 600, mt: 4 }}>
       <StyledSlider {...settings}>
         {movies.map((movie) => (
           <Link key={movie.id} href={`/movies/${movie.id}`}>
@@ -55,7 +55,11 @@ export default function CarouselMovieList({ movies }: CarouselMovieListProps) {
               }}
             >
               <Image
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                src={
+                  !movie.poster_path
+                    ? "/noPosterImage.png"
+                    : `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                }
                 alt={movie.title}
                 fill // 親要素のサイズに合わせて画像を拡大・縮小
                 style={{ objectFit: "cover" }} // 画像をトリミングして親要素にフィットさせる

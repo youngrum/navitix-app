@@ -1,9 +1,8 @@
 // app/api/stripe/webhook/route.ts
-"use server";
-
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import Stripe from "stripe";
+import { handleChargeRefunded } from "@/actions/reservation/cancelReservation";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
@@ -11,11 +10,20 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 // Supabaseクライアント Service Role
 const supabase = createAdminClient();
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");
 
+  // console.log("\n=== Webhook受信 ===");
+
   if (!signature) {
+    console.error("No signature provided");
     return NextResponse.json(
       { error: "No signature provided" },
       { status: 400 }
@@ -26,6 +34,8 @@ export async function POST(req: NextRequest) {
 
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    console.log(`Event Type: ${event.type}`);
+    console.log(`Event ID: ${event.id}`);
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json(
@@ -34,71 +44,81 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  switch (event.type) {
-    case "checkout.session.completed":
-      const session = event.data.object as Stripe.Checkout.Session;
-      console.log("=== Session Metadata ===");
-      console.log("Metadata:", session.metadata);
-      console.log("Reservation ID:", session.metadata?.reservation_id);
+  try {
+    switch (event.type) {
+      case "checkout.session.completed":
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.log("=== checkout.session.completed ===");
+        // console.log("Session ID:", session.id);
+        // console.log("Payment Intent:", session.payment_intent);
+        // console.log("Metadata:", session.metadata);
+        await handleCheckoutCompleted(session);
+        break;
 
-      await handleCheckoutCompleted(session);
-      break;
+      case "charge.refunded":
+        console.log("=== charge.refunded イベント ===");
+        await handleChargeRefunded(event);
+        break;
 
-    case "checkout.session.expired":
-      await handleCheckoutExpired(event.data.object as Stripe.Checkout.Session);
-      break;
+      case "checkout.session.expired":
+        console.log("=== checkout.session.expired ===");
+        await handleCheckoutExpired(
+          event.data.object as Stripe.Checkout.Session
+        );
+        break;
 
-    default:
-      console.log(`Unhandled event type: ${event.type}`);
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+
+    return NextResponse.json({ received: true });
+  } catch (error) {
+    console.error("Webhook processing error:", error);
+    return NextResponse.json(
+      { error: "Webhook processing failed" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ received: true });
 }
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  console.log("=== handleCheckoutCompleted ===");
-  console.log("Full session object:", JSON.stringify(session, null, 2));
+  console.log("\n=== handleCheckoutCompleted 処理開始 ===");
 
   const reservationId = session.metadata?.reservation_id;
+  const paymentIntentId = session.payment_intent as string;
 
   if (!reservationId) {
     console.error("No reservation_id in session metadata");
-    console.error("Available metadata:", session.metadata);
     return;
   }
 
-  console.log(`Payment completed for reservation: ${reservationId}`);
-  console.log(`Reservation ID type: ${typeof reservationId}`);
+  const idToQuery = isNaN(Number(reservationId))
+    ? reservationId
+    : Number(reservationId);
 
-  // Service Role Keyの確認
-  const key = process.env.SUPABASE_SECRET_KEY;
-  console.log("Using Service Role Key:", key?.substring(0, 15) + "...");
+  // console.log(`Reservation ID: ${idToQuery}`);
+  // console.log(`Payment Intent ID: ${paymentIntentId}`);
 
   try {
-    // IDの型を確認して適切に変換
-    const idToQuery = isNaN(Number(reservationId))
-      ? reservationId
-      : Number(reservationId);
-
-    console.log("Querying with ID:", idToQuery, "Type:", typeof idToQuery);
-
-    // まず、レコードが存在するか確認（.single()なし）
+    // 予約が存在するか確認
     const { data: existingReservations, error: fetchError } = await supabase
       .from("reservations")
       .select("*")
       .eq("id", idToQuery);
 
-    console.log("Query result count:", existingReservations?.length);
-    console.log("Existing reservations:", existingReservations);
-    console.log("Fetch error:", fetchError);
-
-    if (!existingReservations || existingReservations.length === 0) {
-      console.error(`Reservation ${reservationId} not found`);
+    if (
+      fetchError ||
+      !existingReservations ||
+      existingReservations.length === 0
+    ) {
+      console.error(`Reservation ${idToQuery} not found`);
       return;
     }
 
     const existingReservation = existingReservations[0];
+    // console.log(`Current Status: ${existingReservation.payment_status}`);
 
+    // 既に処理済みの場合はスキップ
     if (existingReservation.payment_status !== "PENDING") {
       console.log(
         `Reservation already processed: ${existingReservation.payment_status}`
@@ -106,11 +126,19 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       return;
     }
 
-    // 更新実行
+    const paidAt =
+      session.payment_status === "paid" && session.created
+        ? new Date(session.created * 1000).toISOString()
+        : new Date().toISOString();
+
+    // 予約ステータスを PAID に更新 + stripe_payment_idを保存
     const { data: reservationData, error: reservationError } = await supabase
       .from("reservations")
       .update({
         payment_status: "PAID",
+        paid_at: paidAt,
+        stripe_payment_id: paymentIntentId,
+        stripe_session_id: session.id,
       })
       .eq("id", idToQuery)
       .eq("payment_status", "PENDING")
@@ -121,9 +149,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       return;
     }
 
-    console.log("Updated reservation:", reservationData);
+    // console.log("✓ Reservation updated to PAID");
+    // console.log(`  Payment Intent ID: ${paymentIntentId}`);
 
-    // seat_reservationsテーブルを更新
+    // seat_reservations テーブルを更新
     const { error: seatError } = await supabase
       .from("seat_reservations")
       .update({
@@ -137,7 +166,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       return;
     }
 
-    console.log(`Successfully updated reservation ${reservationId} to PAID`);
+    // console.log("✓ Seat reservations updated to PAID");
+    // console.log("=== handleCheckoutCompleted 処理完了 ===\n");
   } catch (error) {
     console.error("Error handling checkout completion:", error);
   }
@@ -147,6 +177,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
  * セッション期限切れ時の処理
  */
 async function handleCheckoutExpired(session: Stripe.Checkout.Session) {
+  console.log("\n=== handleCheckoutExpired 処理開始 ===");
+
   const reservationId = session.metadata?.reservation_id;
 
   if (!reservationId) {
@@ -154,11 +186,10 @@ async function handleCheckoutExpired(session: Stripe.Checkout.Session) {
     return;
   }
 
-  console.log(`Session expired for reservation: ${reservationId}`);
+  console.log(`Reservation ID: ${reservationId}`);
 
   try {
-    // 予約IDに紐づく全ての座席IDを取得
-    // statusがLOCKEDまたはRESERVEDの座席を対象とする
+    // 座席予約から座席IDを取得
     const { data: expiredSeats, error: fetchSeatsError } = await supabase
       .from("seat_reservations")
       .select("seat_id")
@@ -169,52 +200,34 @@ async function handleCheckoutExpired(session: Stripe.Checkout.Session) {
       console.error("Failed to fetch seats for cleanup:", fetchSeatsError);
     }
 
-    // seatsテーブルの is_available を TRUE に更新（一括更新）
-    if (expiredSeats && expiredSeats.length > 0) {
-      const seatIdsToRelease = expiredSeats.map((s) => s.seat_id);
-
-      const { error: seatsUpdateError } = await supabase
-        .from("seats")
-        .update({ is_available: true }) // FALSEからTRUEに戻す
-        .in("id", seatIdsToRelease);
-
-      if (seatsUpdateError) {
-        console.error(
-          "Failed to set expired seats to available (TRUE):",
-          seatsUpdateError
-        );
-      } else {
-        console.log(`Successfully released ${seatIdsToRelease.length} seats.`);
-      }
-    }
-    // ------------------------------------------------------------------
-
-    // reservationsテーブルを削除または期限切れステータスに更新
+    // 予約ステータスを EXPIRED に更新
     const { error: reservationError } = await supabase
       .from("reservations")
       .update({
         payment_status: "EXPIRED",
       })
       .eq("id", reservationId)
-      .eq("payment_status", "PENDING"); // PENDINGの場合のみ
+      .eq("payment_status", "PENDING");
 
     if (reservationError) {
       console.error("Failed to update expired reservation:", reservationError);
+    } else {
+      console.log("✓ Reservation updated to EXPIRED");
     }
 
-    // seat_reservationsテーブルから削除
+    // 座席予約を削除
     const { error: seatError } = await supabase
       .from("seat_reservations")
       .delete()
       .eq("reservation_id", reservationId);
-    // .eq("status", "RESERVED"); // セッション切れの場合、statusはLOCKEDかRESERVEDの可能性があるため、
-    // 削除時にステータス条件は付けず、reservation_idで全て削除するのが安全です。
 
     if (seatError) {
       console.error("Failed to delete seat reservations:", seatError);
+    } else {
+      console.log("✓ Seat reservations deleted");
     }
 
-    console.log(`Successfully handled expired reservation ${reservationId}`);
+    console.log("=== handleCheckoutExpired 処理完了 ===\n");
   } catch (error) {
     console.error("Error handling checkout expiration:", error);
   }

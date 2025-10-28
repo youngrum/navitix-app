@@ -1,6 +1,7 @@
 import { ReservationRequestSchema } from "@/types/form";
 import { schedules } from "@/lib/screenDB";
 import { z } from "zod";
+import { CreateReservationParams } from "@/types/reservation";
 
 type ReservationData = z.infer<typeof ReservationRequestSchema>;
 
@@ -8,7 +9,7 @@ type ReservationData = z.infer<typeof ReservationRequestSchema>;
  * 予約リクエストのバリデーション
  */
 export function validateReservationRequest(
-  formData: any
+  formData: CreateReservationParams
 ):
   | { success: true; error: null; data: ReservationData }
   | { success: false; error: string; data: null } {

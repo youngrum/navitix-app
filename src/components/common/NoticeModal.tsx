@@ -1,20 +1,21 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Modal,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Modal, Typography } from "@mui/material";
 import ForwardToInboxOutlinedIcon from "@mui/icons-material/ForwardToInboxOutlined";
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import LockClockIcon from "@mui/icons-material/LockClock";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 export interface ModalOpenProps {
   openProps: boolean;
   messageProps: string | "";
   messageHeaderProps: string | "";
-  stausProps?: "mail-success" | "mail-error" | "locked" | "notice" | "progress";
+  stausProps?:
+    | "success"
+    | "mail-success"
+    | "mail-error"
+    | "locked"
+    | "notice"
+    | "progress";
 }
 
 const style = {
@@ -30,7 +31,7 @@ const style = {
   p: 4,
 };
 
-export default function NoticeMordal({
+export default function NoticeModal({
   openProps,
   messageProps,
   messageHeaderProps,
@@ -38,31 +39,36 @@ export default function NoticeMordal({
 }: ModalOpenProps) {
   const getIconAndColor = () => {
     switch (stausProps) {
+      case "success":
+        return {
+          icon: <CheckCircleOutlineIcon fontSize="inherit" color="secondary" />,
+        };
       case "mail-success":
         return {
-          icon: <ForwardToInboxOutlinedIcon fontSize="inherit" />,
-          color: "secondary.main",
+          icon: (
+            <ForwardToInboxOutlinedIcon fontSize="inherit" color="secondary" />
+          ),
         };
       case "mail-error":
         return {
-          icon: <ReportGmailerrorredIcon fontSize="inherit" />,
-          color: "secondary.main",
+          icon: (
+            <ReportGmailerrorredIcon fontSize="inherit" color="secondary" />
+          ),
         };
       case "locked":
         return {
-          icon: <LockClockIcon fontSize="inherit" />,
-          color: "secondary.main",
+          icon: <LockClockIcon fontSize="inherit" color="secondary" />,
         };
       case "notice":
         return {
-          icon: <NotificationImportantIcon fontSize="inherit" />,
-          color: "secondary.main",
+          icon: (
+            <NotificationImportantIcon fontSize="inherit" color="secondary" />
+          ),
         };
       case "progress":
       default:
         return {
           icon: <CircularProgress color="secondary" />,
-          color: "secondary.main",
         };
     }
   };
@@ -78,7 +84,7 @@ export default function NoticeMordal({
           backdrop: {
             sx: {
               backdropFilter: "blur(3px)",
-              backgroundColor: "rgba(0, 0, 0, 0.6)", // ここで半透明な背景色を指定
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
             },
           },
         }}
@@ -92,7 +98,13 @@ export default function NoticeMordal({
           >
             {messageHeaderProps}
           </Typography>
-          <Box sx={{ textAlign: "center", fontSize: "5rem", my: 1 }}>
+          <Box
+            sx={{
+              textAlign: "center",
+              fontSize: "5rem",
+              my: 1,
+            }}
+          >
             {icon}
           </Box>
           <Typography id="modal-modal-description" sx={{ fontSize: "14px" }}>
