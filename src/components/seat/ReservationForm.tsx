@@ -11,6 +11,8 @@ import theme from "@/styles/theme";
 import { getSeatDataForClient } from "@/actions/seatActions";
 import { createReservation } from "@/actions/reservation/createReservation";
 import { useRouter } from "next/navigation";
+import NoticeModal from "@/components/common/NoticeModal";
+import { modalStatus } from "@/types/modalStatus";
 
 interface reservationProps {
   theaterName: string;
@@ -50,6 +52,11 @@ export default function ReservationForm({
   const [feeSum, setFeeSum] = useState<number>(0);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessageHeader, setModalMessageHeader] = useState("");
+  const [modalIconStatus, setModalIconStatus] =
+    useState<modalStatus>("mail-success");
+  const [modalMessage, setModalMessage] = useState("");
   const submitText = "予約する";
   const router = useRouter();
 
@@ -124,17 +131,26 @@ export default function ReservationForm({
 
       if (result.success) {
         // 成功時の処理
-        alert(
-          `予約が完了しました！\n予約コード: ${result.uniqueCode}\n予約ID: ${result.reservationId}`
+        setModalMessageHeader("Reservation Complete!");
+        setModalIconStatus("mail-success");
+        setModalMessage(
+          `予約が完了しました!\n予約コード: ${result.uniqueCode}\n予約ID: ${result.reservationId}`
         );
+        setModalOpen(true);
+
         // 予約完了ページへリダイレクト
-        router.push(`/reservations/${result.reservationId}`);
+        router.push(`/tickets/${result.reservationId}`);
       } else {
         // エラー時の処理
         setValidationErrors([result.error || "予約に失敗しました"]);
       }
     } catch (error) {
       console.error("Reservation error:", error);
+      setValidationErrors(["予期しないエラーが発生しました"]);
+      setModalMessageHeader("System Error");
+      setModalIconStatus("notice");
+      setModalMessage("予期しないエラーが発生しました");
+      setModalOpen(true);
       setValidationErrors(["予期しないエラーが発生しました"]);
     } finally {
       setIsSubmitting(false);
@@ -172,6 +188,12 @@ export default function ReservationForm({
           buttonText={submitText}
         ></SubmitButton>
       </form>
+      <NoticeModal
+        openProps={modalOpen}
+        messageProps={modalMessage}
+        messageHeaderProps={modalMessageHeader}
+        stausProps={modalIconStatus}
+      />
     </Box>
   );
 }

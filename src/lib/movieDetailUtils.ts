@@ -1,18 +1,41 @@
+import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
 import tmdbApi from "@/services/tmdbApi";
 import { apiResponse } from "@/types/apiResponse";
-import { _ResponseMovieDetail, ResponseMovieDetail, ResponseReleaseDates_release_dates, ResponseReleaseDates_results } from "@/types/movies";
+import {
+  _ResponseMovieDetail,
+  ResponseCredits_casts,
+  ResponseMovieDetail,
+  ResponseMovies,
+  ResponseMovies_results,
+  ResponseMovieVideos,
+  ResponseReleaseDates_release_dates,
+  ResponseReleaseDates_results,
+} from "@/types/movies";
 
 // 映画の詳細を取得
-export async function getMovieDetailData(movieId: number) {
+export async function getMovieDetailData(movie_id: number) {
   try {
     const res: apiResponse<ResponseMovieDetail> = await tmdbApi.get(
-      `/movie/${movieId}`
+      `/movie/${movie_id}`
     );
     const detail = res.data;
     // console.log("Fetched movie detail:", detail);
     return detail;
   } catch (error) {
     console.log("Failed to fetch movie detail", error);
+    return null;
+  }
+}
+
+// DetailInfoコンポーネント用映画情報詳細レスポンスAPI
+export async function newGetMovileDetail(movie_id: string) {
+  try {
+    const res: apiResponse<_ResponseMovieDetail> =
+      await searchTheaterLocalApi.get(`/movie/get-detail/${movie_id}/`);
+    // console.log("/movie/get-detail/${movie_id}/>>>>>>>>",res.data);
+    return res.data;
+  } catch (error) {
+    console.log("Failed to fetch", error);
     return null;
   }
 }
@@ -43,7 +66,7 @@ export const getCertification = (
   const certifiedItem = release_dates?.find(
     (item) => item.certification !== ""
   );
-  console.log(certifiedItem);
+  // console.log("certifiedItem>>>>>>>>>", certifiedItem);
 
   // 条件に合う要素が見つかればそのcertificationを、なければ'-'を返す
   return certifiedItem ? certifiedItem.certification : "-";
@@ -63,8 +86,7 @@ export const formatMovieDetail = (
     detail.genres?.map((genre) => genre.name).join(", ") ?? "-";
   const formattedOverview =
     detail.overview || "解説・あらすじを取得できませんでした";
-  const formattedPosterPath =
-    detail.poster_path || "https://example.com/default-poster.jpg";
+  const formattedPosterPath = detail.poster_path || "";
   const formattedReleaseDate = detail.release_date || "不明";
   const formattedRevenue = detail.revenue || "不明";
   const formattedRuntime = detail.runtime || 0;
@@ -87,3 +109,110 @@ export const formatMovieDetail = (
     certification: certificationValue,
   };
 };
+
+export const getLatestOfficialTrailerKey = (
+  videoList: ResponseMovieVideos[]
+) => {
+  if (!videoList || videoList.length === 0) {
+    return null; // データが存在しない場合はnullを返す
+  }
+
+  // 条件に合う動画をフィルタリング
+  const filtered_videos = videoList.filter(
+    (video) =>
+      (video.type === "Trailer" || video.type === "Teaser") &&
+      video.site === "YouTube"
+  );
+
+  // フィルタリングされた動画が存在しない場合はnullを返す
+  if (filtered_videos.length === 0) {
+    return null;
+  }
+
+  // published_atが最新のものを見つけるためにソート
+  filtered_videos.sort((a, b) => {
+    // 日付文字列を比較して新しい順に並べる
+    return (
+      new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+    );
+  });
+
+  // ソート後の配列の最初の要素（最も新しいもの）のキーを返す
+  return filtered_videos[0].key;
+};
+
+// 映画の動画情報を取得
+export async function getMovieVideoData(movieId: string) {
+  try {
+    const res: apiResponse<ResponseMovies_results<ResponseMovieVideos[]>> =
+      await tmdbApi.get(`/movie/${movieId}/videos`);
+    const videoData = res.data.results;
+    // console.log(videoData);
+    return videoData;
+  } catch (error) {
+    console.log("Failed to fetch", error);
+    return null;
+  }
+}
+// 映画のキャスト情報を取得
+export async function getMovieCasts(movie_id: string) {
+  try {
+    const res: apiResponse<ResponseCredits_casts> = await tmdbApi.get(
+      `/movie/${movie_id}/credits`
+    );
+    const castsData = res.data.cast;
+    // console.log("castsData>>>>>>>>",castsData);
+    return castsData;
+  } catch (error) {
+    console.log("Failed to fetch", error);
+    return [];
+  }
+}
+
+// 現在上映中の映画データを取得
+export async function getNowPlayingMovieData() {
+  try {
+    const res: apiResponse<ResponseMovies_results<ResponseMovies[]>> =
+      await tmdbApi.get("/movie/now_playing");
+    // console.log("/movie/now_playing>>>>>>",res.data.results);
+    return res.data.results;
+  } catch (error) {
+    console.log("Failed to fetch", error);
+    return [];
+  }
+}
+
+// 公開予定の映画データを取得
+export async function getUpcomingMovieData() {
+  try {
+    const res: apiResponse<ResponseMovies_results<ResponseMovies[]>> =
+      await tmdbApi.get("/movie/upcoming");
+    // console.log("/movie/upcoming>>>>>>",res.data.results);
+    return res.data.results;
+  } catch (error) {
+    console.log("Failed to fetch", error);
+    return [];
+  }
+}
+
+// 公開予定の映画データを取得
+export async function getTop5MovieData() {
+  try {
+    const response = await tmdbApi.get("/movie/now_playing");
+    const allMovies = response.data.results;
+
+    // 1. vote_averageが高い順にソート
+    allMovies.sort(
+      (a: { vote_average: number }, b: { vote_average: number }) =>
+        b.vote_average - a.vote_average
+    );
+
+    // 2. 上位5件を抽出
+    const top5Movies = allMovies.slice(0, 5);
+
+    return top5Movies;
+  } catch (error) {
+    console.error("Failed to fetch and sort movies:", error);
+    return []; // エラー時は空の配列を返す
+  }
+}

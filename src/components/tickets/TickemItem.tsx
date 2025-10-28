@@ -1,6 +1,6 @@
 "use client";
 import { formatTimestampToJST } from "@/lib/getShowTimeUtils";
-import { ReservationData } from "@/types/tickets";
+import { ReservationsTable } from "@/types/reservation";
 import {
   Card,
   CardMedia,
@@ -14,9 +14,10 @@ import {
 import NextLink from "next/link";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import theme from "@/styles/theme";
+import { formatDate } from "@/lib/formatter";
 
 type TicketItemProps = {
-  reservation: ReservationData;
+  reservation: ReservationsTable;
 };
 
 export default function TicketItem({ reservation }: TicketItemProps) {
@@ -30,7 +31,7 @@ export default function TicketItem({ reservation }: TicketItemProps) {
       case "EXPIRED":
         return "error";
       case "CANCELLED":
-        return "default";
+        return "secondary";
       default:
         return "default";
     }
@@ -47,13 +48,16 @@ export default function TicketItem({ reservation }: TicketItemProps) {
   };
 
   return (
-    <MuiLink component={NextLink} href={`/tickets/${reservation.id}`}>
+    <MuiLink
+      component={NextLink}
+      href={`/tickets/${reservation.id}`}
+      underline="none"
+    >
       <Card
         sx={{
           display: "flex",
           my: 4,
           p: 2,
-          opacity: isCancelled ? 0.6 : 1,
           alignItems: "center",
           border: `1px solid ${theme.palette.grey[300]}`,
         }}
@@ -74,7 +78,11 @@ export default function TicketItem({ reservation }: TicketItemProps) {
               objectFit: "cover",
               flexShrink: 0,
             }}
-            image={`https://image.tmdb.org/t/p/w500${reservation.poster_path || "/images/placeholder.jpg"}`}
+            image={
+              !reservation.poster_path
+                ? "/noPosterImage.png"
+                : `https://image.tmdb.org/t/p/w500${reservation.poster_path}`
+            }
             alt={reservation.movie_title}
           />
         </Box>
@@ -104,7 +112,6 @@ export default function TicketItem({ reservation }: TicketItemProps) {
                 fontWeight: 600,
                 flex: 1,
                 pr: 1,
-                textDecoration: isCancelled ? "line-through" : "none",
               }}
             >
               {reservation.movie_title}
@@ -119,15 +126,6 @@ export default function TicketItem({ reservation }: TicketItemProps) {
               color={getPaymentStatusColor(reservation.payment_status)}
               variant={isCancelled ? "outlined" : "filled"}
             />
-            {isCancelled && (
-              <Chip
-                label="キャンセル"
-                size="small"
-                color="error"
-                variant="outlined"
-                sx={{ ml: 1 }}
-              />
-            )}
           </Box>
 
           {/* 上映時刻と日付 */}
@@ -143,8 +141,7 @@ export default function TicketItem({ reservation }: TicketItemProps) {
           {/* キャンセル日時（キャンセルされた場合） */}
           {isCancelled && (
             <Typography variant="caption" color="error" sx={{ mt: "auto" }}>
-              キャンセル日:{" "}
-              {formatTimestampToJST(String(reservation.cancelled_at))}
+              キャンセル日: {formatDate(String(reservation.cancelled_at))}
             </Typography>
           )}
         </CardContent>

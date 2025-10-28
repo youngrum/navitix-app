@@ -1,6 +1,7 @@
 import searchTheaterLocalApi from "@/services/searchTheaterLocalApi";
 import { apiResponse } from "@/types/apiResponse";
-import { ScreenResponse } from "@/types/screen";
+import { ScreenResponse, ScreenSchedule } from "@/types/screen";
+import { toJSTISOString } from "@/lib/formatter";
 
 export async function getScreenData(
   theater_id: string
@@ -34,11 +35,22 @@ type Schedule = {
  * @returns Scheduleオブジェクトの配列
  */
 export const generateScheduleData = (): Schedule[] => {
-  const START_DATE = "2025-10-12";
-  const END_DATE = "2025-10-19";
   const TOTAL_AUDITORIUMS = 90;
   const schedules: Schedule[] = [];
   let idCounter = 1;
+
+  const formatDate = (date: Date): string => {
+    return date.toISOString().split("T")[0];
+  };
+
+  const today = new Date();
+  // 今日の日付を START_DATE に設定
+  const START_DATE_ISO = formatDate(today);
+
+  // 今日から1週間後（+7日）の日付を END_DATE に設定
+  const sevenDaysLater = new Date(today);
+  sevenDaysLater.setDate(today.getDate() + 7);
+  const END_DATE_ISO = formatDate(sevenDaysLater);
 
   // 映画ごとの上映時間と開始時刻の定義
   const movieConfigs = [
@@ -60,8 +72,9 @@ export const generateScheduleData = (): Schedule[] => {
   ];
 
   // 日付の範囲をループ
-  const currentDate = new Date(START_DATE);
-  const endDate = new Date(END_DATE);
+  // START_DATE_ISO と END_DATE_ISO は YYYY-MM-DD 形式
+  const currentDate = new Date(START_DATE_ISO);
+  const endDate = new Date(END_DATE_ISO);
 
   while (currentDate <= endDate) {
     const dateString = currentDate.toISOString().split("T")[0];
@@ -82,8 +95,8 @@ export const generateScheduleData = (): Schedule[] => {
           id: idCounter++,
           movie_id: config.movieId,
           auditorium_id: audId,
-          start_time: startDateTime.toISOString(),
-          end_time: endDateTime.toISOString(),
+          start_time: toJSTISOString(startDateTime),
+          end_time: toJSTISOString(endDateTime),
         });
       }
     }
@@ -93,4 +106,35 @@ export const generateScheduleData = (): Schedule[] => {
   }
   // console.log(schedules);
   return schedules;
+};
+
+// 上映開始時間が予約締切時間（現在時刻から1時間以内）を過ぎているか判定する
+export const isShowtimeDisabled = (
+  start_time: string,
+  currentTime: Date
+): boolean => {
+  const RESERVATION_DEADLINE_MS = 60 * 60 * 1000;
+  // 上映開始時刻をDateオブジェクトとしてパース
+  const startTime = new Date(start_time);
+  // 現在時刻からの差分 (ミリ秒) を計算
+  const timeDifference = startTime.getTime() - currentTime.getTime();
+  // 差分が RESERVATION_DEADLINE_MS (1時間) 未満であれば true (選択不可)
+  return timeDifference < RESERVATION_DEADLINE_MS;
+};
+
+// 予約可能な最初のスケジュール時刻をセットする
+export const findFirstAvailableTime = (
+  schedules: ScreenSchedule[] | undefined,
+  currentTime: Date
+): string => {
+  if (!schedules || schedules.length === 0 || !schedules[0].showtimes) {
+    return "";
+  }
+
+  // 初日の予約可能な最初の時間を見つける
+  const firstAvailableShowtime = schedules[0].showtimes.find(
+    (showtime) => !isShowtimeDisabled(showtime.start_time, currentTime)
+  );
+
+  return firstAvailableShowtime?.start_time || "";
 };

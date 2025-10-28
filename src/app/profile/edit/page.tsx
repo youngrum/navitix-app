@@ -46,7 +46,7 @@ export default async function Page({
           spacing={2}
           sx={{ marginBottom: "35px" }}
         >
-          <BackButton returnPath="/" />
+          <BackButton returnPath="/profile" />
           <Header1 headerText={header1Text} />
         </Stack>
         <SubText subText={subText} />

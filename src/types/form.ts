@@ -67,6 +67,13 @@ export const profileSchema = z.object({
 // プロフィール入力フォームの型
 export type ProfileFormValues = z.infer<typeof profileSchema>;
 
+// プロフィール表示フォームの型 修正しないのですべてオプショナル
+export const profileDisplaySchema = z.object({
+  email: z.string().optional(),
+  accountName: z.string().optional(),
+  birthDay: z.string().optional(),
+});
+
 export const ReservationRequestSchema = z.object({
   // 選択された座席IDの配列
   selected_seat_ids: z

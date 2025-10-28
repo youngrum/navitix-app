@@ -183,6 +183,28 @@ export async function createReservation(formData: CreateReservationParams) {
       };
     }
 
+    const paymentIntentId = stripeResult.session.payment_intent as string;
+    const sessionId = stripeResult.session.id;
+
+    const { error: updateError } = await supabase
+      .from("reservations")
+      .update({
+        stripe_payment_id: paymentIntentId,
+        stripe_session_id: sessionId,
+      })
+      .eq("id", reservation.id);
+
+    if (updateError) {
+      console.error("Failed to save Stripe payment info:", updateError);
+      console.warn("Continuing despite payment info save error");
+    } else {
+      console.log(
+        `Stripe payment info saved for reservation ${reservation.id}`
+      );
+    }
+
+    // ===================================================
+
     // メール送信
     if (stripeResult.session.url && user.email) {
       await sendPaymentEmail(

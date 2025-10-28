@@ -18,7 +18,7 @@ export default function ThemeProviderWrapper({
       <ThemeProvider theme={myProjectTheme}>
         <CssBaseline />
         {/* <Box sx={{ p: 1, maxWidth: "600px", mx: "auto" }}>{children}</Box> */}
-        <Container maxWidth="sm" sx={{ py: 3 }}>
+        <Container maxWidth="sm" sx={{ py: 3, mb: 4 }}>
           {children}
         </Container>
       </ThemeProvider>
