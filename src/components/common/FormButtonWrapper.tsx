@@ -37,8 +37,8 @@ export function FormButtonWrapper({ ticketData }: reservationProps) {
     setError(null);
 
     try {
-      console.log(`キャンセル開始: reservation ${reservationId}`);
-      const result = await cancelReservation({ reservationId });
+      console.log(`キャンセル開始: reservation ${ticketData.id}`);
+      const result = await cancelReservation({ reservationId: ticketData.id });
 
       if (result.success) {
         console.log("✓ キャンセル成功");

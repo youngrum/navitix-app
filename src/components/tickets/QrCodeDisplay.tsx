@@ -1,15 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Slide,
-  Box,
-  Paper,
-  Typography,
-  IconButton,
-  Divider,
-  Stack,
-} from "@mui/material";
+import { Slide, Box, Typography, IconButton, Divider } from "@mui/material";
 import { QRCodeSVG } from "qrcode.react";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { ReservationsTable } from "@/types/reservation";

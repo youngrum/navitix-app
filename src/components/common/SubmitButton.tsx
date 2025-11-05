@@ -8,7 +8,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 interface SubmitButtonProps {
   isLoading: boolean;
   buttonText: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 // ボタンデザイン定義
