@@ -47,7 +47,7 @@ export default async function page({
         <_DetailInfo MovieDetailProps={newDetail} />
         <TicketDetailCard ticketData={ticketData} />
         <Divider sx={{ my: 4 }} />
-        <FormButtonWrapper reservationId={reservationId} />
+        <FormButtonWrapper ticketData={ticketData} />
       </ThemeProviderWrapper>
     </main>
   );
