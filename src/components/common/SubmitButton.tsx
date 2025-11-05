@@ -8,6 +8,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 interface SubmitButtonProps {
   isLoading: boolean;
   buttonText: string;
+  onClick?: () => void;
 }
 
 // ボタンデザイン定義
@@ -21,6 +22,7 @@ const CustomButton = styled(Button)({
 export default function SubmitButton({
   isLoading,
   buttonText,
+  onClick,
 }: SubmitButtonProps) {
   return (
     <Box sx={{ my: 4 }}>
@@ -28,6 +30,7 @@ export default function SubmitButton({
         type="submit"
         variant="contained"
         disabled={isLoading}
+        onClick={onClick}
         color="secondary"
       >
         {isLoading ? (

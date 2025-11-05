@@ -64,7 +64,7 @@ export default function TestPage() {
 
     //   {/* テーマが必要な部分だけをクライアントコンポーネントに */}
     <ThemeProviderWrapper>
-      <SubmitButton isLoading={false} buttonText={"テスト"}></SubmitButton>
+      {/* <SubmitButton isLoading={false} buttonText={"テスト"} ></SubmitButton> */}
       <ClientPageContent />
     </ThemeProviderWrapper>
     // </Box>
